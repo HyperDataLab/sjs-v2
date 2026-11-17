@@ -378,26 +378,12 @@ export default function GlobalHeatMapSection({
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      fill={getFillColor(geoName)}
+                      className={`global-heatmap-country${isSelected ? ' is-selected' : ''}`}
                       stroke="#2B333F"
                       strokeWidth={0.5}
                       onClick={() => handleCountryClick(geo)}
                       style={{
-                        default: {
-                          outline: 'none',
-                          opacity: 1,
-                          transition: 'opacity 0.2s ease, fill 0.2s ease'
-                        },
-                        hover: {
-                          fill: isSelected ? '#005A96' : '#0071BC',
-                          outline: 'none',
-                          cursor: 'pointer',
-                          opacity: 1
-                        },
-                        pressed: {
-                          fill: '#005A96',
-                          outline: 'none'
-                        },
+                        '--geo-fill': getFillColor(geoName),
                       }}
                     />
                   );

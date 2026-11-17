@@ -216,6 +216,23 @@
   display: block;
 }
 
+.global-heatmap-country {
+  fill: var(--geo-fill, #444f5d);
+  outline: none;
+  transition: fill 0.2s ease;
+}
+
+.global-heatmap-country:hover {
+  fill: #0071bc;
+  cursor: pointer;
+}
+
+.global-heatmap-country.is-selected,
+.global-heatmap-country.is-selected:hover,
+.global-heatmap-country:active {
+  fill: #005a96;
+}
+
 .activity-density-legend {
   position: absolute;
   bottom: 24px;
