@@ -21,6 +21,7 @@ export default function AdminSidebar() {
     { label: 'Journals', path: ROUTES.ADMIN_JOURNALS, icon: 'lucide:book-open' },
     { label: 'Articles', path: ROUTES.ADMIN_ARTICLES, icon: 'lucide:file-text' },
     { label: 'Volumes', path: ROUTES.ADMIN_REPOSITORY, icon: 'lucide:layers' },
+    { label: 'Data Sources', path: ROUTES.ADMIN_DATA_SOURCES, icon: 'lucide:database' },
     { label: 'Account', path: ROUTES.ADMIN_USERS, icon: 'lucide:user' },
   ];
 

@@ -18,8 +18,6 @@ import useAuth from '../../auth/hooks/useAuth';
 
 // API
 import { getArticleDetailApi, bookmarkArticleApi, getArticlesListApi } from '../api/articleApi';
-import { spendCoin } from '../../wallet/api/walletApi';
-import { useWalletStore } from '../../../app/store/walletStore';
 
 // Subcomponents
 import ArticleDetailSkeleton from '../components/ArticleDetailSkeleton';
@@ -64,7 +62,6 @@ const ArticleDetailPane = ({
   const navigate = useNavigate();
   const auth = useAuth();
   const currentUser = auth?.user;
-  const { balance, setBalance } = useWalletStore();
   const [article, setArticle] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -73,7 +70,6 @@ const ArticleDetailPane = ({
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showAllAuthors, setShowAllAuthors] = useState(false);
   const [showCitationsModal, setShowCitationsModal] = useState(false);
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [referencePage, setReferencePage] = useState(1);
   const referencesPerPage = 2;
   const fetchArticleForPane = useCallback(async () => {
@@ -176,30 +172,6 @@ const ArticleDetailPane = ({
       toast.error(t("article.khongTheChiaSeBaiBaoLucNay"));
     }
   };
-  const handleConfirmPremiumDownload = async () => {
-    if (!currentUser) {
-      setShowPremiumModal(false);
-      setShowLoginModal(true);
-      return;
-    }
-    const currentCoins = balance ?? 0;
-    if (currentCoins < 2) {
-      toast.error(t("article.soDuCoinCuaBanKhongDuVuiLongNa"));
-      setShowPremiumModal(false);
-      return;
-    }
-    try {
-      await spendCoin(2, `Download Premium PDF for article ${article.article_id}`);
-      setBalance(currentCoins - 2);
-      toast.success(t("article.thanhToan2XuDeTaiPremium"));
-      downloadArticlePdf(article, { withWatermark: false });
-    } catch (err) {
-      console.error("Spend coin API error", err);
-      toast.error(err?.response?.data?.message || err.message || "Giao dịch thất bại, không thể tải Premium PDF.");
-    } finally {
-      setShowPremiumModal(false);
-    }
-  };
   if (isLoading) {
     return <div className="p-4">
         <ArticleDetailSkeleton />
@@ -285,14 +257,9 @@ const ArticleDetailPane = ({
               <Icon icon="lucide:file-spreadsheet" width="14" className="me-2" />
               {t("article.exportCsv")}
             </Dropdown.Item>
-            <Dropdown.Item onClick={() => downloadArticlePdf(article, { withWatermark: true })}>
+            <Dropdown.Item onClick={() => downloadArticlePdf(article, { withWatermark: false })}>
               <Icon icon="lucide:file-text" width="14" className="me-2" />
               {t("article.exportPdf")}
-            </Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item onClick={() => setShowPremiumModal(true)} className="d-flex align-items-center py-2 fw-medium">
-              <Icon icon="lucide:star" width="14" className="me-2" style={{ color: 'var(--primary)' }} />
-              {t("article.premiumPdfCoin")}
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -391,36 +358,6 @@ const ArticleDetailPane = ({
           </div>
         </Modal.Body>
         <Modal.Footer><Button variant="outline-secondary" onClick={() => setShowCitationsModal(false)} className="font-display">{t("article.dong")}</Button></Modal.Footer>
-      </Modal>
-
-      <Modal show={showPremiumModal} onHide={() => setShowPremiumModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title className="font-display fw-bold text-main d-flex align-items-center">
-            <Icon icon="lucide:star" className="me-2" style={{ color: 'var(--primary)' }} />
-            {t("article.taiPdfPremium")}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p className="text-muted-custom mb-3" style={{ lineHeight: 1.7 }}>
-            {t("article.banCoChacChanMuonDung2Xu")}
-          </p>
-          <div className="article-modal-stat-box d-flex align-items-center justify-content-between p-2 px-3" style={{ background: 'var(--bg-main)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-            <span className="fw-semibold text-main d-flex align-items-center">
-              <Icon icon="lucide:file-text" className="me-2 text-muted-custom" /> {t("article.premiumPdf")}
-            </span>
-            <span className="font-display fw-bold d-flex align-items-center" style={{ fontSize: '1.25rem', color: 'var(--primary)' }}>
-              -2 <Icon icon="lucide:coins" className="ms-1" width="18" />
-            </span>
-          </div>
-        </Modal.Body>
-        <Modal.Footer className="border-0">
-          <Button variant="outline-secondary" onClick={() => setShowPremiumModal(false)} className="font-display px-3">
-            {t("admin.huy")}
-          </Button>
-          <Button onClick={handleConfirmPremiumDownload} className="font-display fw-bold px-3 d-flex align-items-center text-white border-0" style={{ backgroundColor: 'var(--primary)' }}>
-             Đồng ý
-          </Button>
-        </Modal.Footer>
       </Modal>
 
       <AuthRequiredModal show={showLoginModal} onHide={() => setShowLoginModal(false)} />

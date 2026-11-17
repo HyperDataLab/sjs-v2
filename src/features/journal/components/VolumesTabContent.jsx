@@ -90,23 +90,25 @@ export default function VolumesTabContent({
       const issueError = issueErrors[volumeId];
       const issuePagination = issuePaginationByVolume[volumeId];
       return <article key={volumeId} className={`journal-volume-card ${isExpanded ? 'is-expanded' : ''}`}>
-            <div className="journal-volume-header" onClick={() => toggleVolume(volumeId)}>
+            <div className="journal-volume-header" onClick={vol.can_expand === false ? undefined : () => toggleVolume(volumeId)}>
               <div className="d-flex align-items-center gap-3 flex-wrap">
                 <Icon icon={isExpanded ? 'lucide:folder-open' : 'lucide:folder'} style={{
               color: 'var(--text-muted)'
             }} width="20" />
                 <div>
-                  <span className="journal-volume-title">Volume {vol.volume_number || 'N/A'}</span>
+                  <span className="journal-volume-title">{vol.display_label || `Volume ${vol.volume_number || 'N/A'}`}</span>
                   <span className="journal-volume-meta">{volumeYear || t("author.chuaCapNhat")}</span>
                   {vol.issue_count !== undefined && vol.issue_count > 0 && <span className="text-muted-custom small ms-2">
                       {vol.issue_count} issue
                     </span>}
                 </div>
               </div>
-              <span className="text-muted-custom d-flex align-items-center">
+              {vol.can_expand !== false && <span className="text-muted-custom d-flex align-items-center">
                 <Icon icon={isExpanded ? 'lucide:chevron-up' : 'lucide:chevron-down'} width="18" />
-              </span>
+              </span>}
             </div>
+
+            {vol.can_expand === false && <div className="journal-issue-panel text-muted-custom">OpenAlex has publications for this year but no volume or issue metadata.</div>}
 
             {isExpanded && <div className="journal-issue-panel">
                 {issues === undefined && !issueError ? <div className="d-flex align-items-center gap-2 py-3 text-muted-custom">

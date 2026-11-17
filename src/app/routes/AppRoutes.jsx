@@ -10,14 +10,9 @@ import DashboardPage from '../../features/dashboard/pages/DashboardPage';
 
 import RegisterPage from '../../features/auth/pages/RegisterPage';
 import LoginPage from '../../features/auth/pages/LoginPage';
+import SsoCallbackPage from '../../features/auth/pages/SsoCallbackPage';
 import ProfilePage from '../../features/profile/pages/ProfilePage';
 import VerifyEmailPage from '../../features/auth/pages/VerifyEmailPage';
-import WalletLayout from '../../features/wallet/components/WalletLayout';
-import MyWalletPage from '../../features/wallet/pages/MyWalletPage';
-import TopUpPage from '../../features/wallet/pages/TopUpPage';
-import TransactionHistoryPage from '../../features/wallet/pages/TransactionHistoryPage';
-import WalletCheckoutPage from '../../features/wallet/pages/WalletCheckoutPage';
-import PaymentResultPage from '../../features/wallet/pages/PaymentResultPage';
 import ROUTES from './routePaths';
 
 import ProtectedRoute from './ProtectedRoute';
@@ -63,16 +58,22 @@ import JournalDirectoryPage from '../../features/admin/pages/JournalDirectoryPag
 import RepositoryManagementPage from '../../features/admin/pages/RepositoryManagementPage';
 import EditJournalPage from '../../features/admin/pages/EditJournalPage';
 import VolumeArchivePage from '../../features/admin/pages/VolumeArchivePage';
+import AdminDataSourcesPage from '../../features/admin/pages/AdminDataSourcesPage';
+
+import TrendingAnalyticsLayout from '../../trendingApp/TrendingAnalyticsLayout';
+import TrendingDashboardPage from '../../trendingApp/features/dashboard/pages/DashboardPage';
+import TrendingJournalsPage from '../../trendingApp/features/journals/pages/JournalsPage';
+import CollaborationAnalyticsPage from '../../trendingApp/features/volume/pages/CollaborationAnalyticsPage';
+import KeywordsNetworksPage from '../../trendingApp/features/volume/pages/KeywordsNetworksPage';
+import { AnalyticsDashboard } from '../../trendingApp/features/analytics/pages/AnalyticsDashboard';
+import CuratedArticlesPage from '../../trendingApp/features/analytics/pages/CuratedArticlesPage';
 
 export default function AppRoutes() {
   return (
     <Routes>
+      <Route path="/auth/sso/callback" element={<SsoCallbackPage />} />
       {/* Root redirect to language-prefixed root */}
       <Route path="/" element={<LanguageRedirect />} />
-
-      {/* PayOS & VNPay redirect route on frontend */}
-      <Route path="/wallet/payment/result" element={<PaymentResultPage />} />
-      <Route path="/api/v1/payments/vnpay/return" element={<PaymentResultPage />} />
 
       {/* Language Prefixed Route Tree */}
       <Route path="/:lang" element={<LangLayout />}>
@@ -101,10 +102,15 @@ export default function AppRoutes() {
             <Route path="projects/:id" element={<ProjectDetailPage />} />
             <Route path="project-invite/accept" element={<AcceptInvitePage />} />
 
-            <Route element={<WalletLayout />}>
-              <Route path={ROUTES.WALLET.substring(1)} element={<MyWalletPage />} />
-              <Route path={ROUTES.WALLET_TOP_UP.substring(1)} element={<TopUpPage />} />
-              <Route path={ROUTES.WALLET_TRANSACTIONS.substring(1)} element={<TransactionHistoryPage />} />
+            {/* Ported analytics pages, served by the current Firebase Worker API. */}
+            <Route path="project/:id" element={<TrendingAnalyticsLayout />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<TrendingDashboardPage />} />
+              <Route path="journals" element={<TrendingJournalsPage />} />
+              <Route path="volumes/journal-metrics" element={<CollaborationAnalyticsPage />} />
+              <Route path="volumes/keywords-networks" element={<KeywordsNetworksPage />} />
+              <Route path="analytics" element={<AnalyticsDashboard />} />
+              <Route path="analytics/curated-articles" element={<CuratedArticlesPage />} />
             </Route>
 
             <Route
@@ -119,6 +125,7 @@ export default function AppRoutes() {
                 <Route path="admin/users" element={<UserDirectoryPage />} />
                 <Route path="admin/users/create" element={<AddNewAccountPage />} />
                 <Route path="admin/users/:id/edit" element={<UpdateUserAccountPage />} />
+                <Route path="admin/data-sources" element={<AdminDataSourcesPage />} />
 
                 <Route path="admin/articles" element={<ArticleRepositoryPage />} />
                 <Route path="admin/articles/create" element={<SubmitArticlePage />} />
@@ -145,9 +152,6 @@ export default function AppRoutes() {
           />
 
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="wallet/checkout" element={<WalletCheckoutPage />} />
-          <Route path="wallet/payment/result" element={<PaymentResultPage />} />
-          <Route path="wallet/payment-result" element={<PaymentResultPage />} />
           <Route path="verify-email" element={<VerifyEmailPage />} />
 
           <Route path="authors" element={<AuthorListPage />} />

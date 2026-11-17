@@ -76,7 +76,7 @@ export default function AuthorDetailPage() {
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               <span className="ap-breadcrumb__link" onClick={() => navigate("/")}>
-                ResearchPulse
+                Trending System
               </span>
             </li>
             <li className="breadcrumb-item">

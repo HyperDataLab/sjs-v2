@@ -11,7 +11,6 @@ import { Icon } from '@iconify/react';
 import { jwtDecode } from 'jwt-decode';
 import { useAuthStore } from '../../app/store/authStore';
 import { useUserStore } from '../../app/store/userStore';
-import { useWalletStore } from '../../app/store/walletStore';
 import { logoutSession } from '../../features/auth/services/authService';
 import PrimaryButton from './Button/PrimaryButton';
 
@@ -24,7 +23,6 @@ export default function SessionExpiredModal() {
   const setSessionExpiredModalVisible = useAuthStore((state) => state.setSessionExpiredModalVisible);
   const logout = useAuthStore((state) => state.logout);
   const clearEmail = useUserStore((state) => state.clearEmail);
-  const clearWallet = useWalletStore((state) => state.clearWallet);
 
   // Giám sát thời hạn thực tế của Token theo thời gian thực (kể cả khi user đứng yên không thao tác)
   useEffect(() => {
@@ -72,7 +70,6 @@ export default function SessionExpiredModal() {
 
     logout();
     clearEmail?.();
-    clearWallet?.();
 
     // Điều hướng người dùng về trang đăng nhập
     navigate('/login', { replace: true });

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import InputField from '../../../shared/components/InputField';
 import PasswordInput from './PasswordInput';
 import CheckboxField from './CheckboxField';
@@ -13,6 +13,20 @@ export default function LoginForm({
   apiError
 }) {
   const { t } = useTranslation();
+  const devAccounts = import.meta.env.DEV
+    ? [
+        {
+          label: 'Login as User',
+          email: import.meta.env.VITE_DEV_USER_EMAIL,
+          password: import.meta.env.VITE_DEV_USER_PASSWORD,
+        },
+        {
+          label: 'Login as Admin',
+          email: import.meta.env.VITE_DEV_ADMIN_EMAIL,
+          password: import.meta.env.VITE_DEV_ADMIN_PASSWORD,
+        },
+      ].filter(({ email, password }) => email && password)
+    : [];
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -97,6 +111,14 @@ export default function LoginForm({
       remember_login: formData.remember_login
     });
   };
+  const handleQuickLogin = account => {
+    if (isLoading) return;
+    onSubmit({
+      email: account.email,
+      password: account.password,
+      remember_login: true,
+    });
+  };
   const rememberLabel = <span className="text-xs font-semibold select-none" style={{
     color: 'var(--text-main)',
     letterSpacing: '0.01em'
@@ -133,5 +155,22 @@ export default function LoginForm({
 
       {/* Submit Button */}
       <SubmitButton isLoading={isLoading} loadingText={t("auth.dangDangNhap")} label={t("signIn")} />
+
+      {devAccounts.length > 0 && (
+        <div className="d-flex gap-2 mt-2">
+          {devAccounts.map(account => (
+            <Button
+              key={account.label}
+              type="button"
+              variant="outline-secondary"
+              className="flex-fill"
+              onClick={() => handleQuickLogin(account)}
+              disabled={isLoading}
+            >
+              {account.label}
+            </Button>
+          ))}
+        </div>
+      )}
     </Form>;
 }

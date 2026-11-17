@@ -41,8 +41,8 @@ const PAYMENT_METHODS = [{
 // Lợi ích khi dùng ResearchPulse Coins
 const BENEFITS = [{
   icon: 'lucide:file-text',
-  iconBg: 'rgba(255, 122, 51, 0.12)',
-  iconColor: '#ff7a33',
+  iconBg: 'rgba(0, 113, 188, 0.12)',
+  iconColor: '#0071BC',
   title: t("wallet.taiLieuPremium"),
   desc: t("wallet.truyCapHangNganBaoCaoNghienCuu")
 }, {
@@ -138,7 +138,7 @@ export default function TopUpPage() {
         <div className="topup-hero">
           <div className="topup-hero__badge">
             <Icon icon="solar:wallet-bold" width={14} />
-            ResearchPulse Coins
+            Trending System Coins
           </div>
           <h1 className="topup-hero__title">{t("wallet.napCoinVaoTaiKhoan")}</h1>
           <p className="topup-hero__sub">{t("wallet.moKhoaNhungTiemNangNghienCuuVo")}</p>
@@ -148,7 +148,7 @@ export default function TopUpPage() {
         <div className="topup-wallet-bar">
           <div className="topup-wallet-bar__left">
             <div className="topup-wallet-bar__icon">
-              <Icon icon="solar:wallet-bold" width={22} color="#ff7a33" />
+              <Icon icon="solar:wallet-bold" width={22} color="#0071BC" />
             </div>
             <div>
               <div className="topup-wallet-bar__label">{t("wallet.soDuHienTai")}</div>
@@ -168,7 +168,7 @@ export default function TopUpPage() {
 
         {loadingPackages && <div className="topup-loading-area">
             <div className="spinner-border spinner-border-sm" role="status" style={{
-          color: '#ff7a33'
+          color: '#0071BC'
         }} />
             <span>{t("wallet.dangTaiGoiCoin")}</span>
           </div>}
@@ -201,11 +201,11 @@ export default function TopUpPage() {
                   <div className="topup-pkg-card__top-row">
                     <div className="topup-pkg-card__icon-wrap">
                       <div className="topup-pkg-card__icon">
-                        <Icon icon="lucide:circle-dollar-sign" width={24} color="#ff7a33" />
+                        <Icon icon="lucide:circle-dollar-sign" width={24} color="#0071BC" />
                       </div>
                     </div>
                     <div className="topup-pkg-card__meta">
-                      <div className="topup-pkg-card__label">ResearchPulse Coin</div>
+                      <div className="topup-pkg-card__label">Trending System Coin</div>
                       <div className="topup-pkg-card__name">{pkg.name.replace(/(Gói)(?=\d)/, '$1 ')}</div>
                     </div>
                   </div>

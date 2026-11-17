@@ -71,6 +71,17 @@ export function useJournalDetail(journalId, currentUser) {
       const response = await getJournalRankingsApi(journalId);
       const rawData = response.data?.data;
       
+      if (Array.isArray(rawData)) {
+        setRankingHistory(rawData.map(item => ({
+          year: Number(item.year),
+          value: Number(item.works_count ?? item.value ?? 0),
+          cited_by_count: Number(item.cited_by_count || 0),
+          quartile: null,
+          h_index: null,
+        })).filter(item => Number.isInteger(item.year)).sort((a, b) => b.year - a.year));
+        return;
+      }
+
       if (rawData) {
         let grouped = {};
         if (Array.isArray(rawData)) {

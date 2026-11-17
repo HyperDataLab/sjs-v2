@@ -119,7 +119,7 @@ export default function AddNewAccountPage() {
 
           <Col xs={12} md={4}>
             <Card className="p-4 border h-100 rounded-3" style={{
-            backgroundColor: '#fff7ed',
+            backgroundColor: '#E6F3FA',
             borderColor: '#fed7aa',
             boxShadow: 'none'
           }}>
@@ -127,8 +127,8 @@ export default function AddNewAccountPage() {
                 <div className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{
                 width: '32px',
                 height: '32px',
-                backgroundColor: '#ffedd5',
-                color: '#ea580c'
+                backgroundColor: '#E6F3FA',
+                color: '#005A96'
               }}>
                   <Icon icon="lucide:shield-check" width="16" />
                 </div>

@@ -34,6 +34,7 @@ const ROUTES = {
   ADMIN_USERS:           "/admin/users",
   ADMIN_USERS_CREATE:    "/admin/users/create",
   ADMIN_USERS_EDIT:      "/admin/users/:id/edit",
+  ADMIN_DATA_SOURCES:    "/admin/data-sources",
 
   // Tuyến đường quản trị bài viết khoa học & Tạp chí (Admin Dashboard, Update Article, Journals Directory...)
   ADMIN_DASHBOARD:       "/admin/dashboard",
@@ -51,15 +52,8 @@ const ROUTES = {
   ARTICLE_DETAIL:        "/articles/:id",
   ARTICLE_VISUAL_DETAIL: "/articles/:id/visual",
 
-  // Hồ sơ cá nhân & Ví coin
+  // Hồ sơ cá nhân
   PROFILE:               "/profile",
-  WALLET:                "/wallet",
-  WALLET_TOP_UP:         "/wallet/top-up",
-  WALLET_TRANSACTIONS:   "/wallet/transactions",
-  WALLET_CHECKOUT:       "/wallet/checkout",
-  PAYMENT_RESULT:        "/wallet/payment-result",
-  PAYOS_RETURN:          "/wallet/payment/result",
-  VNPAY_RETURN:          "/api/v1/payments/vnpay/return",
 
   // Tìm kiếm & Danh mục tạp chí
   CATALOG:               "/catalog",

@@ -53,14 +53,14 @@
 }
 
 .tx-filter-tab:hover {
-  border-color: rgba(255, 122, 51, 0.42);
-  color: #ff6a1a;
+  border-color: rgba(0, 113, 188, 0.42);
+  color: #0071BC;
 }
 
 .tx-filter-tab.active {
-  border-color: #ff7a33;
-  background: rgba(255, 122, 51, 0.08);
-  color: #ff6a1a;
+  border-color: #0071BC;
+  background: rgba(0, 113, 188, 0.08);
+  color: #0071BC;
 }
 
 /* Main Table Card */
@@ -141,8 +141,8 @@
 }
 
 .tx-history-table-type-icon.spend {
-  background: rgba(255, 122, 51, 0.1);
-  color: #ff6a1a;
+  background: rgba(0, 113, 188, 0.1);
+  color: #0071BC;
 }
 
 .tx-history-table-type-icon.refund {

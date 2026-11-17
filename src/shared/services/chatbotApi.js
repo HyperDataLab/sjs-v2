@@ -4,8 +4,10 @@
  * File: shared/services/chatbotApi.js
  */
 
-const CHATBOT_API_URL =
-  import.meta.env.VITE_RAG_CHAT_URL || 'http://localhost:3000/api/v1/chat';
+import { useAuthStore } from '../../app/store/authStore';
+import { API_BASE_URL } from './apiBase';
+
+const CHATBOT_API_URL = `${API_BASE_URL}/chat`;
 
 const chatbotApi = {
   /**
@@ -16,11 +18,14 @@ const chatbotApi = {
    */
   sendMessage: async ({ projectId, project_id, message }) => {
     const resolvedProjectId = project_id ?? projectId;
+    const token = useAuthStore.getState().token;
 
     const response = await fetch(CHATBOT_API_URL, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify({
         project_id: Number(resolvedProjectId),

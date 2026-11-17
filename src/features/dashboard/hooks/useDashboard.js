@@ -11,22 +11,6 @@ import {
   getDashboardTrendingKeywordsApi,
   getTopAuthorsApi,
 } from '../api/dashboardApi';
-import { getAuthorAreasBreakdownApi } from '../../author/api/author.api';
-
-const normalizeAuthorBreakdown = (response) => {
-  if (!response?.data || typeof response.data !== 'object') return [];
-  const payload = response.data.data;
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload?.breakdown)) return payload.breakdown;
-  if (Array.isArray(payload?.data)) return payload.data;
-  return [];
-};
-
-const getPrimarySubjectAreaFromBreakdown = (breakdown = []) => {
-  if (!Array.isArray(breakdown) || breakdown.length === 0) return '';
-  const primary = [...breakdown].sort((a, b) => (Number(b.percentage) || 0) - (Number(a.percentage) || 0))[0];
-  return primary.category_name ?? primary.subject_area ?? primary.subject_area_name ?? primary.name ?? primary.display_name ?? '';
-};
 
 const normalizeTopAuthor = (author) => ({
   ...author,
@@ -54,7 +38,7 @@ export default function useDashboard(currentUser, trendRange = '5') {
       return Array.isArray(data) ? data : [];
     },
     enabled: !!currentUser,
-    staleTime: 7200000, // 2 hours
+    staleTime: 60 * 1000,
   });
 
   const projects = projectsData || [];
@@ -144,32 +128,9 @@ export default function useDashboard(currentUser, trendRange = '5') {
       const data = res.data?.data ?? res.data ?? [];
       const topAuthorsList = Array.isArray(data) ? data.slice(0, 5) : [];
 
-      const breakdownResults = await Promise.allSettled(
-        topAuthorsList.map(async (author) => {
-          const id = author.author_id ?? author.id;
-          if (!id) return { id: null, breakdown: [] };
-          try {
-            const breakdownResponse = await getAuthorAreasBreakdownApi(id);
-            return { id, breakdown: normalizeAuthorBreakdown(breakdownResponse) };
-          } catch {
-            return { id, breakdown: [] };
-          }
-        })
-      );
-
-      const breakdownMap = breakdownResults.reduce((acc, result, index) => {
-        const author = topAuthorsList[index];
-        const id = author?.author_id ?? author?.id;
-        if (!id) return acc;
-        acc[id] = result.status === 'fulfilled' ? result.value.breakdown : [];
-        return acc;
-      }, {});
-
       return topAuthorsList.map((author) => {
         const normalized = normalizeTopAuthor(author);
-        const id = normalized.author_id ?? normalized.id;
-        const breakdown = id ? breakdownMap[id] || [] : [];
-        const primary_subject_area = normalized.subject_area ?? normalized.field ?? normalized.area ?? getPrimarySubjectAreaFromBreakdown(breakdown);
+        const primary_subject_area = normalized.subject_area ?? normalized.field ?? normalized.area ?? '';
         return {
           ...normalized,
           primary_subject_area,
@@ -177,7 +138,7 @@ export default function useDashboard(currentUser, trendRange = '5') {
       });
     },
     enabled: !!currentUser,
-    staleTime: 7200000, // 2 hours
+    staleTime: 10 * 60 * 1000,
   });
 
   const topAuthors = topAuthorsData || [];

@@ -109,11 +109,11 @@ export default function RoleSelect({
         .role-card-item:hover:not(.disabled):not(.selected) {
           border-color: var(--primary) !important;
           transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(255, 122, 51, 0.08) !important;
+          box-shadow: 0 6px 16px rgba(0, 113, 188, 0.08) !important;
         }
         .role-card-item.selected {
           border-color: var(--primary) !important;
-          box-shadow: 0 0 0 3px rgba(255, 122, 51, 0.15) !important;
+          box-shadow: 0 0 0 3px rgba(0, 113, 188, 0.15) !important;
         }
         .role-card-item.selected .icon-container {
           transform: scale(1.08);

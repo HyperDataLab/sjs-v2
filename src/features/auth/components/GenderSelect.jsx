@@ -91,12 +91,12 @@ export default function GenderSelect({
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .gender-option:hover:not(.disabled):not(.selected) {
-          background-color: rgba(255, 122, 51, 0.05) !important;
+          background-color: rgba(0, 113, 188, 0.05) !important;
           color: var(--primary) !important;
         }
         .gender-option.selected {
-          box-shadow: 0 2px 6px rgba(255, 122, 51, 0.12) !important;
-          border-color: rgba(255, 122, 51, 0.15) !important;
+          box-shadow: 0 2px 6px rgba(0, 113, 188, 0.12) !important;
+          border-color: rgba(0, 113, 188, 0.15) !important;
         }
       `}</style>
     </Form.Group>;

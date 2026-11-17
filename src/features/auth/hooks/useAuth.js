@@ -3,17 +3,13 @@
  *
  * File: features/auth/hooks/useAuth.js
  */
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useGoogleLogin } from '@react-oauth/google';
-import { toast } from '../../../shared/utils/toast';
 import { useAuthStore } from '../../../app/store/authStore';
 import { useUserStore } from '../../../app/store/userStore';
-import { useWalletStore } from '../../../app/store/walletStore';
 import {
   deleteCurrentAccount,
   fetchCurrentProfile,
-  loginWithGoogleCode,
   loginWithPassword,
   logoutSession,
   registerUser,
@@ -28,7 +24,6 @@ import {
  */
 export default function useAuth() {
   const navigate = useNavigate();
-  const [googleRedirect, setGoogleRedirect] = useState('/');
 
   // State auth chính lấy từ Zustand store.
   const user = useAuthStore((state) => state.user);
@@ -45,7 +40,6 @@ export default function useAuth() {
   // Store phụ dùng để hiển thị email trên header/landing.
   const setEmail = useUserStore((state) => state.setEmail);
   const clearEmail = useUserStore((state) => state.clearEmail);
-  const clearWallet = useWalletStore((state) => state.clearWallet);
 
   /**
    * Lấy profile người dùng hiện tại từ backend.
@@ -68,40 +62,6 @@ export default function useAuth() {
       setLoading(false);
     }
   }, [setEmail, setError, setLoading, setUser]);
-
-  /**
-   * Cấu hình Google OAuth dạng auth-code.
-   * Sau khi Google trả code, FE gửi code đó về BE để BE xác thực và trả token/user.
-   */
-  const googleLogin = useGoogleLogin({
-    flow: 'auth-code',
-    onSuccess: async (codeResponse) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const { response, token: googleToken, refreshToken: googleRefreshToken, user: googleUser, email } = await loginWithGoogleCode(codeResponse.code);
-
-        if (response?.success && googleToken) {
-          loginSuccess(googleToken, googleUser, true, googleRefreshToken);
-          setEmail(email);
-          toast.success('Đăng nhập thành công');
-          navigate(googleRedirect, { replace: true });
-        } else {
-          toast.error('Đăng nhập thất bại');
-        }
-      } catch (err) {
-        const message = err.response?.data?.message || err.message || 'Đăng nhập thất bại';
-        setError(message);
-        toast.error('Đăng nhập thất bại');
-      } finally {
-        setLoading(false);
-      }
-    },
-    onError: () => {
-      toast.error('Đăng nhập Google thất bại');
-    },
-  });
 
   /**
    * Đăng nhập bằng email/password.
@@ -131,14 +91,6 @@ export default function useAuth() {
   }, [loginSuccess, setEmail, setError, setLoading]);
 
   /**
-   * Mở popup/redirect Google OAuth và ghi nhớ trang cần quay lại sau login.
-   */
-  const loginWithGoogle = useCallback((redirectTo = '/') => {
-    setGoogleRedirect(redirectTo);
-    googleLogin();
-  }, [googleLogin]);
-
-  /**
    * Đăng ký tài khoản mới.
    * BE sẽ gửi email xác thực nếu tạo tài khoản thành công.
    */
@@ -164,9 +116,8 @@ export default function useAuth() {
     await logoutSession();
     clearAuthState();
     clearEmail();
-    clearWallet();
     navigate('/login', { replace: true });
-  }, [clearAuthState, clearEmail, clearWallet, navigate]);
+  }, [clearAuthState, clearEmail, navigate]);
 
   /**
    * Cập nhật profile user và đồng bộ lại store sau khi API thành công.
@@ -204,7 +155,6 @@ export default function useAuth() {
       await deleteCurrentAccount();
       clearAuthState();
       clearEmail();
-      clearWallet();
       navigate('/register', { replace: true });
     } catch (err) {
       const message = err.response?.data?.message || err.message || 'Xóa tài khoản thất bại';
@@ -213,7 +163,7 @@ export default function useAuth() {
     } finally {
       setLoading(false);
     }
-  }, [clearAuthState, clearEmail, clearWallet, navigate, setError, setLoading]);
+  }, [clearAuthState, clearEmail, navigate, setError, setLoading]);
 
   return {
     user,
@@ -223,7 +173,6 @@ export default function useAuth() {
     isLoading,
     error,
     login,
-    loginWithGoogle,
     register,
     logout,
     fetchProfile,

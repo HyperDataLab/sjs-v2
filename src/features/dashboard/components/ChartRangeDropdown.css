@@ -103,7 +103,7 @@
 .crp-checkbox.selected {
   border-color: var(--primary);
   color: var(--primary);
-  background: rgba(255, 91, 46, 0.08);
+  background: rgba(0, 113, 188, 0.08);
 }
 
 .crp-label {

@@ -14,10 +14,10 @@
   --text-main: #0d1b1c; /* Text chính */
   --text-muted: #6b6b6b; /* Text phụ */
 
-  --primary: #ff7a33; /* Accent / link cam */
-  --primary-light: #fff0e8; /* Light tint của cam */
+  --primary: #0071BC; /* Brand blue */
+  --primary-light: #E6F3FA; /* Light tint of brand blue */
   --btn-dark: #071a1c; /* Button đen đậm */
-  --q1-color: #ff7a33; /* Q1 badge dùng accent cam */
+  --q1-color: #0071BC; /* Q1 badge uses the brand accent */
 
   /* Compatibility aliases */
   --dark-bg: var(--bg-main);
@@ -25,7 +25,7 @@
   --dark-border: var(--border);
   --brand-accent: var(--primary);
 
-  --glow-accent: rgba(255, 122, 51, 0.08);
+  --glow-accent: rgba(0, 113, 188, 0.08);
 }
 
 html,
@@ -150,13 +150,13 @@ header.sticky-scrolled {
 
 .glass-card:hover {
   border-color: var(--primary);
-  box-shadow: 0 10px 30px -10px rgba(255, 122, 51, 0.12);
+  box-shadow: 0 10px 30px -10px rgba(0, 113, 188, 0.12);
   transform: translateY(-2px);
 }
 
 /* Glowing text */
 .glow-text-accent {
-  text-shadow: 0 0 10px rgba(255, 122, 51, 0.2);
+  text-shadow: 0 0 10px rgba(0, 113, 188, 0.2);
 }
 
 /* Primary accent button */
@@ -165,12 +165,12 @@ header.sticky-scrolled {
   border: none;
   color: #ffffff !important;
   font-weight: 600;
-  box-shadow: 0 4px 14px rgba(255, 122, 51, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 113, 188, 0.25);
   transition: all 0.3s ease;
 }
 .btn-primary-glow:hover {
-  background: #e8632a;
-  box-shadow: 0 6px 20px rgba(255, 122, 51, 0.4);
+  background: #005A96;
+  box-shadow: 0 6px 20px rgba(0, 113, 188, 0.4);
   transform: translateY(-1px);
   color: #ffffff !important;
 }
@@ -372,7 +372,7 @@ th,
   background: var(--primary) !important;
   color: #fff !important;
   border: none !important;
-  box-shadow: 0 2px 12px rgba(255, 122, 51, 0.18);
+  box-shadow: 0 2px 12px rgba(0, 113, 188, 0.18);
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
@@ -380,8 +380,8 @@ th,
 }
 .btn-primary-glow:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 18px rgba(255, 122, 51, 0.22);
-  background: #e8632a !important;
+  box-shadow: 0 4px 18px rgba(0, 113, 188, 0.22);
+  background: #005A96 !important;
 }
 .btn-primary-glow:active {
   transform: translateY(0);
@@ -465,7 +465,7 @@ select.account-form-input {
 .account-form-input:focus {
   background-color: #f1f5f9 !important;
   outline: 0 !important;
-  box-shadow: 0 0 0 2px rgba(255, 122, 51, 0.25) !important;
+  box-shadow: 0 0 0 2px rgba(0, 113, 188, 0.25) !important;
 }
 
 .account-form-label {
@@ -481,38 +481,38 @@ select.account-form-input {
 }
 
 .orange-switch-toggle .form-check-input:checked {
-  background-color: #ea580c !important;
-  border-color: #ea580c !important;
+  background-color: #005A96 !important;
+  border-color: #005A96 !important;
 }
 
 /* --- Premium Dropzone styling --- */
 .premium-dropzone {
-  border: 1.5px dashed #fdba74 !important;
+  border: 1.5px dashed #66B1D9 !important;
   background-color: #fafafa !important;
   transition: all 0.2s ease-in-out !important;
   min-height: 280px;
   cursor: pointer;
 }
 .premium-dropzone.drag-active {
-  border: 2px dashed #ea580c !important;
-  background-color: #fff0e8 !important;
+  border: 2px dashed #005A96 !important;
+  background-color: #E6F3FA !important;
 }
 .premium-dropzone-icon-wrapper {
   width: 56px;
   height: 56px;
-  background-color: #fff0e8 !important;
-  color: #ea580c !important;
+  background-color: #E6F3FA !important;
+  color: #005A96 !important;
 }
 .premium-dropzone-btn {
-  border: 1px solid #ea580c !important;
-  color: #ea580c !important;
+  border: 1px solid #005A96 !important;
+  color: #005A96 !important;
   background-color: #ffffff !important;
   font-size: 0.85rem !important;
   font-weight: 700 !important;
   transition: all 0.2s ease-in-out !important;
 }
 .premium-dropzone-btn:hover {
-  background-color: #ea580c !important;
+  background-color: #005A96 !important;
   color: #ffffff !important;
 }
 
@@ -522,9 +522,9 @@ select.account-form-input {
 }
 .project-card-recent-hover:hover {
   border-color: var(--primary) !important;
-  background-color: rgba(255, 112, 47, 0.02) !important;
+  background-color: rgba(0, 113, 188, 0.02) !important;
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(255, 112, 47, 0.06) !important;
+  box-shadow: 0 10px 22px rgba(0, 113, 188, 0.06) !important;
 }
 .project-card-recent-hover:hover .recent-arrow-icon {
   color: var(--primary) !important;

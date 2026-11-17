@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Navbar } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import Icon from '../../../shared/components/Icon';
+import Logo from '../../../shared/components/Logo';
 
 export default function AuthBanner() {
   const { t } = useTranslation();
@@ -23,7 +24,7 @@ export default function AuthBanner() {
         width: '320px',
         height: '320px',
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(255, 122, 51, 0.15) 0%, rgba(255, 122, 51, 0) 70%)',
+        background: 'radial-gradient(circle, rgba(0, 113, 188, 0.15) 0%, rgba(0, 113, 188, 0) 70%)',
         top: '-50px',
         right: '-50px',
         filter: 'blur(40px)',
@@ -59,22 +60,9 @@ export default function AuthBanner() {
       <div className="d-flex align-items-center justify-content-between" style={{
       zIndex: 2
     }}>
-        <Navbar.Brand onClick={() => navigate("/")} className="d-flex align-items-center text-main font-weight-bold transition-all hover-lift" style={{
-        fontFamily: "var(--font-display)",
-        fontWeight: 800,
-        cursor: "pointer"
-      }}>
-            <div className="d-flex align-items-center justify-content-center me-2.5 shadow-sm" style={{
-          width: "42px",
-          height: "42px",
-          borderRadius: "10px",
-          background: "var(--btn-dark)",
-          boxShadow: "0 4px 14px rgba(7, 26, 28, 0.2)"
-        }}>
-              <Icon icon="lucide:activity" className="text-white text-base animate-pulse" />
-            </div>
-            <span className="fs-4 font-display fw-bold" style={{ letterSpacing: '-0.02em' }}>ResearchPulse</span>
-          </Navbar.Brand>
+        <Navbar.Brand onClick={() => navigate("/")} className="transition-all hover-lift">
+          <Logo size={42} fontSize="1.5rem" />
+        </Navbar.Brand>
 
         {/* Live Academic Pulse Tag */}
         <div className="d-none d-lg-flex align-items-center gap-2 px-3 py-1.5 rounded-full border bg-white bg-opacity-75 backdrop-blur shadow-xs" style={{ fontSize: '0.78rem', borderColor: 'var(--border)' }}>
@@ -91,7 +79,7 @@ export default function AuthBanner() {
       zIndex: 2,
       maxWidth: '480px'
     }}>
-        <div className="mb-3 d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style={{ background: 'var(--primary-light)', border: '1px solid rgba(255, 122, 51, 0.2)' }}>
+        <div className="mb-3 d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style={{ background: 'var(--primary-light)', border: '1px solid rgba(0, 113, 188, 0.2)' }}>
           <Icon icon="lucide:sparkles" className="text-sm" style={{ color: 'var(--primary)' }} />
           <span className="text-xs font-semibold" style={{ color: 'var(--primary)' }}>Academic Intelligence Platform</span>
         </div>
@@ -120,7 +108,7 @@ export default function AuthBanner() {
             borderRadius: '50%',
             background: 'var(--primary-light)',
             border: '1.5px solid var(--primary)',
-            boxShadow: '0 2px 8px rgba(255, 122, 51, 0.15)'
+            boxShadow: '0 2px 8px rgba(0, 113, 188, 0.15)'
           }}>
                 <Icon icon="lucide:check" className="text-xs" style={{
               color: 'var(--primary)',
@@ -141,7 +129,7 @@ export default function AuthBanner() {
       borderColor: 'rgba(0, 0, 0, 0.06)',
       color: 'var(--text-muted)'
     }}>
-        <span>© {new Date().getFullYear()} ResearchPulse. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} Trending System. All rights reserved.</span>
         <div className="d-flex gap-3">
           <Icon icon="lucide:globe" width="16" className="hover-lift" style={{
           cursor: 'pointer',

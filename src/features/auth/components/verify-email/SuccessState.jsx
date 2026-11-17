@@ -36,7 +36,7 @@ const SuccessState = ({
         color: 'var(--primary)',
         fontWeight: 600
       }}>
-          ResearchPulse
+          Trending System
         </span>
         .
       </p>

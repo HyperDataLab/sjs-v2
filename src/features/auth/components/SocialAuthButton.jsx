@@ -14,7 +14,7 @@ export default function SocialAuthButton({
   const {
     t
   } = useTranslation();
-  const resolvedLabel = label || t("auth.tiepTucVoiGoogle");
+  const resolvedLabel = label || t("auth.dangNhapBangSso");
   return <Button variant="light" onClick={onClick} disabled={disabled} className="w-100 d-flex align-items-center justify-content-center gap-2 py-2.5 rounded-3 border transition-all text-sm font-semibold" style={{
     background: 'var(--bg-chip)',
     borderColor: 'var(--border)',
@@ -30,7 +30,7 @@ export default function SocialAuthButton({
     e.currentTarget.style.background = 'var(--bg-chip)';
     e.currentTarget.style.borderColor = 'var(--border)';
   }}>
-      <Icon icon="flat-color-icons:google" width="18" />
+      <Icon icon="lucide:shield-check" width="18" />
       <span>{resolvedLabel}</span>
     </Button>;
 }

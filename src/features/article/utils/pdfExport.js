@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
-import logoIcon from '../../../assets/icons/researchpulse_logo_icon.svg';
-import logoFull from '../../../assets/icons/researchpulse_logo_full.svg';
+const logoIcon = '/Cyan_folded-ribbon_T_favicon.png';
+const logoFull = '/Cyan_folded-ribbon_T_favicon.png';
 
 /**
  * Utility functions for exporting article data to PDF.
@@ -152,7 +152,7 @@ export const downloadArticlePdf = async (article, options = { withWatermark: tru
   // Footer (e.g., Exported from Scientific Journal System)
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
-  doc.text(`Exported from ResearchPulse on ${new Date().toLocaleDateString()}`, margin, doc.internal.pageSize.getHeight() - 10);
+  doc.text(`Exported from Trending System on ${new Date().toLocaleDateString()}`, margin, doc.internal.pageSize.getHeight() - 10);
 
   // Trigger Download
   const safeTitle = (article.title || 'article').substring(0, 30).replace(/[^a-z0-9]/gi, '_').toLowerCase();

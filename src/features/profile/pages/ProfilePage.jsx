@@ -173,7 +173,7 @@ export default function ProfilePage() {
             fontSize: "16px"
           }}>{t("profile.banCanDangNhapDeXemVaQuanLyHoS")}</p>
               <button onClick={() => navigate("/login")} style={{
-            background: "#ff7a30",
+            background: "#0071BC",
             color: "white",
             border: "none",
             padding: "12px 32px",
@@ -185,8 +185,8 @@ export default function ProfilePage() {
           }}>{t("signIn")}</button>
               <button onClick={() => navigate("/register")} style={{
             background: "transparent",
-            color: "#ff7a30",
-            border: "2px solid #ff7a30",
+            color: "#0071BC",
+            border: "2px solid #0071BC",
             padding: "10px 30px",
             borderRadius: "10px",
             fontSize: "16px",

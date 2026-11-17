@@ -110,7 +110,7 @@ export default function ChatbotWidget() {
             <div className="rp-chatbot__identity">
               <div className="rp-chatbot__avatar">AI</div>
               <div>
-                <p className="rp-chatbot__eyebrow">ResearchPulse RAG</p>
+                <p className="rp-chatbot__eyebrow">Trending System RAG</p>
                 <h2>AI Research Assistant</h2>
               </div>
             </div>

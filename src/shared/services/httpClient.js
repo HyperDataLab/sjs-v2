@@ -4,11 +4,10 @@
 
 import axios from 'axios';
 import { useAuthStore } from '../../app/store/authStore';
+import { API_BASE_URL } from './apiBase';
 
 const httpClient = axios.create({
-  // Tự động phân giải base URL của API từ biến môi trường.
-  // Fallback linh hoạt giữa VITE_API_URL (chuẩn chính) và VITE_API_BASE_URL.
-  baseURL: import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1',
+  baseURL: API_BASE_URL,
 
   // Thời gian chờ tối đa cho request (10 giây) để tránh treo ứng dụng
   timeout: 10000,

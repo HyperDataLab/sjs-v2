@@ -7,7 +7,6 @@ import useProjects from '../hooks/useProjects';
 import { Icon } from '@iconify/react';
 import { getSubjectAreasApi } from '../../catalog/api/catalogApi';
 import keywordApi from '../../keywords/api/keywordApi';
-import keywordService from '../../keyword/services/keywordService';
 import SearchableSelect from '../../../shared/components/Select/SearchableSelect';
 import SearchableKeywordInput from '../../../shared/components/Input/SearchableKeywordInput';
 import Header from '../../landing/components/Header';
@@ -101,7 +100,6 @@ const CreateProjectPage = () => {
     setLoading(true);
     setError(null);
     try {
-      // 1. Tạo project có kèm keywords trực tiếp từ Backend
       const res = await createProject({
         title: title.trim(),
         subject_area_id: parseInt(subjectAreaId, 10),
@@ -112,14 +110,6 @@ const CreateProjectPage = () => {
 
       const projectId = res?.data?.project_id || res?.data?.id || res?.project_id;
       if (projectId) {
-        // Dự phòng đồng bộ nếu backend chưa kịp gắn (hoặc đảm bảo tính đồng bộ tuyệt đối)
-        if (keywords.length > 0) {
-          try {
-            await keywordService.syncProjectKeywordsFEOnly(projectId, keywords);
-          } catch (syncErr) {
-            console.warn('Keyword sync fallback warning:', syncErr);
-          }
-        }
         navigate(`/projects/${projectId}`);
       } else {
         setError(res?.message || t("project.taoDuAnThatBai"));

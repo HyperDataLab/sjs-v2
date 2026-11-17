@@ -1,4 +1,4 @@
-﻿/* Wallet checkout page */
+/* Wallet checkout page */
 .wallet-checkout-page {
   min-height: 100vh;
   padding-top: 80px;
@@ -25,7 +25,7 @@
 .wallet-checkout-breadcrumb button {
   border: 0;
   background: transparent;
-  color: #ff7a33;
+  color: #0071BC;
   font-weight: 700;
   padding: 0;
 }
@@ -104,8 +104,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 122, 51, 0.11);
-  color: #ff7a33;
+  background: rgba(0, 113, 188, 0.11);
+  color: #0071BC;
 }
 
 .checkout-package-card {
@@ -114,20 +114,20 @@
   gap: 18px;
   padding: 18px;
   border-radius: 20px;
-  border: 1px solid rgba(255, 122, 51, 0.22);
-  background: linear-gradient(135deg, rgba(255, 122, 51, 0.055), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(0, 113, 188, 0.22);
+  background: linear-gradient(135deg, rgba(0, 113, 188, 0.055), rgba(255, 255, 255, 0.02));
 }
 
 .checkout-package-icon {
   width: 64px;
   height: 64px;
   border-radius: 22px;
-  background: linear-gradient(135deg, #fff8f3, #ffe8d8);
+  background: linear-gradient(135deg, #E6F3FA, #E6F3FA);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #ff7a33;
+  color: #0071BC;
 }
 
 .checkout-package-main {
@@ -157,7 +157,7 @@
 
 .checkout-package-coin span {
   display: block;
-  color: #ff7a33;
+  color: #0071BC;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0;
@@ -183,8 +183,8 @@
 }
 
 .checkout-method-item.active {
-  border-color: #ff7a33;
-  background: rgba(255, 122, 51, 0.035);
+  border-color: #0071BC;
+  background: rgba(0, 113, 188, 0.035);
 }
 
 .checkout-method-left {
@@ -200,7 +200,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 122, 51, 0.09);
+  background: rgba(0, 113, 188, 0.09);
 }
 
 .checkout-method-name {
@@ -276,9 +276,9 @@
 
 .checkout-pay-btn {
   border: 0;
-  background: linear-gradient(135deg, #ff7a33, #ff5608);
+  background: linear-gradient(135deg, #0071BC, #005A96);
   color: #fff;
-  box-shadow: 0 8px 18px rgba(255, 122, 51, 0.2);
+  box-shadow: 0 8px 18px rgba(0, 113, 188, 0.2);
 }
 
 .checkout-pay-btn:disabled {

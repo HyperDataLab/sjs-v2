@@ -40,8 +40,8 @@
   gap: 6px;
   padding: 5px 14px;
   border-radius: 50rem;
-  background: rgba(255, 122, 51, 0.1);
-  color: #ff7a33;
+  background: rgba(0, 113, 188, 0.1);
+  color: #0071BC;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -88,7 +88,7 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: rgba(255, 122, 51, 0.12);
+  background: rgba(0, 113, 188, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,7 +112,7 @@
 .topup-wallet-bar__unit {
   font-size: 13px;
   font-weight: 600;
-  color: #ff7a33;
+  color: #0071BC;
   margin-left: 6px;
 }
 
@@ -151,7 +151,7 @@
   position: relative;
   min-height: 230px;
   background:
-    radial-gradient(circle at top right, rgba(255, 122, 51, 0.055), transparent 34%),
+    radial-gradient(circle at top right, rgba(0, 113, 188, 0.055), transparent 34%),
     var(--bg-card);
   border: 1.5px solid var(--border);
   border-radius: 22px;
@@ -182,17 +182,17 @@
 }
 
 .topup-pkg-card:hover {
-  border-color: rgba(255, 122, 51, 0.42);
-  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(255, 122, 51, 0.08);
+  border-color: rgba(0, 113, 188, 0.42);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(0, 113, 188, 0.08);
   transform: translateY(-2px);
 }
 
 .topup-pkg-card.selected {
-  border-color: #ff7a33;
-  box-shadow: 0 10px 24px rgba(255, 122, 51, 0.12);
+  border-color: #0071BC;
+  box-shadow: 0 10px 24px rgba(0, 113, 188, 0.12);
   background:
-    radial-gradient(circle at top right, rgba(255, 122, 51, 0.075), transparent 36%),
-    linear-gradient(180deg, rgba(255, 122, 51, 0.025), var(--bg-card) 72%);
+    radial-gradient(circle at top right, rgba(0, 113, 188, 0.075), transparent 36%),
+    linear-gradient(180deg, rgba(0, 113, 188, 0.025), var(--bg-card) 72%);
 }
 
 .topup-pkg-card.selected .topup-pkg-card__check {
@@ -202,7 +202,7 @@
 
 .topup-pkg-card.selected .topup-pkg-card__icon {
   transform: scale(1.03) rotate(-2deg);
-  box-shadow: 0 6px 14px rgba(255, 122, 51, 0.16);
+  box-shadow: 0 6px 14px rgba(0, 113, 188, 0.16);
 }
 
 /* Checkmark overlay */
@@ -213,14 +213,14 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff7a33, #ff5500);
+  background: linear-gradient(135deg, #0071BC, #005A96);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   transform: scale(0.65);
   transition: opacity 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 4px 10px rgba(255, 122, 51, 0.18);
+  box-shadow: 0 4px 10px rgba(0, 113, 188, 0.18);
 }
 
 /* Badge recommended */
@@ -230,12 +230,12 @@
   left: 22px;
   padding: 4px 12px;
   border-radius: 0 0 10px 10px;
-  background: linear-gradient(135deg, #ff7a33, #ff5500);
+  background: linear-gradient(135deg, #0071BC, #005A96);
   color: #fff;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.35px;
-  box-shadow: 0 4px 10px rgba(255, 122, 51, 0.12);
+  box-shadow: 0 4px 10px rgba(0, 113, 188, 0.12);
 }
 
 .topup-pkg-card__top-row {
@@ -249,7 +249,7 @@
   width: 54px;
   height: 54px;
   border-radius: 18px;
-  background: rgba(255, 122, 51, 0.1);
+  background: rgba(0, 113, 188, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -261,12 +261,12 @@
   width: 42px;
   height: 42px;
   border-radius: 15px;
-  background: linear-gradient(135deg, #fff8f3, #ffe9da);
+  background: linear-gradient(135deg, #E6F3FA, #E6F3FA);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ff7a33;
-  box-shadow: 0 4px 10px rgba(255, 122, 51, 0.1);
+  color: #0071BC;
+  box-shadow: 0 4px 10px rgba(0, 113, 188, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -276,7 +276,7 @@
 
 .topup-pkg-card__label {
   font-size: 10px;
-  color: #ff7a33;
+  color: #0071BC;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.45px;
@@ -385,14 +385,14 @@
 }
 
 .topup-method-btn:hover {
-  border-color: rgba(255, 122, 51, 0.4);
+  border-color: rgba(0, 113, 188, 0.4);
   color: var(--text-main);
 }
 
 .topup-method-btn.active {
-  border-color: #ff7a33;
+  border-color: #0071BC;
   color: var(--text-main);
-  background: rgba(255, 122, 51, 0.05);
+  background: rgba(0, 113, 188, 0.05);
 }
 
 /* ── CTA Button ─────────────────────────────────────────── */
@@ -410,7 +410,7 @@
   gap: 8px;
   padding: 14px 32px;
   border-radius: 50rem;
-  background: linear-gradient(135deg, #ff7a33, #ff5500);
+  background: linear-gradient(135deg, #0071BC, #005A96);
   color: #fff;
   border: none;
   font-family: var(--font-display);
@@ -418,12 +418,12 @@
   font-weight: 700;
   cursor: pointer;
   transition: box-shadow 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
-  box-shadow: 0 4px 16px rgba(255, 122, 51, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 113, 188, 0.35);
   min-width: 200px;
 }
 
 .topup-cta-btn:hover:not(:disabled) {
-  box-shadow: 0 6px 24px rgba(255, 122, 51, 0.5);
+  box-shadow: 0 6px 24px rgba(0, 113, 188, 0.5);
   transform: translateY(-1px);
 }
 

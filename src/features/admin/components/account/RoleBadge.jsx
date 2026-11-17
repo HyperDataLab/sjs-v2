@@ -10,9 +10,9 @@ export default function RoleBadge({ role }) {
   // Define styling map matching SCImago / mockup aesthetics
   const styles = {
     RESEARCHER: {
-      backgroundColor: '#fff0e8',
-      color: '#ff7a33',
-      border: '1px solid rgba(255, 122, 51, 0.2)'
+      backgroundColor: '#E6F3FA',
+      color: '#0071BC',
+      border: '1px solid rgba(0, 113, 188, 0.2)'
     },
     LECTURER: {
       backgroundColor: '#fff0f5',

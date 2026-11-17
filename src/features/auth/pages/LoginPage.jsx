@@ -8,6 +8,7 @@ import LoginForm from '../components/LoginForm';
 import SocialAuthButton from '../components/SocialAuthButton';
 import { toast } from '../../../shared/utils/toast';
 import ROUTES from '../../../app/routes/routePaths';
+import { startHyperdatalabSso } from '../services/hyperdatalabSso';
 const DASHBOARD_PAGE = ROUTES.DASHBOARD;
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -16,11 +17,11 @@ export default function LoginPage() {
   const location = useLocation();
   const {
     login,
-    loginWithGoogle
   } = useAuth();
 
   // State riêng của màn hình login để điều khiển loading và lỗi form.
   const [isLoading, setIsLoading] = useState(false);
+  const [ssoLoading, setSsoLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Nếu người dùng bị redirect tới login từ một trang khác, đăng nhập xong quay lại trang đó.
@@ -52,15 +53,18 @@ export default function LoginPage() {
    * Khởi chạy luồng đăng nhập Google OAuth.
    * Sau khi thành công, hook `useAuth` sẽ tự điều hướng về dashboard.
    */
-  const handleLoginWithGoogle = () => {
-    setIsLoading(true);
+  const handleLoginWithSso = async () => {
+    setSsoLoading(true);
     setError(null);
     try {
-      loginWithGoogle(from);
-    } catch {
-      toast.error(t("auth.dangNhapThatBai"));
-    } finally {
-      setIsLoading(false);
+      await startHyperdatalabSso(from);
+    } catch (ssoError) {
+      const message = ssoError.message === 'SSO_CONFIGURATION_MISSING'
+        ? t('auth.ssoChuaCauHinh')
+        : t('auth.ssoDangNhapThatBai');
+      setError(message);
+      toast.error(message);
+      setSsoLoading(false);
     }
   };
   return <AuthLayout banner={<AuthBanner />}>
@@ -74,12 +78,14 @@ export default function LoginPage() {
       }}>{t("auth.chaoMungTroLaiVuiLongNhapThong")}</p>
       </div>
 
-      {/* Nút đăng nhập bằng Google OAuth. */}
+      {/* Single sign-on entry point. */}
       <div className="mb-4">
-        <SocialAuthButton onClick={handleLoginWithGoogle} disabled={isLoading} />
+        <SocialAuthButton onClick={handleLoginWithSso} disabled={isLoading || ssoLoading} label={t('auth.dangNhapBangSso')} />
       </div>
 
-      {/* Đường phân cách giữa Google OAuth và form email/password. */}
+      {error && <div role="alert" className="text-danger small mb-3">{error}</div>}
+
+      {/* Đường phân cách giữa SSO và form email/password. */}
       <div className="d-flex align-items-center justify-content-center mb-4 text-xs font-semibold select-none text-muted-custom" style={{
       color: 'var(--text-muted) !important'
     }}>

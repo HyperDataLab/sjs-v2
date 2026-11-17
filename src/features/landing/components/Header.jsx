@@ -13,10 +13,10 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import Dropdown from "react-bootstrap/Dropdown";
 import Button from "react-bootstrap/Button";
 import Icon from "../../../shared/components/Icon";
+import Logo from "../../../shared/components/Logo";
 import useAuth from "../../auth/hooks/useAuth";
 import { useUserStore } from "../../../app/store/userStore";
 import ROUTES from "../../../app/routes/routePaths";
-import CoinBalanceBadge from "../../wallet/components/CoinBalanceBadge";
 // Single source of truth for supported languages — shared by desktop & mobile switchers.
 const LANGUAGES = [
   { code: "vi", label: "Tiếng Việt" },
@@ -150,19 +150,7 @@ export default function Header() {
               cursor: "pointer",
             }}
           >
-            <div
-              className="d-flex align-items-center justify-content-center me-2"
-              style={{
-                width: "32px",
-                height: "32px",
-                borderRadius: "8px",
-                background: "var(--btn-dark)",
-                boxShadow: "0 0 10px rgba(7, 26, 28, 0.15)",
-              }}
-            >
-              <Icon icon="lucide:activity" className="text-white text-sm" />
-            </div>
-            ResearchPulse
+            <Logo size={32} />
           </Navbar.Brand>
 
           {/* Hamburger toggle for mobile */}
@@ -255,7 +243,6 @@ export default function Header() {
               {/* User Authentication Display/Buttons */}
               {email ? (
                 <>
-                  <CoinBalanceBadge />
                   <Dropdown align="end">
                     <Dropdown.Toggle
                       as="button"
@@ -288,26 +275,6 @@ export default function Header() {
                           {email}
                         </div>
                       </div>
-                      <Dropdown.Item
-                        onClick={() => navigateWithLang(ROUTES.WALLET)}
-                        className="d-flex align-items-center gap-2 text-xs py-2 text-main"
-                      >
-                        <Icon
-                          icon="solar:wallet-bold"
-                          width="14"
-                          style={{
-                            color: "#ff7a33",
-                          }}
-                        />
-                        <span
-                          className="font-weight-bold"
-                          style={{
-                            color: "var(--text-main)",
-                          }}
-                        >
-                          {t("landing.viCuaToi")}
-                        </span>
-                      </Dropdown.Item>
                       <Dropdown.Item
                         onClick={() => navigateWithLang(ROUTES.DASHBOARD)}
                         className="d-flex align-items-center gap-2 text-xs py-2 text-main"
@@ -387,18 +354,7 @@ export default function Header() {
               fontWeight: 800,
             }}
           >
-            <div
-              className="d-flex align-items-center justify-content-center me-2"
-              style={{
-                width: "28px",
-                height: "28px",
-                borderRadius: "6px",
-                background: "var(--btn-dark)",
-              }}
-            >
-              <Icon icon="lucide:activity" className="text-white text-xs" />
-            </div>
-            ResearchPulse
+            <Logo size={28} fontSize="1rem" />
           </Offcanvas.Title>
         </Offcanvas.Header>
 
@@ -440,7 +396,7 @@ export default function Header() {
                   height: "36px",
                   borderRadius: "50%",
                   background: "var(--primary)",
-                  boxShadow: "0 0 6px rgba(255, 122, 51, 0.15)",
+                  boxShadow: "0 0 6px rgba(0, 113, 188, 0.15)",
                 }}
               >
                 <Icon icon="lucide:user" width="16" />
@@ -458,9 +414,6 @@ export default function Header() {
                 >
                   {email}
                 </span>
-              </div>
-              <div className="flex-shrink-0">
-                <CoinBalanceBadge />
               </div>
             </div>
           )}

@@ -57,7 +57,7 @@ export default function ArticleListPage() {
           <div>
             <div className="article-list-eyebrow">
               <Icon icon="lucide:library-big" width="15" height="15" />
-              ResearchPulse Articles
+              Trending System Articles
             </div>
             <h1 id="article-list-title" className="article-list-title">{t("article.khoLuuTruBaiBaoKhoaHoc")}</h1>
             <p className="article-list-description">{t("article.duyetQuaTimKiemVaLocHangNghinB")}</p>

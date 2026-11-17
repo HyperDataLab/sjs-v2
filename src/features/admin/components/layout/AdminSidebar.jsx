@@ -20,9 +20,9 @@ export default function AdminSidebar() {
       <div>
         <div className="admin-sidebar__brand">
           <span className="admin-sidebar__brand-icon">
-            <Icon icon="lucide:activity" />
+            <img src="/Cyan_folded-ribbon_T_favicon.png" alt="" width="25" height="25" style={{ objectFit: 'contain' }} />
           </span>
-          <span>ResearchPulse</span>
+          <span>Trending System</span>
         </div>
 
         {/* Danh sách menu chính - map từ ADMIN_MENU để dễ thêm/sửa */}

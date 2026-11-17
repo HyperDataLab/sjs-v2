@@ -1,10 +1,7 @@
-// AuthLogo.jsx
-// Hiển thị logo ResearchPulse phía trên card.
-// Tách riêng để dễ thay đổi logo sau này mà không ảnh hưởng page.
-
 const AuthLogo = () => {
   return (
-    <div className="text-center mb-4">
+    <div className="d-flex align-items-center justify-content-center mb-4">
+      <img src="/Cyan_folded-ribbon_T_favicon.png" alt="" width="38" height="38" className="me-2" />
       <span
         style={{
           fontFamily: "var(--font-display)",
@@ -14,7 +11,7 @@ const AuthLogo = () => {
           letterSpacing: '-0.5px',
         }}
       >
-        ResearchPulse
+        Trending System
       </span>
     </div>
   );

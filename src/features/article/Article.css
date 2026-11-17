@@ -944,7 +944,7 @@
   cursor: pointer;
 }
 .related-paper-card.is-origin .paper-title:hover {
-  color: #e8632a;
+  color: #005A96;
   text-decoration: underline;
 }
 
@@ -1029,7 +1029,7 @@
   fill: var(--primary-light);
   stroke: var(--primary);
   r: 18; /* Scale slightly */
-  filter: drop-shadow(0 4px 8px rgba(255, 122, 51, 0.15));
+  filter: drop-shadow(0 4px 8px rgba(0, 113, 188, 0.15));
 }
 
 /* Active node animations */
@@ -1054,9 +1054,9 @@
 }
 
 .graph-node-group.is-center:hover .node-circle {
-  fill: #e8632a;
+  fill: #005A96;
   r: 23;
-  filter: drop-shadow(0 6px 12px rgba(255, 122, 51, 0.25));
+  filter: drop-shadow(0 6px 12px rgba(0, 113, 188, 0.25));
 }
 
 .node-label {
@@ -1169,7 +1169,7 @@
 }
 
 .article-detail-author-toggle:hover {
-  color: #e8632a !important;
+  color: #005A96 !important;
 }
 
 /* Metadata lists */

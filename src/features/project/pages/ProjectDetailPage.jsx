@@ -10,7 +10,6 @@ import { useProjectMembersQuery } from '../hooks/useProjectMembersQuery';
 import KeywordWatchList from '../../keyword/components/KeywordWatchList';
 import AddKeywordModal from '../../keyword/components/AddKeywordModal';
 import ManageKeywordsModal from '../../keyword/components/ManageKeywordsModal';
-import UpgradePlanModal from '../components/UpgradePlanModal';
 import ProjectMembersList from '../components/ProjectMembersList';
 import InviteMemberModal from '../components/InviteMemberModal';
 import { Icon } from '@iconify/react';
@@ -62,7 +61,6 @@ const ProjectDetailPage = () => {
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showManageModal, setShowManageModal] = useState(false);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState({ show: false, userId: null });
   
@@ -75,7 +73,7 @@ const ProjectDetailPage = () => {
   
   const [membersActionLoading, setMembersActionLoading] = useState(false);
 
-  const chartColors = ['#ff702f', '#ff9f68', '#ffc09b', '#334155', '#64748b', '#94a3b8'];
+  const chartColors = ['#0071BC', '#3393CB', '#66B1D9', '#334155', '#64748b', '#94a3b8'];
 
   const handleInviteMember = async (email, role) => {
     setMembersActionLoading(true);
@@ -406,7 +404,8 @@ const ProjectDetailPage = () => {
   const createdAt = project.created_at ? new Date(project.created_at).toLocaleDateString('vi-VN') : 'N/A';
   const keywordCount = watchedKeywords?.length || 0;
   const articleCount = watchArticlesPagination?.total || 0;
-  const isProjectActive = String(project.status || '').toUpperCase() === 'ACTIVE';
+  const growthRate = Number(overviewData?.summary?.growthRate ?? project?.alerts_24h?.growthRate ?? 0);
+  const growthYear = overviewData?.summary?.growthYear;
   return <div className="container-fluid pb-4 grid-bg min-vh-100 position-relative overflow-hidden" style={{
     paddingTop: '80px'
   }}>
@@ -442,40 +441,25 @@ const ProjectDetailPage = () => {
               </div>
               <div className="d-flex align-items-center gap-3 flex-wrap">
                 <h1 className="font-display text-main mb-0" style={{ fontSize: 'clamp(2rem, 1.625rem + 1.5vw, 2.625rem)', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.05 }}>{title}</h1>
-                <span className={`po-status ${isProjectActive ? 'is-active' : ''}`}>
+                <span className="po-status is-active">
                   <span className="po-status__dot" aria-hidden="true" />
-                  {isProjectActive ? t("project.dangHoatDong") : t("project.chuaKichHoat", "Chưa kích hoạt")}
+                  {t("project.dangHoatDong")}
                 </span>
               </div>
             </div>
 
             {/* RIGHT: action buttons */}
             <div className="d-flex align-items-center gap-2 flex-shrink-0">
-              {!isProjectActive && (
-                <PrimaryButton
-                  className="px-3"
-                  variant="outline"
-                  style={{ minHeight: 36, padding: '0.4rem 0.85rem', fontSize: '0.85rem' }}
-                  onClick={() => setShowUpgradeModal(true)}
-                >
-                  <Icon icon="lucide:crown" width="14" />
-                  {t("project.kichHoatGoi")}
-                </PrimaryButton>
-              )}
-
               <PrimaryButton
                 className="px-3"
-                variant={isProjectActive ? 'primary' : 'outline'}
-                disabled={!isProjectActive}
-                style={!isProjectActive ? { opacity: 0.55, cursor: 'not-allowed', minHeight: 36, padding: '0.4rem 0.85rem', fontSize: '0.85rem' } : { minHeight: 36, padding: '0.4rem 0.85rem', fontSize: '0.85rem' }}
+                variant="primary"
+                style={{ minHeight: 36, padding: '0.4rem 0.85rem', fontSize: '0.85rem' }}
                 onClick={() => {
-                  if (!isProjectActive) return;
-                  const originUrl = import.meta.env.VITE_ORIGIN_URL || 'http://localhost:5174';
                   const lang = i18n.language ? i18n.language.split('-')[0] : 'vi';
-                  window.location.href = `${originUrl}/${lang}/project/${projectId}/dashboard`;
+                  navigate(`/${lang}/project/${projectId}/dashboard`);
                 }}
               >
-                <Icon icon={isProjectActive ? "lucide:sparkles" : "lucide:lock"} width="14" />
+                <Icon icon="lucide:sparkles" width="14" />
                 {t("project.phanTichChuyenSau")}
               </PrimaryButton>
             </div>
@@ -490,19 +474,19 @@ const ProjectDetailPage = () => {
               <div className="po-metric__value po-metric__value--hero">{articleCount.toLocaleString('vi-VN')}</div>
             </div>
             <div className="po-metric">
-              <div className="po-metric__label">{t("project.mucDoTangTruong")}</div>
+              <div className="po-metric__label" title={growthYear ? `${growthYear} vs ${growthYear - 1}` : undefined}>{t("project.mucDoTangTruong")}</div>
               <div className={`po-metric__value po-metric__value--strong ${
-                (project?.alerts_24h?.growthRate || 0) > 0 ? 'is-positive'
-                : (project?.alerts_24h?.growthRate || 0) < 0 ? 'is-negative'
+                growthRate > 0 ? 'is-positive'
+                : growthRate < 0 ? 'is-negative'
                 : ''
               }`}>
                 <Icon
-                  icon={(project?.alerts_24h?.growthRate || 0) > 0 ? "lucide:trending-up"
-                    : (project?.alerts_24h?.growthRate || 0) < 0 ? "lucide:trending-down"
+                  icon={growthRate > 0 ? "lucide:trending-up"
+                    : growthRate < 0 ? "lucide:trending-down"
                     : "lucide:minus"}
                   width="14"
                 />
-                {(project?.alerts_24h?.growthRate || 0) > 0 ? '+' : ''}{project?.alerts_24h?.growthRate || 0}%
+                {growthRate > 0 ? '+' : ''}{growthRate}%
               </div>
             </div>
             <div className="po-metric">
@@ -673,11 +657,6 @@ const ProjectDetailPage = () => {
         </Modal.Footer>
       </Modal>
 
-      <UpgradePlanModal show={showUpgradeModal} onHide={() => setShowUpgradeModal(false)} projectId={projectId} onSuccess={() => {
-      fetchProjectOverview();
-      if (refetchProjectDetails) refetchProjectDetails();
-      setShowUpgradeModal(false);
-    }} />
     </div>;
 };
 export default ProjectDetailPage;

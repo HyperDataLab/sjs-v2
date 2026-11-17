@@ -14,6 +14,8 @@ const ADMIN_MENU = [
   // Quản lý Volume/Issue (liên quan tới issue khác, dùng chung journal context).
   { key: 'volumes', label: 'Volumes', icon: 'lucide:layers', path: ROUTES.ADMIN_REPOSITORY },
 
+  { key: 'data-sources', label: 'Data Sources', icon: 'lucide:database', path: ROUTES.ADMIN_DATA_SOURCES },
+
   // Trang tài khoản admin (đổi mật khẩu, thông tin cá nhân...).
   { key: 'account', label: 'Account', icon: 'lucide:user', path: ROUTES.ADMIN_USERS },
 ];

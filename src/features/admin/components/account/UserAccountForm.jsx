@@ -142,7 +142,7 @@ export default function UserAccountForm({
           <div className="rounded-4 d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0" style={{
         width: '80px',
         height: '80px',
-        background: 'linear-gradient(135deg, #fb923c 0%, #ea580c 100%)',
+        background: 'linear-gradient(135deg, #3393CB 0%, #005A96 100%)',
         fontSize: '2rem',
         boxShadow: '0 12px 24px rgba(234, 88, 12, 0.18)'
       }} aria-label={`Avatar chữ cái đầu của ${displayName || email || t("admin.nguoiDung")}`}>
@@ -160,11 +160,11 @@ export default function UserAccountForm({
       <div>
         <h6 className="fw-bold d-flex align-items-center gap-2 mb-3.5 tracking-wider text-uppercase" style={{
         fontSize: '0.85rem',
-        color: '#ea580c',
+        color: '#005A96',
         letterSpacing: '0.03em'
       }}>
           <Icon icon="lucide:user" width="16" style={{
-          color: '#ea580c'
+          color: '#005A96'
         }} />{t("admin.thongTinCaNhan")}</h6>
         
         <Row className="g-3">
@@ -226,11 +226,11 @@ export default function UserAccountForm({
       <div className="py-3 border-top">
         <h6 className="fw-bold d-flex align-items-center gap-2 mb-3.5 tracking-wider text-uppercase" style={{
         fontSize: '0.85rem',
-        color: '#ea580c',
+        color: '#005A96',
         letterSpacing: '0.03em'
       }}>
           <Icon icon="lucide:shield" width="16" style={{
-          color: '#ea580c'
+          color: '#005A96'
         }} />{t("admin.vaiTroTrangThai")}</h6>
 
         <Row className="g-3 align-items-center">
@@ -275,11 +275,11 @@ export default function UserAccountForm({
       <div className="py-3 border-top">
         <h6 className="fw-bold d-flex align-items-center gap-2 mb-3.5 tracking-wider text-uppercase" style={{
         fontSize: '0.85rem',
-        color: '#ea580c',
+        color: '#005A96',
         letterSpacing: '0.03em'
       }}>
           <Icon icon="lucide:lock" width="16" style={{
-          color: '#ea580c'
+          color: '#005A96'
         }} />{t("admin.thongTinDangNhap")}</h6>
         
         <Row className="g-3">

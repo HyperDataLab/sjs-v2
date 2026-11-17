@@ -57,7 +57,7 @@ export default function JournalCardAdmin({
                 <span className="text-muted-custom text-xs d-block text-uppercase fw-semibold" style={{
                 fontSize: '0.65rem'
               }}>Publisher</span>
-                <span className="text-main fw-bold text-truncate d-block">{journal.publisher || 'ResearchPulse'}</span>
+                <span className="text-main fw-bold text-truncate d-block">{journal.publisher || 'Trending System'}</span>
               </Col>
               <Col xs={6} className="ps-3 border-bottom pb-1.5" style={{
               borderColor: 'var(--border)'

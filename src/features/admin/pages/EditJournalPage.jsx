@@ -167,7 +167,7 @@ export default function EditJournalPage() {
       visibility: formData.visibility,
       subjectCategory: formData.subjectCategory,
       subjectArea: formData.subjectArea,
-      publisher_name: selectedPub ? selectedPub.display_name : 'ResearchPulse Press',
+      publisher_name: selectedPub ? selectedPub.display_name : 'Trending System Press',
       publisher: formData.publisher
     };
     

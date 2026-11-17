@@ -138,7 +138,7 @@ export default function AddJournalModal({
         visibility: formData.visibility,
         subjectCategory: formData.subjectCategory,
         subjectArea: formData.subjectArea,
-        publisher_name: selectedPub ? selectedPub.display_name : 'ResearchPulse Press'
+        publisher_name: selectedPub ? selectedPub.display_name : 'Trending System Press'
       };
       await addJournal(payload);
       setFormData({

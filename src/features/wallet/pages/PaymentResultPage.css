@@ -1,9 +1,9 @@
-﻿/* Payment result page */
+/* Payment result page */
 .payment-result-page {
   min-height: 100vh;
   padding-top: 80px;
   background:
-    radial-gradient(circle at top, rgba(255, 122, 51, 0.055), transparent 34%),
+    radial-gradient(circle at top, rgba(0, 113, 188, 0.055), transparent 34%),
     var(--bg-main);
   color: var(--text-main);
 }
@@ -41,8 +41,8 @@
 }
 
 .payment-result-icon.pending {
-  background: rgba(255, 122, 51, 0.1);
-  color: #ff7a33;
+  background: rgba(0, 113, 188, 0.1);
+  color: #0071BC;
 }
 
 .payment-result-title {
@@ -91,7 +91,7 @@
   font-family: var(--font-display);
   font-size: 1.45rem;
   font-weight: 900;
-  color: #ff7a33;
+  color: #0071BC;
   letter-spacing: -0.03em;
 }
 
@@ -148,8 +148,8 @@
 .payment-result-btn.primary {
   border: 0;
   color: #fff;
-  background: linear-gradient(135deg, #ff7a33, #ff5608);
-  box-shadow: 0 8px 18px rgba(255, 122, 51, 0.18);
+  background: linear-gradient(135deg, #0071BC, #005A96);
+  box-shadow: 0 8px 18px rgba(0, 113, 188, 0.18);
 }
 
 .payment-result-alert {
@@ -170,8 +170,8 @@
 }
 
 .payment-result-alert.pending {
-  background: rgba(255, 122, 51, 0.08);
-  border: 1px solid rgba(255, 122, 51, 0.14);
+  background: rgba(0, 113, 188, 0.08);
+  border: 1px solid rgba(0, 113, 188, 0.14);
   color: #b45309;
 }
 

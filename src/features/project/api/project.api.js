@@ -146,11 +146,10 @@ export const unwatchKeywordApi = (id, keywordId) => {
 /**
  * Activate a project to VIP
  * @param {number|string} id - Project ID
- * @param {number} coinAmount - Amount of coins to deduct
  * @returns {Promise} Axios promise
  */
-export const activateProjectApi = (id, coinAmount) => {
-  return api.put(`/projects/${id}/activate`, { coinAmount });
+export const activateProjectApi = (id) => {
+  return api.put(`/projects/${id}/activate`);
 };
 
 /**

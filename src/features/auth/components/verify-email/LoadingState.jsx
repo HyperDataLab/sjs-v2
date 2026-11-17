@@ -10,7 +10,7 @@ const LoadingState = () => {
   return <div className="text-center py-3">
       {/* Spinner Bootstrap */}
       <div className="spinner-border mb-4" role="status" style={{
-      color: 'var(--primary, #FF7A33)',
+      color: 'var(--primary, #0071BC)',
       width: '3rem',
       height: '3rem'
     }}>

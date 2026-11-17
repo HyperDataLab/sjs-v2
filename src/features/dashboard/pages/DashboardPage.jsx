@@ -117,7 +117,7 @@ export default function DashboardPage() {
                 }}
               >
                 <Icon icon="lucide:sparkles" width={14} />
-                <span>ResearchPulse Analytics</span>
+                <span>Trending System Analytics</span>
               </div>
               <h1
                 className="font-display fw-bold text-main mb-2"

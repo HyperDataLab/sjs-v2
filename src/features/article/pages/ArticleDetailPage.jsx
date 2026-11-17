@@ -15,7 +15,6 @@ import Header from '../../landing/components/Header';
 
 // Auth
 import useAuth from '../../auth/hooks/useAuth';
-import { useWalletStore } from '../../../app/store/walletStore';
 
 // API
 import { getArticleDetailApi, bookmarkArticleApi, getArticlesListApi } from '../api/articleApi';
@@ -82,8 +81,6 @@ export default function ArticleDetailPage() {
   const [isRecommendedLoading, setIsRecommendedLoading] = useState(false);
   const [showAllAuthors, setShowAllAuthors] = useState(false);
   const [showCitationsModal, setShowCitationsModal] = useState(false);
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
-  const { balance, setBalance } = useWalletStore();
   const [referencePage, setReferencePage] = useState(1);
   const referencesPerPage = 2;
   const visibleAuthors = useMemo(() => {
@@ -167,23 +164,6 @@ export default function ArticleDetailPage() {
     } finally {
       setIsBookmarkLoading(false);
     }
-  };
-  const handleConfirmPremiumDownload = async () => {
-    if (!currentUser) {
-      setShowPremiumModal(false);
-      setShowLoginModal(true);
-      return;
-    }
-    const currentCoins = balance ?? 0;
-    if (currentCoins < 2) {
-      toast.error(t("article.soDuCoinCuaBanKhongDuVuiLongNa"));
-      setShowPremiumModal(false);
-      return;
-    }
-    setBalance(currentCoins - 2);
-    setShowPremiumModal(false);
-    // eslint-disable-next-line no-undef
-    downloadArticlePdf(article, { withWatermark: false, premium: true });
   };
   const handleDoiClick = () => {
     if (!articleDoiUrl) return;
@@ -506,36 +486,6 @@ export default function ArticleDetailPage() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-secondary" onClick={() => setShowCitationsModal(false)}>{t("article.dong")}</Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={showPremiumModal} onHide={() => setShowPremiumModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title className="font-display fw-bold text-main d-flex align-items-center">
-            <Icon icon="lucide:star" className="me-2" style={{ color: 'var(--primary)' }} />
-            {t("article.taiPdfPremium")}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p className="text-muted-custom mb-3" style={{ lineHeight: 1.7 }}>
-            {t("article.banCoChacChanMuonDung2Xu")}
-          </p>
-          <div className="article-modal-stat-box d-flex align-items-center justify-content-between p-2 px-3" style={{ background: 'var(--bg-main)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-            <span className="fw-semibold text-main d-flex align-items-center">
-              <Icon icon="lucide:file-text" className="me-2 text-muted-custom" /> {t("article.premiumPdf")}
-            </span>
-            <span className="font-display fw-bold d-flex align-items-center" style={{ fontSize: '1.25rem', color: 'var(--primary)' }}>
-              -2 <Icon icon="lucide:coins" className="ms-1" width="18" />
-            </span>
-          </div>
-        </Modal.Body>
-        <Modal.Footer className="border-0">
-          <Button variant="outline-secondary" onClick={() => setShowPremiumModal(false)} className="font-display px-3">
-            {t("admin.huy")}
-          </Button>
-          <Button onClick={handleConfirmPremiumDownload} className="font-display fw-bold px-3 d-flex align-items-center text-white border-0" style={{ backgroundColor: 'var(--primary)' }}>
-             {t("article.dongY")}
-          </Button>
         </Modal.Footer>
       </Modal>
 

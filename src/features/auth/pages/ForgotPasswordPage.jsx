@@ -6,7 +6,6 @@ import AuthBanner from '../components/AuthBanner';
 import ForgotPasswordForm from '../components/ForgotPasswordForm';
 import ForgotPasswordSuccess from '../components/ForgotPasswordSuccess';
 import { forgotPasswordApi } from '../api/auth.api';
-import Icon from '../../../shared/components/Icon';
 export default function ForgotPasswordPage() {
   const { t: _t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
@@ -51,13 +50,13 @@ export default function ForgotPasswordPage() {
           background: 'var(--btn-dark)',
           boxShadow: '0 4px 10px rgba(7, 26, 28, 0.15)'
         }}>
-              <Icon icon="lucide:activity" className="text-white text-sm" />
+              <img src="/Cyan_folded-ribbon_T_favicon.png" alt="" width="36" height="36" style={{ objectFit: 'contain' }} />
             </div>
             <span className="fs-5 fw-bold font-display" style={{
           letterSpacing: '0.03em',
           color: 'var(--text-main)'
         }}>
-              ResearchPulse
+              Trending System
             </span>
           </div>
 

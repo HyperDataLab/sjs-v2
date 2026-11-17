@@ -89,15 +89,16 @@ export default function JournalHero({
     metric_name,
     metric_year,
     latest_metrics,
+    summary_stats,
     subject_categories = [],
     is_following
   } = journal || {};
 
   const journalTitle = display_name || title || name || '';
   const displayQuartile = quartile || latest_metrics?.quartile || 'Q1';
-  const displayMetricValue = metric_value ?? latest_metrics?.sjr ?? latest_metrics?.value ?? null;
-  const displayMetricName = metric_name || 'SJR Score';
-  const displayMetricYear = metric_year || latest_metrics?.year || '2025';
+  const displayMetricValue = metric_value ?? latest_metrics?.sjr ?? latest_metrics?.value ?? summary_stats?.h_index ?? null;
+  const displayMetricName = metric_name || (summary_stats?.h_index != null ? 'OpenAlex H-index' : 'SJR Score');
+  const displayMetricYear = metric_year || latest_metrics?.year || null;
 
   const handleCategoryClick = categoryName => {
     if (!categoryName) return;
@@ -133,7 +134,7 @@ export default function JournalHero({
                 {displayMetricValue}
               </div>
               <div className="journal-metric-label">
-                {displayMetricName} {displayMetricYear}
+                {displayMetricName}{displayMetricYear ? ` ${displayMetricYear}` : ''}
               </div>
             </div> : <div className="journal-metric-panel ms-md-auto mb-3">
               <span className="text-muted-custom">{t("journal.chuaCoDuLieuRanking")}</span>

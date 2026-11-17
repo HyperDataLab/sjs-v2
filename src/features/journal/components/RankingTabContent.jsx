@@ -73,7 +73,7 @@ export default function RankingTabContent({
       <Col lg={7} className="d-flex flex-column">
         <section className="journal-surface p-4 h-100 d-flex flex-column">
           <h2 className="journal-section-title">
-            {metricName} {t("journal.theoNam")}</h2>
+            {t("journal.hoatDongOpenAlex", "OpenAlex publication activity")}</h2>
 
           <div className="flex-grow-1 d-flex justify-content-center align-items-center overflow-auto py-2">
             <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="100%" style={{
@@ -137,27 +137,25 @@ export default function RankingTabContent({
 
       <Col lg={5} className="d-flex flex-column">
         <section className="journal-surface p-4 h-100 d-flex flex-column">
-          <h2 className="journal-section-title">{t("journal.bangXepHangLichSu")}</h2>
+          <h2 className="journal-section-title">{t("journal.soBaiBaoVaTrichDanTheoNam", "Works and citations by year")}</h2>
 
           <div className="table-responsive flex-grow-1">
             <Table borderless className="journal-ranking-table align-middle mb-0 text-start">
               <thead>
                 <tr>
                   <th>{t("article.nam")}</th>
-                  <th>Quartile</th>
-                  <th>{metricName}</th>
-                  <th>H-Index</th>
+                  <th>{t("journal.baiBao", "Works")}</th>
+                  <th>{t("journal.trichDan", "Citations")}</th>
                 </tr>
               </thead>
               <tbody>
                 {tableData.map((row, idx) => <tr key={idx}>
                     <td className="journal-number">{row.year}</td>
-                    <td>{row.quartile || <span className="journal-muted-dash">N/A</span>}</td>
                     <td className="journal-number">
                       {row.value !== null && row.value !== undefined ? row.value : <span className="journal-muted-dash">N/A</span>}
                     </td>
                     <td>
-                      {row.h_index || <span className="journal-muted-dash">N/A</span>}
+                      {row.cited_by_count ?? 0}
                     </td>
                   </tr>)}
               </tbody>

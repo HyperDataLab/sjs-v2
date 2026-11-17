@@ -5,18 +5,18 @@
  */
 import axios from 'axios';
 import { useAuthStore } from '../../app/store/authStore';
+import { API_BASE_URL } from './apiBase';
 
 /**
  * Axios instance dùng chung cho toàn bộ FE.
  *
- * Luồng auth hiện tại sau khi merge nhánh Duy:
- * - BE lưu access token/refresh token trong HTTP-only cookie.
- * - `withCredentials: true` giúp browser gửi cookie kèm request.
+ * Worker dùng Firestore cho dữ liệu và trả access/refresh token cùng HTTP-only cookies.
+ * `withCredentials: true` gửi cookie kèm các request cross-origin.
  * - Nếu API trả 401, interceptor sẽ thử gọi `/auth/refresh` đúng 1 lần
  * để lấy access token mới rồi gọi lại request ban đầu.
  */
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -39,7 +39,7 @@ api.interceptors.request.use(
 
 // Axios instance for public endpoints (does not send cookies or tokens)
 export const publicApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -119,7 +119,7 @@ api.interceptors.response.use(
         }
 
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/auth/refresh`,
+          `${API_BASE_URL}/auth/refresh`,
           {
             withCredentials: true,
             headers: refreshHeaders,

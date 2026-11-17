@@ -195,7 +195,7 @@ const UpgradePlanModal = ({
           <button className="btn btn-primary" onClick={handleActivate} disabled={loading} style={{
           borderRadius: '8px',
           fontWeight: 600,
-          background: 'linear-gradient(135deg, #ff702f, #f97316)',
+          background: 'linear-gradient(135deg, #0071BC, #0071BC)',
           border: 'none',
           color: '#fff'
         }}>

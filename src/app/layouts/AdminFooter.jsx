@@ -13,7 +13,7 @@ export default function AdminFooter() {
     >
       {/* Copyright branding */}
       <div className="mb-2 mb-md-0">
-        © {currentYear} ResearchPulse Admin. All rights reserved.
+        © {currentYear} Trending System Admin. All rights reserved.
       </div>
 
       {/* Useful helper links matching the mockup footer */}

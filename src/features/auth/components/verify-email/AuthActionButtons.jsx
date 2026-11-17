@@ -17,7 +17,7 @@ const AuthActionButtons = ({
     return <div className="d-grid gap-2">
         {/* Button chính — đi thẳng đến login không chờ countdown */}
         <button onClick={onLogin} className="btn" style={{
-        backgroundColor: 'var(--primary, #FF7A33)',
+        backgroundColor: 'var(--primary, #0071BC)',
         color: '#fff',
         border: 'none',
         borderRadius: '8px',

@@ -72,7 +72,7 @@ export default function UserTable({
                   <div className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-white fw-bold" style={{
                 width: '42px',
                 height: '42px',
-                background: 'linear-gradient(135deg, #fb923c 0%, #ea580c 100%)',
+                background: 'linear-gradient(135deg, #3393CB 0%, #005A96 100%)',
                 fontSize: '0.95rem',
                 boxShadow: '0 8px 18px rgba(234, 88, 12, 0.14)'
               }} aria-label={`Avatar chữ cái đầu của ${user.name || user.email || t("admin.nguoiDung")}`}>

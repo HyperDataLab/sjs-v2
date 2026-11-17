@@ -156,8 +156,8 @@
 .bar-row-container:hover .geography-chart-bar-horizontal,
 .geography-chart-bar-horizontal.is-active,
 .bar-row-container.is-selected .geography-chart-bar-horizontal {
-  background: linear-gradient(90deg, #FF9E66 0%, var(--primary) 100%) !important;
-  box-shadow: 0 6px 20px rgba(255, 122, 51, 0.4) !important;
+  background: linear-gradient(90deg, #3393CB 0%, var(--primary) 100%) !important;
+  box-shadow: 0 6px 20px rgba(0, 113, 188, 0.4) !important;
 }
 
 .flag-wrapper {
@@ -274,7 +274,7 @@
 }
 
 .geography-article-row:hover .geography-link-accent {
-  color: #e8632a;
+  color: #005A96;
 }
 
 /* Pagination modifications */

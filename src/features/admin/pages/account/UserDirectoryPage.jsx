@@ -137,7 +137,7 @@ export default function UserDirectoryPage() {
           <p className="text-muted-custom small mb-0" style={{
           maxWidth: '680px'
         }}>
-            Manage platform contributors, their access levels, and account status within the ResearchPulse ecosystem.
+            Manage platform contributors, their access levels, and account status within the Trending System ecosystem.
           </p>
         </div>
         
@@ -173,7 +173,7 @@ export default function UserDirectoryPage() {
         <Col xs={12} lg={3.5} className="col-lg-4 d-flex flex-column gap-4">
           {/* Access Control Information box */}
           <Card className="p-4 rounded-4 border-0 text-white" style={{
-          background: 'linear-gradient(135deg, #ff7a33 0%, #ea580c 100%)',
+          background: 'linear-gradient(135deg, #0071BC 0%, #005A96 100%)',
           boxShadow: '0 4px 20px rgba(234, 88, 12, 0.15)'
         }}>
             <div className="d-flex align-items-center gap-2 mb-2.5">

@@ -127,7 +127,7 @@ export default function WalletCheckoutPage() {
         {loading ? <div className="checkout-state">
             <div>
               <div className="spinner-border spinner-border-sm" role="status" style={{
-            color: '#ff7a33'
+            color: '#0071BC'
           }} />
               <div style={{
             marginTop: 12
@@ -186,7 +186,7 @@ export default function WalletCheckoutPage() {
                         <div className="checkout-method-desc">{methodMeta.desc}</div>
                       </div>
                     </div>
-                    <Icon icon="lucide:badge-check" width={20} color="#ff7a33" />
+                    <Icon icon="lucide:badge-check" width={20} color="#0071BC" />
                   </div>
 
                   <div className="checkout-method-item" style={{

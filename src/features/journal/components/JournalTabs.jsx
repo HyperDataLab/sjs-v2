@@ -17,7 +17,7 @@ export default function JournalTabs({
       <Nav variant="tabs" activeKey={activeTab} onSelect={onTabChange} className="tab-nav-custom border-0 d-flex flex-nowrap overflow-auto">
         <Nav.Item>
           <Nav.Link eventKey="ranking" className="d-flex align-items-center gap-2 text-nowrap">
-            <Icon icon="lucide:bar-chart-3" width="16" />{t("journal.lichSuRanking")}</Nav.Link>
+            <Icon icon="lucide:bar-chart-3" width="16" />{t("journal.hoatDongOpenAlex", "OpenAlex activity")}</Nav.Link>
         </Nav.Item>
 
         <Nav.Item>

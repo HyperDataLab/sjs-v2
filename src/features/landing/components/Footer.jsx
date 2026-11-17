@@ -5,7 +5,7 @@
  */
 import { useTranslation } from 'react-i18next';
 import Container from 'react-bootstrap/Container';
-import Icon from '../../../shared/components/Icon';
+import Logo from '../../../shared/components/Logo';
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -30,21 +30,8 @@ export default function Footer() {
         <div className="d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
           {/* Brand and Description */}
           <div className="d-flex align-items-center gap-3">
-            <div 
-              className="d-flex align-items-center justify-content-center rounded-circle"
-              style={{
-                width: '40px',
-                height: '40px',
-                backgroundColor: 'var(--text-main)',
-                color: 'white'
-              }}
-            >
-              <Icon icon="lucide:line-chart" className="fs-5" />
-            </div>
             <div>
-              <div className="font-display text-main" style={{ fontWeight: 800, fontSize: '1.25rem' }}>
-                ResearchPulse
-              </div>
+              <Logo size={40} fontSize="1.25rem" />
               <div className="text-muted-custom" style={{ fontSize: '0.8rem', maxWidth: '300px' }}>
                 {t('footerDesc')}
               </div>
@@ -73,7 +60,7 @@ export default function Footer() {
           className="text-center text-muted-custom mt-4 pt-4" 
           style={{ borderTop: '1px solid var(--border)', fontSize: '0.75rem' }}
         >
-          © {currentYear} ResearchPulse. {t('footerRights')}
+          © {currentYear} Trending System. {t('footerRights')}
         </div>
       </Container>
     </footer>

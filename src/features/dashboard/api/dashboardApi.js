@@ -45,7 +45,7 @@ export const getDashboardTrendingKeywordsApi = (params = {}) =>
  * BE: GET /api/v1/author/leaderboard  [requireAuth]
  */
 export const getTopAuthorsApi = (limit = 5) =>
-  api.get('/author/leaderboard', { params: { limit } });
+  api.get('/author/leaderboard', { params: { limit, period: 'week' } });
 
 /**
  * Get related articles for a project
