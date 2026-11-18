@@ -11,7 +11,7 @@ function PageContainer({ className = '', children, ...props }) {
       initial={reduceMotion ? false : 'hidden'}
       animate="show"
       variants={reduceMotion ? {} : fadeUp}
-      className={cn('w-full max-w-[1360px] mx-auto px-4 pt-4 pb-12 sm:px-6 sm:pt-5 sm:pb-16 space-y-4 sm:space-y-5', className)}
+      className={cn('w-full px-4 pt-4 pb-12 sm:px-6 lg:px-8 space-y-4 sm:space-y-5', className)}
       {...props}
     >
       {children}

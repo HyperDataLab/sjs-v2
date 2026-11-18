@@ -32,7 +32,11 @@ export default function DashboardShell({ children }) {
   const base = `/${lang}`;
   const activePath = location.pathname.replace(/\/$/, '').split('/').at(-1);
   const activeItem = items.find(({ path }) => path === activePath);
-  const pageTitle = activeItem ? t(`navigation.${activeItem.path}`, activeItem.label) : t('navigation.projects', 'Projects');
+  const pageTitle = activeItem
+    ? t(`navigation.${activeItem.path}`, activeItem.label)
+    : activePath === 'profile'
+    ? t('navigation.account', 'Profile')
+    : t('navigation.projects', 'Projects');
 
   // Ensure window and sidebar always scroll to top on page navigation
   useEffect(() => {
@@ -123,8 +127,8 @@ export default function DashboardShell({ children }) {
 
       {/* Main Content Column */}
       <div className="flex flex-1 flex-col min-w-0">
-        <header className="app-topbar sticky top-0 z-[var(--ds-z-sticky)] flex max-md:hidden min-h-14 items-center border-b border-border bg-surface/95 px-4 md:px-6 backdrop-blur">
-          <div className="w-full max-w-[1360px] mx-auto flex items-center justify-between">
+        <header className="app-topbar sticky top-0 z-[var(--ds-z-sticky)] flex max-md:hidden min-h-14 items-center border-b border-border bg-surface/95 px-4 sm:px-6 lg:px-8 backdrop-blur">
+          <div className="w-full flex items-center justify-between">
             <div className="flex min-w-0 items-center gap-2 text-xs sm:text-sm">
               <span className="text-muted-foreground">{t('navigation.workspace', 'Workspace')}</span>
               <span aria-hidden="true" className="text-subtle-foreground">/</span>

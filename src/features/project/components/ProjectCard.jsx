@@ -157,10 +157,7 @@ const ProjectCard = ({
         }}
         className="group flex flex-col sm:flex-row sm:items-center justify-between p-3.5 gap-4 transition-colors hover:border-primary/50 hover:bg-surface-muted/20 shadow-xs cursor-pointer border border-border bg-surface rounded-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary select-none"
       >
-        <div className="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-control bg-primary-subtle text-primary">
-            <Icon icon="lucide:folder-kanban" width="18" aria-hidden="true" />
-          </div>
+        <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
           <div className="min-w-0 flex-1 space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="m-0 truncate text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
@@ -170,20 +167,6 @@ const ProjectCard = ({
                 <span>Field:</span>
                 <span className="text-foreground font-medium">{areaName}</span>
               </span>
-              {isDeleted ? (
-                <Badge variant="destructive" className="text-[11px] py-0">
-                  {t('project.daXoa', 'Deleted')}
-                </Badge>
-              ) : isActive ? (
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-success">
-                  <span className="size-1.5 rounded-full bg-success" />
-                  {t('project.dangHoatDong', 'Active')}
-                </span>
-              ) : (
-                <Badge variant="secondary" className="text-[11px] py-0">
-                  {t('project.chuaKichHoat', 'Inactive')}
-                </Badge>
-              )}
             </div>
             <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
               <span className="flex items-center gap-1">
@@ -220,31 +203,18 @@ const ProjectCard = ({
           handleCardClick(e);
         }
       }}
-      className="group flex h-full flex-col justify-between p-3.5 transition-colors hover:border-primary/50 shadow-xs border border-border bg-surface rounded-card cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary select-none"
+      className="group flex h-full flex-col justify-between p-4 transition-all hover:border-primary/50 hover:shadow-sm border border-border bg-surface rounded-xl cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary select-none no-underline"
     >
       <div>
-        {/* Top Row: [Icon] title [● Active] [⋮] */}
+        {/* Top Row: title [⋮] */}
         <div className="flex items-start justify-between gap-2.5">
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-control bg-primary-subtle text-primary">
-              <Icon icon="lucide:folder-kanban" width="16" aria-hidden="true" />
-            </div>
+          <div className="min-w-0 flex-1">
             <h3 className="m-0 text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
               {title}
             </h3>
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
-            {isDeleted ? (
-              <Badge variant="destructive" className="text-[11px] font-medium py-0">
-                {t('project.daXoa', 'Deleted')}
-              </Badge>
-            ) : isActive ? (
-              <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold bg-success-subtle text-success border border-success/20">
-                <span className="size-1.5 rounded-full bg-success" />
-                {t('project.dangHoatDong', 'Active')}
-              </span>
-            ) : null}
 
             {/* Action Menu [⋮] */}
             {isOwner && (
@@ -256,7 +226,7 @@ const ProjectCard = ({
                     e.stopPropagation();
                     setMenuOpen(!menuOpen);
                   }}
-                  className="flex size-7 items-center justify-center rounded-control border-0 bg-transparent text-muted-foreground hover:bg-surface-muted hover:text-foreground transition-colors cursor-pointer"
+                  className="flex size-7 items-center justify-center rounded-lg border-0 bg-transparent text-muted-foreground hover:bg-surface-muted hover:text-foreground transition-colors cursor-pointer"
                   title="Actions"
                   aria-label="Actions"
                 >
@@ -264,7 +234,7 @@ const ProjectCard = ({
                 </button>
 
                 {menuOpen && (
-                  <div className="absolute right-0 top-full z-20 mt-1 w-36 rounded-control border border-border bg-surface py-1 shadow-popover">
+                  <div className="absolute right-0 top-full z-20 mt-1 w-36 rounded-lg border border-border bg-surface py-1 shadow-popover">
                     <button
                       type="button"
                       onClick={(e) => {
@@ -328,42 +298,38 @@ const ProjectCard = ({
           </div>
         </div>
 
-        {/* Second Line: Field: AreaName */}
-        <p className="m-0 mt-2 text-xs text-muted-foreground flex items-center gap-1.5">
-          <span>Field:</span>
-          <span className="font-semibold text-foreground">{areaName}</span>
+        {/* Second Line: Field Metadata */}
+        <p className="m-0 mt-1 text-xs text-muted-foreground truncate">
+          Field: <span className="font-medium text-foreground">{areaName}</span>
         </p>
 
-        {/* Divider line ─────────────────────────────── */}
-        <div className="border-t border-border my-3" />
-
-        {/* Third Line: 📊 X Articles   🔑 X Keywords */}
-        <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <Icon icon="lucide:file-text" width="15" className="text-primary shrink-0" />
+        {/* Third Line: Metrics Bar */}
+        <div className="mt-3.5 pt-3 border-t border-border/60 grid grid-cols-2 gap-2 text-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            <Icon icon="lucide:file-text" width="14" className="text-primary shrink-0" />
             <span>
-              <strong className="font-bold text-foreground">{formatCount(articleCount)}</strong> {t('dashboard.articles', 'Articles')}
+              <strong className="font-semibold text-foreground">{formatCount(articleCount)}</strong> {t('dashboard.articles', 'Articles')}
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Icon icon="lucide:key" width="15" className="text-amber-600 shrink-0" />
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            <Icon icon="lucide:key" width="14" className="text-amber-500 shrink-0" />
             <span>
-              <strong className="font-bold text-foreground">{formatCount(keywordCount)}</strong> {t('project.keywords', 'Keywords')}
+              <strong className="font-semibold text-foreground">{formatCount(keywordCount)}</strong> {t('project.keywords', 'Keywords')}
             </span>
           </div>
         </div>
       </div>
 
       {/* Bottom Line: 👥 [Avatar Group]   Updated 17/11/2026 */}
-      <div className="mt-3.5 flex items-center justify-between gap-2 pt-2.5 border-t border-border/60">
+      <div className="mt-3.5 pt-2.5 border-t border-border/40 flex items-center justify-between gap-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-2 min-w-0">
           {renderAvatarGroup()}
-          <span className="truncate text-xs text-muted-foreground">
+          <span className="truncate text-[11px]">
             By <strong className="font-medium text-foreground">{ownerName}</strong>
           </span>
         </div>
 
-        <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1">
+        <span className="text-[11px] text-muted-foreground/80 shrink-0 flex items-center gap-1">
           <Icon icon="lucide:calendar" width="12" /> {createdAt}
         </span>
       </div>
