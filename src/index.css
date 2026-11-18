@@ -94,6 +94,11 @@ h6, .h6 { font-size: 0.6875rem; font-weight: 600; }   /* 11px */
   min-height: 46px !important;
 }
 
+/* ─── Neutralize Bootstrap Padding Collisions on Sidebar ─────────────── */
+aside.app-sidebar {
+  padding: 0.75rem !important;
+}
+
 /* Custom background grid pattern for light mode */
 .grid-bg {
   background-color: var(--bg-main);

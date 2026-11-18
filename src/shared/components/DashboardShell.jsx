@@ -57,33 +57,43 @@ export default function DashboardShell({ children }) {
   }, [mobileOpen]);
 
   const sidebar = (
-    <aside className="app-sidebar flex min-h-full flex-col border-r border-border bg-surface px-4 py-5" aria-label="Primary navigation">
-      <div className="border-b border-border px-2 pb-5"><Logo size={30} fontSize="1.05rem" /></div>
-      <nav className="flex flex-col gap-1 pt-4">
+    <aside className="app-sidebar flex min-h-full flex-col border-r border-border bg-surface p-3" aria-label="Primary navigation">
+      <div className="h-12 flex items-center border-b border-border px-2 mb-2">
+        <Logo size={26} fontSize="0.95rem" />
+      </div>
+      <nav className="flex flex-col gap-0.5">
         {items.map(({ label, path, icon: Icon }) => (
           <NavLink
             key={path}
             to={`${base}/${path}`}
             onClick={() => setMobileOpen(false)}
             className={({ isActive }) =>
-              `group flex min-h-11 w-full items-center gap-3 rounded-control border-l-3 px-3 py-2.5 text-left text-sm transition-colors ${
+              `group flex h-9 min-h-[36px] w-full items-center gap-2.5 rounded-control border-l-3 px-2.5 py-1.5 text-left text-xs transition-colors ${
                 isActive
                   ? 'border-primary bg-primary-subtle font-semibold !text-primary'
                   : 'border-transparent font-medium !text-muted-foreground hover:bg-surface-muted hover:!text-foreground'
               }`
             }
           >
-            <Icon aria-hidden="true" className="shrink-0 text-lg" />
+            <Icon aria-hidden="true" className="shrink-0 text-base" />
             <span>{t(`navigation.${path}`, label)}</span>
           </NavLink>
         ))}
       </nav>
-      <div className="mt-auto flex flex-col gap-1 border-t border-border pt-3">
-        <button type="button" className="flex min-h-11 w-full items-center gap-3 rounded-control border-0 bg-transparent px-3 py-2.5 text-left text-sm font-semibold text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground" onClick={() => navigate(`${base}/profile`)}>
-          <FiUsers aria-hidden="true" /> <span>{t('navigation.account', 'Account')}</span>
+      <div className="mt-auto flex flex-col gap-0.5 border-t border-border pt-2">
+        <button
+          type="button"
+          className="flex h-9 min-h-[36px] w-full items-center gap-2.5 rounded-control border-0 bg-transparent px-2.5 py-1.5 text-left text-xs font-semibold text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground cursor-pointer"
+          onClick={() => navigate(`${base}/profile`)}
+        >
+          <FiUsers aria-hidden="true" className="text-base" /> <span>{t('navigation.account', 'Account')}</span>
         </button>
-        <button type="button" className="flex min-h-11 w-full items-center gap-3 rounded-control border-0 bg-transparent px-3 py-2.5 text-left text-sm font-semibold text-muted-foreground transition-colors hover:bg-danger-subtle hover:text-danger" onClick={() => logout()}>
-          <FiLogOut aria-hidden="true" /> <span>{t('navigation.signOut', 'Sign out')}</span>
+        <button
+          type="button"
+          className="flex h-9 min-h-[36px] w-full items-center gap-2.5 rounded-control border-0 bg-transparent px-2.5 py-1.5 text-left text-xs font-semibold text-muted-foreground transition-colors hover:bg-danger-subtle hover:text-danger cursor-pointer"
+          onClick={() => logout()}
+        >
+          <FiLogOut aria-hidden="true" className="text-base" /> <span>{t('navigation.signOut', 'Sign out')}</span>
         </button>
       </div>
     </aside>
