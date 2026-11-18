@@ -1,8 +1,22 @@
 import { cn } from '../../lib/utils';
 import { Breadcrumbs } from './breadcrumb';
+import { motion, useReducedMotion } from 'framer-motion';
+import { fadeUp } from './motion';
 
-function PageContainer({ className = '', ...props }) {
-  return <div className={cn('w-full max-w-[1360px] mx-auto px-4 pt-4 pb-12 sm:px-6 sm:pt-5 sm:pb-16 space-y-4 sm:space-y-5', className)} {...props} />;
+function PageContainer({ className = '', children, ...props }) {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <motion.div
+      initial={reduceMotion ? false : 'hidden'}
+      animate="show"
+      variants={reduceMotion ? {} : fadeUp}
+      className={cn('w-full max-w-[1360px] mx-auto px-4 pt-4 pb-12 sm:px-6 sm:pt-5 sm:pb-16 space-y-4 sm:space-y-5', className)}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
 }
 
 function PageHeader({

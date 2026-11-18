@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "isolate-bootstrap": "node scripts/isolate-bootstrap.cjs",
+    "build": "node scripts/isolate-bootstrap.cjs && vite build",
     "preview": "vite preview --port $PORT --host",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"

@@ -44,6 +44,20 @@ body {
     color 0.3s ease;
 }
 
+/* ─── Neutralize Bootstrap 5 Default Link Underlines ─────────────────── */
+a,
+a:hover,
+a:focus,
+a:visited {
+  text-decoration: none;
+}
+
+a.underline,
+a.underline:hover,
+a.underline:focus {
+  text-decoration: underline !important;
+}
+
 /* ─── Definitively Neutralize Bootstrap 5 Unlayered Oversized Headings ─── */
 h1, .h1,
 h2, .h2,
