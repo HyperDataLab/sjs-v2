@@ -42,7 +42,7 @@ export default function AuthorCard({ author }) {
       tabIndex={0}
       onClick={handleCardClick}
       onKeyDown={handleKeyDown}
-      className="group flex h-full flex-col justify-between p-4 cursor-pointer text-left transition-all duration-200 hover:-translate-y-1 hover:border-primary/50 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-card"
+      className="group flex h-full flex-col justify-between p-4 cursor-pointer text-left transition-colors border border-border bg-surface hover:border-primary/50 hover:bg-surface-muted/30 shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-card"
     >
       <div>
         {/* Header row: avatar + info */}

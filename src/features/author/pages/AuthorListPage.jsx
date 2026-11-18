@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 import Icon from '../../../shared/components/Icon';
-import Header from '../../landing/components/Header';
 import useAuthors from '../hooks/useAuthors';
 import AuthorTable from '../components/AuthorTable';
 import AuthorCard from '../components/AuthorCard';
@@ -11,10 +10,10 @@ import AuthorNavigationTabs from '../components/AuthorNavigationTabs';
 import AdminPagination from '../../../shared/components/Pagination';
 import { Button } from '../../../shared/ui/button';
 import { Card } from '../../../shared/ui/card';
+import { Badge } from '../../../shared/ui/badge';
 import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
 import { Skeleton } from '../../../shared/ui/skeleton';
-import { FilterCard } from '../../../shared/components/Card';
-import { FilterSearch, FilterSelect } from '../../../shared/components/Input';
+import { cn } from '../../../lib/utils';
 import './AuthorListPage.css';
 
 export default function AuthorListPage() {
@@ -107,168 +106,181 @@ export default function AuthorListPage() {
 
   const statCards = [
     {
-      label: t("article.tongTacGia"),
+      label: t("article.tongTacGia", "Total Authors"),
       value: formatLocalNumber(totalAuthors),
       icon: 'lucide:users',
+      iconBg: 'bg-primary-subtle',
+      iconColor: 'text-primary',
       desc: subjectAreaVal
-        ? `${t("author.tacGiaTrongLinhVuc", "Tác giả trong lĩnh vực")} ${subjectAreaVal}`
-        : t("author.tongTacGiaTrongHeThong"),
+        ? `${t("author.tacGiaTrongLinhVuc", "Authors in")} ${subjectAreaVal}`
+        : t("author.tongTacGiaTrongHeThong", "Indexed in repository"),
     },
     {
-      label: t("author.tacGiaNoiBat"),
+      label: t("author.tacGiaNoiBat", "Featured Authors"),
       value: formatLocalNumber(featuredAuthorsCount || visibleAuthorsCount),
       icon: 'lucide:award',
+      iconBg: 'bg-warning-subtle',
+      iconColor: 'text-warning',
       desc:
         visibleAuthorsCount > 0
-          ? `Trong ${formatLocalNumber(visibleAuthorsCount)} tác giả đang hiển thị`
-          : t("author.hindexVuotTroi30"),
+          ? `${formatLocalNumber(visibleAuthorsCount)} ${t("author.hienThi", "displayed on this page")}`
+          : t("author.hindexVuotTroi30", "H-index ≥ 30"),
     },
     {
-      label: t("article.tongBaiBao"),
+      label: t("article.tongBaiBao", "Publications"),
       value: formatLocalNumber(totalWorksCount),
       icon: 'lucide:file-text',
-      desc: t("author.tongBaiBaoTrenTrangHienTai"),
+      iconBg: 'bg-success-subtle',
+      iconColor: 'text-success',
+      desc: t("author.tongBaiBaoTrenTrangHienTai", "Recorded articles on page"),
     },
     {
-      label: t("author.tongCitations"),
+      label: t("author.tongCitations", "Citations Count"),
       value: formatLocalNumber(totalCitationCount),
       icon: 'lucide:quote',
-      desc: t("author.tongCitationsTrenTrangHienTai"),
+      iconBg: 'bg-primary-subtle',
+      iconColor: 'text-primary',
+      desc: t("author.tongCitationsTrenTrangHienTai", "Total academic citations"),
     },
   ];
 
   return (
-    <div className="author-list-page min-vh-100">
-      <Header />
-
-      <PageContainer className="author-list-shell">
-        <PageHeader
-          breadcrumbs={[
-            { label: t("author.tongQuan"), to: "/" },
-            { label: t("author.tacGiaNoiBat") }
-          ]}
-          badge={
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-subtle text-primary text-xs font-semibold">
-              <Icon icon="lucide:users-round" width="14" />
-              <span>Author registry</span>
+    <PageContainer>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Workspace", to: "/dashboard" },
+          { label: t("author.danhSachTacGia", "Authors") }
+        ]}
+        badge={
+          <Badge variant="info" className="gap-1.5 py-1 px-2.5 text-xs font-semibold">
+            <Icon icon="lucide:users-round" width="14" />
+            <span>Author registry</span>
+          </Badge>
+        }
+        title={t("author.danhSachNhaKhoaHocTacGia", "Authors & Researchers Directory")}
+        description={t("author.traCuuThongTinChiSoHocThuatHin", "Explore author profiles, scientific contributions, h-index rankings, and publication impact.")}
+        actions={
+          <div className="text-end">
+            <div className="text-xs text-muted-foreground">{t("author.tongTacGia", "Total Authors")}</div>
+            <div className="text-sm font-bold text-foreground">
+              {totalAuthors ? totalAuthors.toLocaleString() : '—'} authors
             </div>
-          }
-          title={t("author.danhSachNhaKhoaHocTacGia")}
-          description={t("author.traCuuThongTinChiSoHocThuatHin")}
-        />
+          </div>
+        }
+      />
 
-        <AuthorNavigationTabs activeTab="list" />
+      <AuthorNavigationTabs activeTab="list" />
 
-        {/* 4 Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {statCards.map((stat, idx) => (
-            <Card key={idx} className="p-4 flex flex-col justify-between">
-              <div className="flex items-center justify-between gap-2 text-xs font-medium text-muted-foreground">
-                <span className="truncate">{stat.label}</span>
-                <Icon icon={stat.icon} width="16" className="text-primary shrink-0" />
-              </div>
-              <div className="mt-2 text-base font-bold text-foreground tabular-nums">
-                {stat.value}
-              </div>
-              <div className="mt-1 text-xs text-muted-foreground truncate" title={stat.desc}>
-                {stat.desc}
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        {/* Filter bar */}
-        <FilterCard className="mb-6">
-          <Form onSubmit={handleSearchSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-              <div className="md:col-span-6 lg:col-span-5">
-                <FilterSearch
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  placeholder={t("author.timTheoTenVienNghienCuuTuKhoa")}
-                />
-              </div>
-
-              <div className="md:col-span-4 lg:col-span-5">
-                <FilterSelect
-                  value={subjectAreaVal}
-                  onChange={(e) => handleFilterChange('subject_area', e.target.value)}
-                  options={[
-                    { value: '', label: t("admin.chonLinhVuc") },
-                    ...(subjectAreas || []).map((area) => ({
-                      value: area.display_name || area.name || '',
-                      label: area.display_name || area.name || '',
-                    })),
-                  ]}
-                />
-              </div>
-
-              <div className="md:col-span-2 lg:col-span-2">
-                <Button type="submit" size="sm" className="w-full">
-                  <Icon icon="lucide:search" width="14" aria-hidden="true" />
-                  <span>{t("searchBtn")}</span>
-                </Button>
+      {/* 4 Stat Cards */}
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        {statCards.map((stat, idx) => (
+          <Card key={idx} className="p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group">
+            <div className="flex items-start justify-between gap-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">{stat.label}</span>
+              <div className={cn("size-8 rounded-control flex items-center justify-center shrink-0", stat.iconBg, stat.iconColor)}>
+                <Icon icon={stat.icon} width="16" height="16" />
               </div>
             </div>
-          </Form>
-        </FilterCard>
+            <div className="mt-2">
+              <div className="text-2xl font-bold tracking-tight text-foreground tabular-nums">{stat.value}</div>
+              <div className="text-xs text-muted-foreground mt-0.5 truncate" title={stat.desc}>{stat.desc}</div>
+            </div>
+          </Card>
+        ))}
+      </section>
 
-        {/* Authors List */}
-        <div className="mb-6">
-          {viewMode === 'grid' ? (
-            loadingAuthors ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Array.from({ length: limitVal }).map((_, idx) => (
-                  <Card key={idx} className="p-4 space-y-3">
-                    <div className="flex gap-3 items-center">
-                      <Skeleton className="h-10 w-10 rounded-full" />
-                      <div className="flex-1 space-y-1.5">
-                        <Skeleton className="h-4 w-3/5 rounded" />
-                        <Skeleton className="h-3 w-2/5 rounded" />
-                      </div>
-                    </div>
-                    <Skeleton className="h-7 w-full rounded" />
-                    <Skeleton className="h-4 w-1/3 rounded" />
-                  </Card>
-                ))}
-              </div>
-            ) : authors.length === 0 ? (
-              <AuthorTable
-                authors={[]}
-                loading={false}
-                error={errorAuthors}
-                onRetry={() => fetchAuthors()}
+      {/* Filter bar */}
+      <Card className="p-4 shadow-card">
+        <Form onSubmit={handleSearchSubmit}>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="relative flex-1 w-full">
+              <Icon icon="lucide:search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" width={16} />
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder={t("author.timTheoTenVienNghienCuuTuKhoa", "Search by author name, institution, or keyword...")}
+                className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground"
               />
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {authors.map((author) => (
-                  <AuthorCard key={author.author_id ?? author.id} author={author} />
-                ))}
-              </div>
-            )
-          ) : (
+            </div>
+
+            <div className="w-full sm:w-[260px] shrink-0">
+              <select
+                value={subjectAreaVal}
+                onChange={(e) => handleFilterChange('subject_area', e.target.value)}
+                className="w-full h-11 px-3 text-sm bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground"
+              >
+                <option value="">{t("admin.chonLinhVuc", "All subject areas")}</option>
+                {(subjectAreas || []).map((area) => {
+                  const val = area.display_name || area.name || '';
+                  return <option key={val} value={val}>{val}</option>;
+                })}
+              </select>
+            </div>
+
+            <Button type="submit" size="default" className="h-11 px-6 gap-2 shrink-0 w-full sm:w-auto">
+              <Icon icon="lucide:search" width={16} aria-hidden="true" />
+              <span>{t("searchBtn", "Search")}</span>
+            </Button>
+          </div>
+        </Form>
+      </Card>
+
+      {/* Authors List (Responsive 4 columns) */}
+      <div>
+        {viewMode === 'grid' ? (
+          loadingAuthors ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {Array.from({ length: limitVal }).map((_, idx) => (
+                <Card key={idx} className="p-4 space-y-3">
+                  <div className="flex gap-3 items-center">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="flex-1 space-y-1.5">
+                      <Skeleton className="h-4 w-3/5 rounded" />
+                      <Skeleton className="h-3 w-2/5 rounded" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-7 w-full rounded" />
+                  <Skeleton className="h-4 w-1/3 rounded" />
+                </Card>
+              ))}
+            </div>
+          ) : authors.length === 0 ? (
             <AuthorTable
-              authors={authors}
-              loading={loadingAuthors}
+              authors={[]}
+              loading={false}
               error={errorAuthors}
               onRetry={() => fetchAuthors()}
-              startIndex={startIndex}
             />
-          )}
-        </div>
-
-        {authors.length > 0 && totalPagesCount > 1 && (
-          <div className="mt-6">
-            <AdminPagination
-              totalItems={totalAuthors}
-              currentPage={pageVal}
-              limit={limitVal}
-              onPageChange={handlePageChange}
-              entityName={t("author.tacGia")}
-            />
-          </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {authors.map((author) => (
+                <AuthorCard key={author.author_id ?? author.id} author={author} />
+              ))}
+            </div>
+          )
+        ) : (
+          <AuthorTable
+            authors={authors}
+            loading={loadingAuthors}
+            error={errorAuthors}
+            onRetry={() => fetchAuthors()}
+            startIndex={startIndex}
+          />
         )}
-      </PageContainer>
-    </div>
+      </div>
+
+      {authors.length > 0 && totalPagesCount > 1 && (
+        <div className="pt-2">
+          <AdminPagination
+            totalItems={totalAuthors}
+            currentPage={pageVal}
+            limit={limitVal}
+            onPageChange={handlePageChange}
+            entityName={t("author.tacGia", "authors")}
+          />
+        </div>
+      )}
+    </PageContainer>
   );
 }

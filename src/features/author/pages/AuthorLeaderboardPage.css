@@ -1,9 +1,5 @@
 .author-leaderboard-page {
-  min-height: 100vh;
-  padding-top: 96px;
-  padding-bottom: 72px;
-  background: var(--bg-main);
-  color: var(--text-main);
+  width: 100%;
 }
 
 .author-leaderboard-breadcrumb .breadcrumb { margin-bottom: 0; font-size: 14px; }

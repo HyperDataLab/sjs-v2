@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../../shared/components/Icon';
-import Header from '../../landing/components/Header';
 import useAuthors from '../hooks/useAuthors';
 import AuthorLeaderboardTable from '../components/AuthorLeaderboardTable';
 import AuthorNavigationTabs from '../components/AuthorNavigationTabs';
@@ -57,10 +56,7 @@ export default function AuthorLeaderboardPage() {
   };
 
   return (
-    <div className="author-leaderboard-page min-vh-100">
-      <Header />
-
-      <PageContainer className="author-leaderboard-shell">
+    <PageContainer>
         <PageHeader
           breadcrumbs={[
             { label: t("author.tongQuan"), to: "/" },
@@ -151,6 +147,5 @@ export default function AuthorLeaderboardPage() {
           </div>
         )}
       </PageContainer>
-    </div>
   );
 }

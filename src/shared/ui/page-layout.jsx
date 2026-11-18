@@ -2,7 +2,7 @@ import { cn } from '../../lib/utils';
 import { Breadcrumbs } from './breadcrumb';
 
 function PageContainer({ className = '', ...props }) {
-  return <div className={cn('w-full max-w-7xl mx-auto px-6 pt-6 pb-16 md:px-8 md:pb-24 space-y-6', className)} {...props} />;
+  return <div className={cn('w-full px-6 pt-6 pb-16 md:px-8 md:pb-24 space-y-6', className)} {...props} />;
 }
 
 function PageHeader({
