@@ -118,28 +118,6 @@ export default function GeographyPage() {
       <PageHeader
         title={t("zone.phanBoTapChiTheoQuocGia", "Geographic Distribution of Publications")}
         description={t("zone.xemThongKeSoLuongAnPhamKhoaHoc", "Explore worldwide scientific publication volume, top-producing nations, and country rankings.")}
-        actions={
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap">
-              {t("article.namXuatBan", "Publication Year")}
-            </span>
-            <select
-              value={selectedYear}
-              onChange={(e) => {
-                setSelectedYear(e.target.value);
-                setArticlesPage(1);
-              }}
-              className="h-9 rounded-control border border-border bg-background px-3 text-xs font-medium text-foreground transition-colors focus:border-primary focus:outline-none"
-            >
-              <option value="All">{t("zone.tatCaCacNam", "All Years")}</option>
-              {['2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015'].map((yr) => (
-                <option key={yr} value={yr}>
-                  {yr}
-                </option>
-              ))}
-            </select>
-          </div>
-        }
       />
 
         {/* Error handling for countries */}
@@ -173,6 +151,10 @@ export default function GeographyPage() {
               selectedCountry={selectedCountry}
               onSelectCountry={handleSelectCountry}
               selectedYear={selectedYear}
+              onYearChange={(year) => {
+                setSelectedYear(year);
+                setArticlesPage(1);
+              }}
             />
           </div>
 
