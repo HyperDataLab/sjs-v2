@@ -183,9 +183,9 @@ const ProjectListPage = () => {
         title={t("project.duAnNghienCuuCuaToi", "My Research Projects")}
         description={t("project.quanLyCacKeywordWatchlistsPhan", "Manage keyword watch-lists, analyze publishing trends and monitor scientific articles.")}
         actions={
-          <Button onClick={() => navigate(ROUTES.PROJECT_CREATE)} className="flex items-center gap-2 shadow-xs">
-            <Icon icon="lucide:plus" width="16" aria-hidden="true" />
-            <span>+ Create Project</span>
+          <Button onClick={() => navigate(ROUTES.PROJECT_CREATE)} size="default" className="gap-2 shrink-0">
+            <Icon icon="lucide:plus" width={16} aria-hidden="true" />
+            <span>{t("project.taoDuAnMoi", "Create Project")}</span>
           </Button>
         }
       />

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Dropdown, Form } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import { Card } from '../../../shared/ui/card';
+import { Button } from '../../../shared/ui/button';
 
 export default function FilterPanel({
   searchInput = '',
@@ -186,7 +187,11 @@ export default function FilterPanel({
         <Dropdown.Toggle
           variant="light"
           id={`catalog-filter-${config.id}`}
-          className={`catalog-filter-button ${config.selectedLabel ? 'is-active' : ''}`}
+          className={`h-9 px-3 text-xs rounded-control border transition-colors flex items-center gap-1.5 shadow-2xs ${
+            config.selectedLabel
+              ? 'border-primary text-primary bg-primary-subtle font-semibold hover:bg-primary-subtle'
+              : 'border-border bg-surface text-foreground font-medium hover:bg-surface-muted'
+          }`}
           disabled={config.disabled}
         >
           <span className="truncate max-w-[150px]">{config.selectedLabel || config.label}</span>
@@ -294,13 +299,14 @@ export default function FilterPanel({
             </button>
           )}
         </div>
-        <button
+        <Button
           type="submit"
-          className="h-11 px-5 rounded-control bg-primary text-white text-sm font-semibold hover:bg-primary-hover shadow-xs flex items-center gap-2 shrink-0 border-0 cursor-pointer transition-colors"
+          size="default"
+          className="h-11 px-5 gap-2 shrink-0"
         >
-          <Icon icon="lucide:search" width="15" />
+          <Icon icon="lucide:search" width={16} />
           <span>Search</span>
-        </button>
+        </Button>
       </form>
 
       {/* 2. Dropdown Filters Toolbar */}
@@ -316,7 +322,11 @@ export default function FilterPanel({
           <Dropdown.Toggle
             variant="light"
             id="catalog-more-filters"
-            className={`catalog-filter-button ${accessValue === 'open_access' || isOaDiamond ? 'is-active' : ''}`}
+            className={`h-9 px-3 text-xs rounded-control border transition-colors flex items-center gap-1.5 shadow-2xs ${
+              accessValue === 'open_access' || isOaDiamond
+                ? 'border-primary text-primary bg-primary-subtle font-semibold hover:bg-primary-subtle'
+                : 'border-border bg-surface text-foreground font-medium hover:bg-surface-muted'
+            }`}
           >
             <Icon icon="lucide:sliders-horizontal" width="14" className="shrink-0" />
             <span>Access Type</span>

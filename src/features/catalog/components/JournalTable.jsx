@@ -3,6 +3,7 @@ import { Table } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '../../../shared/ui/badge';
+import { Button } from '../../../shared/ui/button';
 
 export default function JournalTable({
   journals = [],
@@ -140,19 +141,21 @@ export default function JournalTable({
 
                   {/* Follow Action Button */}
                   <td className="px-4 py-3.5 text-end whitespace-nowrap">
-                    <button
+                    <Button
                       type="button"
+                      size="sm"
+                      variant={isFollowed ? "secondary" : "outline"}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         onFollow(id);
                       }}
-                      className={`catalog-follow-btn ${isFollowed ? 'is-followed' : ''}`}
+                      className="h-8 px-2.5 text-xs gap-1.5"
                       title={isFollowed ? 'Unfollow journal' : 'Follow journal'}
                     >
                       <Icon icon={isFollowed ? 'lucide:check' : 'lucide:plus'} width="13" />
                       <span>{isFollowed ? t("catalog.daTheoDoi", "Following") : t("catalog.theoDoi", "Follow")}</span>
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               );

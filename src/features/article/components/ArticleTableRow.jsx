@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import LatexText from '../../../shared/components/LatexText/LatexText';
 import { Badge } from '../../../shared/ui/badge';
+import { Button } from '../../../shared/ui/button';
 
 export default function ArticleTableRow({
   article,
@@ -146,10 +147,16 @@ export default function ArticleTableRow({
 
       {/* Action: Details */}
       <td className="px-4 py-3.5 text-end whitespace-nowrap">
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary group-hover:translate-x-0.5 transition-transform">
+        <Button
+          type="button"
+          size="sm"
+          variant="ghost"
+          onClick={() => onDetailClick(article.article_id)}
+          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary-hover hover:bg-primary-subtle gap-1"
+        >
           <span>{t("article.chiTiet1", "Details")}</span>
-          <Icon icon="lucide:arrow-right" width="13" />
-        </span>
+          <Icon icon="lucide:arrow-right" width={13} />
+        </Button>
       </td>
     </tr>
   );

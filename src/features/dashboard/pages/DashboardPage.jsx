@@ -88,7 +88,10 @@ export default function DashboardPage() {
             <h1 className="mb-2 text-base font-semibold leading-snug tracking-tight text-foreground">{t("dashboard.chaoMungBanDenVoiResearchpulse")}</h1>
             <p className="m-0 max-w-2xl text-sm leading-6 text-muted-foreground">{t("dashboard.khamPhaXuHuongXepHangTapChiVaC")}</p>
           </div>
-          <Button onClick={handleCreateProject} className="dashboard-welcome__cta shrink-0"><Icon icon="lucide:plus" width={16} />{t("dashboard.taoProject")}</Button>
+          <Button onClick={handleCreateProject} size="default" className="gap-2 shrink-0">
+            <Icon icon="lucide:plus" width={16} />
+            <span>{t("dashboard.taoProject", "Create Project")}</span>
+          </Button>
         </div>
       </Card>
       <DashboardStatCards stats={summaryStats} loading={loadingProjects} />
