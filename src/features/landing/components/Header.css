@@ -127,13 +127,13 @@
 }
 
 .mnav-user-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-main);
 }
 
 .mnav-user-email {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -159,7 +159,7 @@
   border-radius: 12px;
   background: var(--mnav-red-soft);
   color: var(--mnav-red);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition:
@@ -259,7 +259,7 @@
   border-radius: 14px;
   background: var(--btn-dark);
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 6px 16px rgba(7, 26, 28, 0.18);
@@ -288,7 +288,7 @@
   flex: 1;
   padding: 11px 12px;
   border-radius: 12px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition:
@@ -338,7 +338,7 @@
   padding: 12px 14px;
   border: 0;
   background: transparent;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
   cursor: pointer;
@@ -417,7 +417,7 @@
   border: 0;
   border-radius: 10px;
   background: transparent;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-main);
   text-align: left;
   cursor: pointer;
@@ -443,7 +443,7 @@
   margin-top: auto;
   padding-top: 4px;
   text-align: center;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-muted);
 }
 

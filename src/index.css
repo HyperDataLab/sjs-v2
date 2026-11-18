@@ -91,7 +91,7 @@ body::-webkit-scrollbar {
 
 /* View Trends Button */
 .btn-view-trends {
-  font-size: 0.875rem;
+  font-size: 14px;
   letter-spacing: 0.03em;
   background: var(--bg-chip) !important;
   border: 1px solid var(--border) !important;
@@ -400,7 +400,7 @@ th,
 
 /* ─── Sandbox Suggestion Tags ────────────────────────────────────── */
 .sandbox-tag {
-  font-size: 0.75rem;
+  font-size: 13px;
   background: var(--bg-chip) !important;
   border: none !important;
   color: var(--text-muted) !important;
@@ -446,7 +446,7 @@ th,
   background-color: #f1f5f9 !important;
   border: none !important;
   border-radius: 8px !important;
-  font-size: 0.88rem !important;
+  font-size: 14px !important;
   padding: 0.65rem 1rem !important;
   color: var(--text-main) !important;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
@@ -469,7 +469,7 @@ select.account-form-input {
 }
 
 .account-form-label {
-  font-size: 0.825rem !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
   color: #334155 !important;
   margin-bottom: 6px !important;
@@ -507,7 +507,7 @@ select.account-form-input {
   border: 1px solid #005A96 !important;
   color: #005A96 !important;
   background-color: #ffffff !important;
-  font-size: 0.85rem !important;
+  font-size: 14px !important;
   font-weight: 700 !important;
   transition: all 0.2s ease-in-out !important;
 }
@@ -599,7 +599,7 @@ select.account-form-input {
   .po-metric:nth-child(even) { border-left: 1px solid var(--divider); }
 }
 .po-metric__label {
-  font-size: 0.7rem;
+  font-size: 13px;
   color: var(--text-subtle);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -607,7 +607,7 @@ select.account-form-input {
   margin-bottom: 0.25rem;
 }
 .po-metric__value {
-  font-size: 1.5rem;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-main);
   letter-spacing: -0.01em;
@@ -633,7 +633,7 @@ select.account-form-input {
   background: transparent;
   border: 0;
   padding: 0.75rem 0;
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-muted);
   display: inline-flex;
@@ -656,7 +656,7 @@ select.account-form-input {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.75rem;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-muted);
   line-height: 1.2;
@@ -700,7 +700,7 @@ select.account-form-input {
 .po-metric__value--strong.is-positive { color: #15803d !important; }
 /* Muted: tertiary, scannable but not competing (keywords, alerts) */
 .po-metric__value--muted {
-  font-size: 1.0625rem !important;
+  font-size: 16px !important;
   font-weight: 600 !important;
   letter-spacing: -0.005em !important;
   color: var(--text-subtle) !important;
@@ -710,7 +710,7 @@ select.account-form-input {
 /* ─── Project Overview: breadcrumb & meta line ──────────────── */
 /* Muted, editorial breadcrumb — small, low-emphasis, not competing with title */
 .po-breadcrumb {
-  font-size: 0.75rem;
+  font-size: 13px;
   color: var(--text-subtle);
   letter-spacing: 0.01em;
 }
@@ -730,7 +730,7 @@ select.account-form-input {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.75rem;
+  font-size: 13px;
   color: var(--text-subtle);
   letter-spacing: 0.005em;
   font-weight: 500;

@@ -61,10 +61,7 @@ export default function ForgotPasswordPage() {
           </div>
 
           <div className="mb-4">
-            <h2 className="font-display fw-bold mb-1" style={{
-          fontSize: '1.85rem',
-          color: 'var(--text-main)'
-        }}>{t("auth.quenMatKhau")}</h2>
+            <h2 className="font-display font-semibold text-base text-main mb-1">{t("auth.quenMatKhau")}</h2>
             <p className="text-muted-custom text-sm mb-0" style={{
           color: 'var(--text-muted)'
         }}>{t("auth.nhapEmailTaiKhoanCuaBanNeuEmai")}</p>

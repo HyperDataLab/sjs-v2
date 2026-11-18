@@ -61,15 +61,10 @@ export default function RegisterPage() {
         border: '2px solid #10b981',
         boxShadow: '0 0 20px rgba(16, 185, 129, 0.1)'
       }}>
-            <Icon icon="lucide:check-circle" className="text-success" style={{
-          fontSize: '40px'
-        }} />
+            <Icon icon="lucide:check-circle" width="40" height="40" className="text-success" />
           </div>
 
-          <h2 className="font-display fw-bold mb-3" style={{
-        fontSize: '1.75rem',
-        color: 'var(--text-main)'
-      }}>{t("auth.dangKyThanhCong")}</h2>
+          <h2 className="font-display font-semibold text-base text-main mb-3">{t("auth.dangKyThanhCong")}</h2>
 
           <p className="text-muted-custom mb-4" style={{
         color: 'var(--text-muted) !important',
@@ -91,10 +86,7 @@ export default function RegisterPage() {
       }}>{t("auth.diDenDangNhap")}</button>
         </div> : <>
           <div className="mb-4">
-            <h2 className="font-display fw-bold mb-1" style={{
-          fontSize: '1.85rem',
-          color: 'var(--text-main)'
-        }}>{t("auth.taoTaiKhoan")}</h2>
+            <h2 className="font-display font-semibold text-base text-main mb-1">{t("auth.taoTaiKhoan")}</h2>
             <p className="text-muted-custom text-sm mb-0" style={{
           color: 'var(--text-muted) !important'
         }}>{t("auth.dangKyMienPhiKhongCanTheTinDun")}</p>

@@ -70,10 +70,7 @@ export default function LoginPage() {
   };
   return <AuthLayout banner={<AuthBanner />}>
       <div className="mb-4">
-        <h2 className="font-display fw-bold mb-1" style={{
-        fontSize: '1.85rem',
-        color: 'var(--text-main)'
-      }}>{t("signIn")}</h2>
+        <h2 className="font-display font-semibold text-base text-main mb-1">{t("signIn")}</h2>
         <p className="text-muted-custom text-sm mb-0" style={{
         color: 'var(--text-muted) !important'
       }}>{t("auth.chaoMungTroLaiVuiLongNhapThong")}</p>

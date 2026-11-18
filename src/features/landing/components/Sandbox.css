@@ -113,7 +113,7 @@
   background: transparent !important;
   color: var(--text-main);
   caret-color: var(--primary);
-  font-size: 0.95rem;
+  font-size: 15px;
   padding: 0.55rem 0.6rem;
   transition: color var(--sandbox-fast) ease;
 }
@@ -129,7 +129,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.8rem;
+  font-size: 13px;
   font-weight: 700;
   padding: 0.55rem 1.15rem;
   white-space: nowrap;
@@ -162,7 +162,7 @@
   background: var(--bg-chip);
   color: var(--text-muted);
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 13px;
   font-weight: 600;
   padding: 0.42rem 0.95rem;
   cursor: pointer;
@@ -195,7 +195,7 @@
   background: var(--bg-chip);
   border: 1px solid var(--border);
   border-radius: 18px;
-  font-size: 0.85rem;
+  font-size: 14px;
   animation: sandbox-fade-up 0.3s var(--sandbox-ease);
 }
 
@@ -244,7 +244,7 @@
 .sandbox-results-title {
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 1.08rem;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.01em;
   margin-bottom: 1rem;
@@ -343,7 +343,7 @@
 
 .sandbox-result-title {
   color: var(--text-main);
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 500;
   max-width: 340px;
   transition: color 0.2s ease;
@@ -352,7 +352,7 @@
 /* ─── Type badge ─────────────────────────────────────────────── */
 .sandbox-result-badge {
   border-radius: 8px;
-  font-size: 0.62rem;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.06em;

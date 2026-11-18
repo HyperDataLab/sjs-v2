@@ -6,14 +6,17 @@ import { t } from "i18next";
  * File: features\topic\pages\TopicDetailPage.jsx
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Container, Row, Col, Card, Badge, Spinner, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
 import { StateCard } from '../../../shared/components/Card';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import Header from '../../landing/components/Header';
 import { getTopicByIdApi, getTopicArticlesApi } from '../api/topic.api';
 import AdminPagination from '../../../shared/components/Pagination';
-import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
+import { Button } from '../../../shared/ui/button';
+import { Badge } from '../../../shared/ui/badge';
+import { Card, CardContent } from '../../../shared/ui/card';
+import { Alert } from '../../../shared/ui/alert';
 import LatexText from '../../../shared/components/LatexText/LatexText';
 import './TopicDetailPage.css';
 const PAGE_SIZE = 10;
@@ -116,7 +119,7 @@ export default function TopicDetailPage() {
         </nav>
 
         <Card className="topic-detail-hero">
-          <Card.Body className="topic-detail-hero__body">
+          <CardContent className="topic-detail-hero__body">
             <Row className="g-5 align-items-center">
               <Col lg={8}>
                 <div className="topic-detail-eyebrow">
@@ -124,18 +127,18 @@ export default function TopicDetailPage() {
                   <span>Research Topic</span>
                 </div>
 
-                <h1 className="topic-detail-title">
+                <h1 className="topic-detail-title text-base font-semibold">
                   {topic?.display_name || t("topic.dangTaiTopic")}
                 </h1>
 
-                <p className="topic-detail-description">{t("topic.khamPhaCacBaiBaoThuocChuDeNayD")}</p>
+                <p className="topic-detail-description text-sm leading-relaxed">{t("topic.khamPhaCacBaiBaoThuocChuDeNayD")}</p>
               </Col>
 
               <Col lg={4}>
                 <div className="topic-detail-summary">
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <div className="topic-detail-summary__label">{t("topic.maTopic")}</div>
-                    <Badge className="topic-detail-summary__badge">
+                    <div className="topic-detail-summary__label text-xs">{t("topic.maTopic")}</div>
+                    <Badge variant="outline" className="topic-detail-summary__badge text-xs">
                       #{topic?.topic_id || topicId}
                     </Badge>
                   </div>
@@ -143,32 +146,33 @@ export default function TopicDetailPage() {
                   <hr className="topic-detail-summary__divider" />
 
                   <div className="d-flex justify-content-between align-items-center">
-                    <div className="topic-detail-summary__label">{t("project.tongSoBaiBao")}</div>
-                    <div className="topic-detail-summary__value">
+                    <div className="topic-detail-summary__label text-xs">{t("project.tongSoBaiBao")}</div>
+                    <div className="topic-detail-summary__value text-base font-bold">
                       {(pagination.total || 0).toLocaleString('en-US')}
                     </div>
                   </div>
 
-                  <PrimaryButton id="topic-view-all-articles" onClick={() => navigate(`/articles?topic_id=${topicId}`)} className="topic-detail-action mt-2 w-100 justify-content-center">{t("topic.moBoLocBaiBao")}<Icon icon="lucide:arrow-right" width="18" />
-                  </PrimaryButton>
+                  <Button id="topic-view-all-articles" onClick={() => navigate(`/articles?topic_id=${topicId}`)} className="topic-detail-action mt-2 w-100 justify-content-center text-sm gap-2">
+                    {t("topic.moBoLocBaiBao")}<Icon icon="lucide:arrow-right" width="18" />
+                  </Button>
                 </div>
               </Col>
             </Row>
-          </Card.Body>
+          </CardContent>
         </Card>
 
         <div className="topic-detail-section-heading d-flex align-items-center justify-content-between flex-wrap gap-3">
           <div>
-            <h2 className="topic-detail-section-title">{t("topic.baiBaoThuocTopic")}</h2>
-            <p className="topic-detail-section-subtitle">
+            <h2 className="topic-detail-section-title text-base font-semibold">{t("topic.baiBaoThuocTopic")}</h2>
+            <p className="topic-detail-section-subtitle text-xs text-text-muted">
               {t("pagination.page", "Page")} {pagination.page} / {totalPages}
             </p>
           </div>
-          <Badge className="topic-detail-count-badge">
+          <Badge variant="secondary" className="topic-detail-count-badge text-xs">
             {(pagination.total || 0).toLocaleString('en-US')}{t("author.baiBao")}</Badge>
         </div>
 
-        {error && <Alert variant="danger" className="topic-detail-alert mb-4">
+        {error && <Alert variant="destructive" className="mb-4">
             {error}
           </Alert>}
 
@@ -178,14 +182,14 @@ export default function TopicDetailPage() {
             </Spinner>
           </div> : <div className="d-grid gap-3">
             {articles.length === 0 ? <StateCard variant="neutral" icon="lucide:file-question" title={t("topic.khongCoDuLieu")} description={t("topic.chuaCoBaiBaoNaoChoTopicNay")} className="my-4" /> : articles.map(article => <Card key={article.id} className="topic-detail-article-card">
-                  <Card.Body className="p-4">
+                  <CardContent className="p-4">
                     <div className="d-flex justify-content-between align-items-start gap-3 flex-wrap">
                       <div className="flex-grow-1">
-                        <button type="button" className="btn btn-link topic-detail-article-title mb-2" onClick={() => navigate(`/articles/${article.id}/visual`)}>
+                        <button type="button" className="btn btn-link topic-detail-article-title mb-2 text-start text-sm font-semibold" onClick={() => navigate(`/articles/${article.id}/visual`)}>
                           <LatexText text={article.title} />
                         </button>
 
-                        <div className="topic-detail-article-meta">
+                        <div className="topic-detail-article-meta text-xs">
                           <span className="d-inline-flex align-items-center gap-1">
                             <Icon icon="lucide:calendar-range" width="15" />
                             {article.year || 'N/A'}
@@ -197,7 +201,7 @@ export default function TopicDetailPage() {
                         </div>
                       </div>
                     </div>
-                  </Card.Body>
+                  </CardContent>
                 </Card>)}
           </div>}
 

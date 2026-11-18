@@ -270,9 +270,8 @@ export default function Header() {
                       <div className="px-3 py-2 text-xs font-bold text-main border-bottom pb-2 mb-1">
                         <span>{t("landing.nguoiDung")}</span>
                         <div
-                          className="text-muted-custom font-normal mt-0.5 text-truncate"
+                          className="text-muted-custom font-normal mt-0.5 text-truncate text-xs"
                           style={{
-                            fontSize: "10px",
                             color: "var(--text-muted)",
                           }}
                         >
@@ -413,8 +412,7 @@ export default function Header() {
                   {t("landing.nguoiDung")}
                 </span>
                 <span
-                  className="text-muted text-truncate"
-                  style={{ fontSize: "10px", marginTop: "1px" }}
+                  className="text-muted text-truncate text-xs mt-0.5"
                 >
                   {email}
                 </span>

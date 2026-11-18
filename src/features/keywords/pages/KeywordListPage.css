@@ -8,7 +8,7 @@
 
 .keyword-list-breadcrumb .breadcrumb {
   margin-bottom: 0;
-  font-size: 0.86rem;
+  font-size: 14px;
 }
 
 .keyword-list-hero {
@@ -60,7 +60,7 @@
 
 .keyword-list-eyebrow span {
   color: var(--text-muted);
-  font-size: 0.74rem;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -70,7 +70,7 @@
   margin: 0 0 0.9rem;
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.035em;
@@ -80,14 +80,14 @@
   max-width: 680px;
   margin: 0 0 1rem;
   color: var(--text-muted);
-  font-size: 1.02rem;
+  font-size: 16px;
   line-height: 1.72;
 }
 
 .keyword-list-total-pill {
   padding: 0.55rem 0.85rem;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .keyword-list-total-pill strong {
@@ -134,7 +134,7 @@
 
 .keyword-search-input {
   color: var(--text-main) !important;
-  font-size: 0.95rem !important;
+  font-size: 15px !important;
 }
 
 .keyword-search-submit,
@@ -178,7 +178,7 @@
   gap: 0.5rem;
   margin-bottom: 1rem;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .keyword-active-filter__term {
@@ -189,7 +189,7 @@
 
 .keyword-active-filter__clear {
   color: var(--text-muted) !important;
-  font-size: 0.85rem !important;
+  font-size: 14px !important;
   text-decoration: none !important;
 }
 
@@ -219,7 +219,7 @@
 .keyword-card-label {
   margin-bottom: 0.55rem;
   color: var(--text-muted);
-  font-size: 0.72rem;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -229,7 +229,7 @@
   margin: 0;
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 1.16rem;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.35;
 }
@@ -259,7 +259,7 @@
 .keyword-card-action {
   border-radius: 10px !important;
   padding: 0.62rem 1rem !important;
-  font-size: 0.9rem !important;
+  font-size: 14px !important;
 }
 
 .keyword-state-card {
@@ -274,7 +274,7 @@
 .keyword-state-title {
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 16px;
   font-weight: 700;
 }
 

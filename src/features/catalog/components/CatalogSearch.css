@@ -10,7 +10,7 @@
 
 .catalog-breadcrumb {
   margin-bottom: 1.4rem;
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .catalog-breadcrumb a,
@@ -32,7 +32,7 @@
 .catalog-title {
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: clamp(2rem, 3vw, 3rem);
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.05;
@@ -93,7 +93,7 @@
   justify-content: space-between;
   gap: 0.55rem;
   font-family: var(--font-display) !important;
-  font-size: 0.9rem !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
   padding: 0.52rem 0.8rem !important;
   box-shadow: none !important;
@@ -143,7 +143,7 @@
   justify-content: space-between;
   gap: 0.75rem;
   color: var(--text-main);
-  font-size: 0.84rem;
+  font-size: 14px;
   font-weight: 600;
   padding: 0.2rem 0.15rem 0.55rem;
 }
@@ -153,7 +153,7 @@
   background: transparent;
   color: var(--text-muted);
   font: inherit;
-  font-size: 0.78rem;
+  font-size: 13px;
   font-weight: 600;
   padding: 0;
 }
@@ -184,7 +184,7 @@
   background: transparent;
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 0.86rem;
+  font-size: 14px;
 }
 
 .catalog-menu-search input::placeholder {
@@ -210,7 +210,7 @@
   padding: 0.45rem 0.5rem;
   text-align: left;
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -242,7 +242,7 @@
 
 .catalog-filter-empty {
   color: var(--text-muted);
-  font-size: 0.86rem;
+  font-size: 14px;
   padding: 0.8rem 0.5rem;
 }
 
@@ -273,7 +273,7 @@
   gap: 0.45rem;
   padding: 0.25rem 0.55rem;
   font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -316,7 +316,7 @@
   gap: 0.75rem;
   padding: 0.55rem 0.5rem;
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 14px;
   font-weight: 500;
   text-align: left;
 }
@@ -385,7 +385,7 @@
   background: transparent !important;
   align-items: center;
   gap: 0.45rem;
-  font-size: 0.9rem !important;
+  font-size: 14px !important;
 }
 
 .catalog-dropdown-menu {
@@ -398,7 +398,7 @@
 .catalog-dropdown-menu .dropdown-item {
   border-radius: 8px;
   color: var(--text-main);
-  font-size: 0.9rem;
+  font-size: 14px;
   padding: 0.55rem 0.7rem;
 }
 
@@ -421,7 +421,7 @@
   background: var(--bg-chip) !important;
   border-bottom: 1px solid var(--border) !important;
   color: var(--text-muted) !important;
-  font-size: 0.72rem;
+  font-size: 13px;
   font-weight: 600 !important;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -430,7 +430,7 @@
 
 .catalog-table tbody td {
   border-color: var(--border) !important;
-  font-size: 0.92rem;
+  font-size: 15px;
   vertical-align: middle;
 }
 
@@ -455,7 +455,7 @@
   align-items: center;
   justify-content: center;
 
-  font-size: 0.73rem;
+  font-size: 13px;
   font-weight: 600;
   min-height: 25px;
   padding: 0.18rem 0.55rem;
@@ -474,7 +474,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.38rem;
-  font-size: 0.8rem;
+  font-size: 13px;
   font-weight: 600;
   padding: 0.34rem 0.8rem;
   white-space: nowrap;
@@ -503,7 +503,7 @@
 .catalog-state-title {
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 0.45rem;
 }

@@ -59,7 +59,7 @@
   border-radius: 999px;
   background: var(--bg-card);
   color: var(--primary);
-  font-size: 0.75rem;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.05em;
 }
@@ -104,7 +104,7 @@
   justify-content: center;
   gap: 0.55rem;
   padding-inline: 1.35rem !important;
-  font-size: 0.9rem !important;
+  font-size: 14px !important;
   font-weight: 600 !important;
   white-space: nowrap;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
@@ -166,12 +166,12 @@
 .landing-rank-card__title {
   color: var(--text-main);
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 14px;
 }
 
 .landing-rank-card__meta {
   color: var(--text-muted);
-  font-size: 0.75rem;
+  font-size: 13px;
 }
 
 .landing-rank-row {
@@ -196,12 +196,12 @@
 .landing-rank-name {
   color: var(--text-main);
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: 15px;
 }
 
 .landing-rank-sub {
   color: var(--text-muted);
-  font-size: 0.76rem;
+  font-size: 13px;
   margin-top: 0.15rem;
 }
 
@@ -210,7 +210,7 @@
   border-radius: 7px;
   background: rgba(47, 198, 70, 0.12);
   color: var(--q1-color);
-  font-size: 0.73rem;
+  font-size: 13px;
   font-weight: 700;
   padding: 0.18rem 0.5rem;
 }
@@ -232,13 +232,13 @@
   display: block;
   margin-bottom: 0.25rem;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .landing-annotation span {
   color: var(--text-muted);
-  font-size: 0.78rem;
+  font-size: 13px;
   line-height: 1.45;
 }
 
@@ -273,7 +273,7 @@
   display: block;
   margin-top: 0.45rem;
   color: var(--text-muted);
-  font-size: 0.72rem;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -311,7 +311,7 @@
 
 .landing-section-text {
   color: var(--text-muted);
-  font-size: 1rem;
+  font-size: 16px;
   line-height: 1.65;
   margin: 0;
 }
@@ -362,14 +362,14 @@
 .landing-feature-title {
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 1.18rem;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 0.55rem;
 }
 
 .landing-feature-text {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 14px;
   line-height: 1.62;
   margin: 0;
 }
@@ -409,14 +409,14 @@
   background: var(--btn-dark);
   color: #fff;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .landing-step__title {
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 0.55rem;
 }
@@ -425,7 +425,7 @@
   max-width: 250px;
   margin: 0 auto;
   color: var(--text-muted);
-  font-size: 0.88rem;
+  font-size: 14px;
   line-height: 1.62;
 }
 
@@ -484,20 +484,20 @@
 .landing-footer__brand-name {
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 700;
 }
 
 .landing-footer__credit,
 .landing-footer__copy {
   color: var(--text-muted);
-  font-size: 0.75rem;
+  font-size: 13px;
   line-height: 1.45;
 }
 
 .landing-footer__link {
   color: var(--text-muted) !important;
-  font-size: 0.78rem !important;
+  font-size: 13px !important;
   font-weight: 500 !important;
   transition: color 0.18s ease;
 }
@@ -651,4 +651,4 @@
 
 .animate-pulse-glow {
   animation: pulseGlow 3s ease-in-out infinite;
-}
+}
