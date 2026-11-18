@@ -4,12 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import ROUTES from '../../../app/routes/routePaths';
 import useProjects from '../hooks/useProjects';
 import ProjectCard from '../components/ProjectCard';
-import EmptyState from '../../../shared/components/EmptyState';
-import LoadingSkeleton from '../../../shared/components/LoadingSkeleton';
 import { Icon } from '@iconify/react';
 import { Modal } from 'react-bootstrap';
 import { Button } from '../../../shared/ui/button';
 import { Alert } from '../../../shared/ui/alert';
+import { Skeleton } from '../../../shared/ui/skeleton';
+import { StatePanel } from '../../../shared/ui/state-panel';
+import { Card } from '../../../shared/ui/card';
 import useAuth from '../../auth/hooks/useAuth';
 import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
 
@@ -98,29 +99,16 @@ const ProjectListPage = () => {
     .filter(Boolean);
 
   return (
-    <PageContainer className="py-6">
-      {/* Breadcrumb */}
-      <nav aria-label="breadcrumb" className="mb-4">
-        <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
-          <li>
-            <Link to={ROUTES.DASHBOARD} className="no-underline text-muted-foreground hover:text-primary transition-colors">
-              {t("author.tongQuan")}
-            </Link>
-          </li>
-          <li aria-hidden="true" className="select-none">/</li>
-          <li className="font-medium text-foreground" aria-current="page">
-            {t("project.duAnTheoDoi")}
-          </li>
-        </ol>
-      </nav>
-
-      {/* Page Header */}
+    <PageContainer className="py-6 space-y-6">
       <PageHeader
-        className="mb-6 border-0 pb-0"
+        breadcrumbs={[
+          { label: t("author.tongQuan"), to: ROUTES.DASHBOARD },
+          { label: t("project.duAnTheoDoi") }
+        ]}
         title={t("project.duAnNghienCuuCuaToi")}
         description={t("project.quanLyCacKeywordWatchlistsPhan")}
         actions={
-          <Button onClick={() => navigate(ROUTES.PROJECT_CREATE)}>
+          <Button onClick={() => navigate(ROUTES.PROJECT_CREATE)} className="flex items-center gap-1.5">
             <Icon icon="lucide:plus" width="16" aria-hidden="true" />
             <span>{t("journal.taoDuAnMoi")}</span>
           </Button>
@@ -128,7 +116,7 @@ const ProjectListPage = () => {
       />
 
       {/* Filter / Search Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-border">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pb-4 border-b border-border">
         <div className="relative w-full sm:max-w-xs">
           <Icon
             icon="lucide:search"
@@ -160,40 +148,45 @@ const ProjectListPage = () => {
 
       {/* Content */}
       {error ? (
-        <Alert variant="destructive" className="mb-6 items-center">
-          <Icon icon="lucide:alert-triangle" width="20" className="shrink-0" aria-hidden="true" />
-          <div className="flex-1">
-            <h4 className="font-semibold text-base mb-1">{t("article.loiTaiDuLieu")}</h4>
-            <p className="text-xs text-muted-foreground m-0">{error}</p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
-            {t("article.thuLai")}
-          </Button>
-        </Alert>
+        <StatePanel
+          variant="error"
+          title={t("article.loiTaiDuLieu")}
+          description={error}
+          action={{
+            label: t("article.thuLai"),
+            onClick: () => refetch(),
+          }}
+        />
       ) : isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-card border border-border bg-surface p-4">
-              <LoadingSkeleton height="20px" width="40%" className="mb-3 rounded-control" />
-              <LoadingSkeleton height="24px" width="80%" className="mb-4 rounded-control" />
-              <LoadingSkeleton height="14px" width="60%" className="mb-2 rounded-control" />
-              <LoadingSkeleton height="14px" width="50%" className="mb-4 rounded-control" />
-              <LoadingSkeleton height="1px" width="100%" className="mb-3 rounded-control" />
-              <div className="flex justify-between items-center mt-auto pt-2">
-                <LoadingSkeleton height="14px" width="40%" className="rounded-control" />
-                <LoadingSkeleton height="14px" width="20%" className="rounded-control" />
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Card key={i} className="p-5 space-y-4">
+              <div className="flex justify-between items-center">
+                <Skeleton className="h-5 w-28 rounded-full" />
+                <Skeleton className="h-5 w-16 rounded-full" />
               </div>
-            </div>
+              <Skeleton className="h-6 w-3/4" />
+              <div className="space-y-2">
+                <Skeleton className="h-3 w-1/2" />
+                <Skeleton className="h-3 w-2/3" />
+              </div>
+              <div className="flex justify-between items-center pt-3 border-t border-border">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-16" />
+              </div>
+            </Card>
           ))}
         </div>
       ) : projects.length === 0 ? (
-        <EmptyState
+        <StatePanel
+          variant="neutral"
+          icon={<Icon icon="lucide:folder-open" width="36" className="text-muted-foreground" />}
           title={t("project.banChuaCoDuAnNao")}
           description={t("project.taoDuAnDauTienDeBatDauTheoDoiT")}
-          icon="lucide:folder-open"
-          actionLabel="+ Tạo dự án mới"
-          onAction={() => navigate(ROUTES.PROJECT_CREATE)}
-          className="mt-4"
+          action={{
+            label: "+ Tạo dự án mới",
+            onClick: () => navigate(ROUTES.PROJECT_CREATE),
+          }}
         />
       ) : (
         <div className="flex flex-col gap-8">
@@ -228,11 +221,11 @@ const ProjectListPage = () => {
               </span>
             </h3>
             {filteredProjects.length === 0 ? (
-              <EmptyState
+              <StatePanel
+                variant="neutral"
+                icon={<Icon icon="lucide:search-x" width="36" className="text-muted-foreground" />}
                 title={t("common.khongTimThayKetQuaPhuHop", "Không tìm thấy kết quả phù hợp")}
                 description={t("project.thuTimKiemVoiTuKhoaKhac", "Thử tìm kiếm với từ khóa khác")}
-                icon="lucide:search-x"
-                className="mt-2"
               />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

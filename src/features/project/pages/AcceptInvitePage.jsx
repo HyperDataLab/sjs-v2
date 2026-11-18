@@ -37,7 +37,7 @@ const AcceptInvitePage = () => {
   }, [searchParams, t]);
 
   return (
-    <PageContainer className="grid-bg flex min-h-[70vh] items-center justify-center py-10 max-w-xl">
+    <PageContainer className="flex min-h-[60vh] items-center justify-center py-10 max-w-xl">
       {status === 'loading' && (
         <StatePanel
           variant="info"

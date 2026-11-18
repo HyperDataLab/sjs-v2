@@ -17,7 +17,9 @@ import { Button } from '../../../shared/ui/button';
 import { Badge } from '../../../shared/ui/badge';
 import { Alert } from '../../../shared/ui/alert';
 import { Card, CardHeader, CardTitle, CardContent } from '../../../shared/ui/card';
-import { PageContainer } from '../../../shared/ui/page-layout';
+import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
+import { Skeleton } from '../../../shared/ui/skeleton';
+import { StatePanel } from '../../../shared/ui/state-panel';
 import projectService from '../../project/services/projectService';
 import LatexText from '../../../shared/components/LatexText/LatexText';
 import useAuth from '../../auth/hooks/useAuth';
@@ -287,9 +289,25 @@ const ProjectDetailPage = () => {
 
     if (overviewLoading) {
       return (
-        <div className="flex flex-col items-center justify-center p-10 rounded-card border border-border bg-surface text-center">
-          <Icon icon="lucide:loader-2" width="32" className="animate-spin text-primary mb-3" />
-          <p className="text-xs text-muted-foreground m-0">{t("project.dangTaiDuLieuTongQuan")}</p>
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => (
+              <Card key={i} className="p-4 space-y-2">
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="h-7 w-16" />
+              </Card>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="p-6 space-y-4">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-[240px] w-full rounded" />
+            </Card>
+            <Card className="p-6 space-y-4">
+              <Skeleton className="h-5 w-40" />
+              <Skeleton className="h-[240px] w-full rounded" />
+            </Card>
+          </div>
         </div>
       );
     }
@@ -422,8 +440,28 @@ const ProjectDetailPage = () => {
 
   if (loading) {
     return (
-      <PageContainer className="flex min-h-[50vh] items-center justify-center py-10">
-        <Icon icon="lucide:loader-2" className="animate-spin text-primary" width="36" />
+      <PageContainer className="py-6 space-y-6">
+        <Skeleton className="h-6 w-48" />
+        <div className="flex justify-between items-start">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-8 w-64" />
+          </div>
+          <Skeleton className="h-10 w-36 rounded" />
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map(i => (
+            <Card key={i} className="p-4 space-y-2">
+              <Skeleton className="h-3 w-20" />
+              <Skeleton className="h-6 w-16" />
+            </Card>
+          ))}
+        </div>
+        <div className="flex gap-4 border-b border-border pb-2">
+          <Skeleton className="h-8 w-24" />
+          <Skeleton className="h-8 w-24" />
+          <Skeleton className="h-8 w-24" />
+        </div>
       </PageContainer>
     );
   }
@@ -431,16 +469,15 @@ const ProjectDetailPage = () => {
   if (error || !project) {
     return (
       <PageContainer className="py-8">
-        <Alert variant="destructive" className="items-center">
-          <Icon icon="lucide:alert-triangle" width="24" className="shrink-0" />
-          <div className="flex-1">
-            <h4 className="font-semibold text-base mb-1">{t("project.khongTheTaiDuAn")}</h4>
-            <p className="text-xs m-0">{error || t("project.duAnKhongTonTaiHoacDaBiXoa")}</p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => navigate(ROUTES.PROJECTS)}>
-            {t("auth.quayLai")}
-          </Button>
-        </Alert>
+        <StatePanel
+          variant="error"
+          title={t("project.khongTheTaiDuAn")}
+          description={error || t("project.duAnKhongTonTaiHoacDaBiXoa")}
+          action={{
+            label: t("auth.quayLai"),
+            onClick: () => navigate(ROUTES.PROJECTS),
+          }}
+        />
       </PageContainer>
     );
   }
@@ -457,62 +494,46 @@ const ProjectDetailPage = () => {
   const growthYear = overviewData?.summary?.growthYear;
 
   return (
-    <PageContainer className="py-6">
-      {/* Breadcrumb */}
-      <nav aria-label="breadcrumb" className="mb-4">
-        <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
-          <li>
-            <Link to={ROUTES.DASHBOARD} className="no-underline text-muted-foreground hover:text-primary transition-colors">
-              {t("author.tongQuan")}
-            </Link>
-          </li>
-          <li aria-hidden="true" className="select-none">/</li>
-          <li>
-            <Link to={ROUTES.PROJECTS} className="no-underline text-muted-foreground hover:text-primary transition-colors">
-              {t("project.duAnTheoDoi")}
-            </Link>
-          </li>
-          <li aria-hidden="true" className="select-none">/</li>
-          <li className="font-medium text-foreground truncate max-w-xs" aria-current="page">
-            {title}
-          </li>
-        </ol>
-      </nav>
+    <PageContainer className="py-6 space-y-6">
+      <PageHeader
+        breadcrumbs={[
+          { label: t("author.tongQuan"), to: ROUTES.DASHBOARD },
+          { label: t("project.duAnTheoDoi"), to: ROUTES.PROJECTS },
+          { label: title }
+        ]}
+        title={
+          <div className="flex items-center gap-3 flex-wrap">
+            <span>{title}</span>
+            <Badge variant="success" className="text-xs">
+              {t("project.dangHoatDong")}
+            </Badge>
+          </div>
+        }
+        description={
+          <span className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+            <Badge variant="secondary" className="text-xs font-medium">
+              {areaName}
+            </Badge>
+            <span>•</span>
+            <span>{t("project.capNhatLuc")} {createdAt}</span>
+          </span>
+        }
+        actions={
+          <Button
+            onClick={() => {
+              const lang = i18n.language ? i18n.language.split('-')[0] : 'vi';
+              navigate(`/${lang}/project/${projectId}/dashboard`);
+            }}
+            className="flex items-center gap-1.5"
+          >
+            <Icon icon="lucide:sparkles" width="16" aria-hidden="true" />
+            <span>{t("project.phanTichChuyenSau")}</span>
+          </Button>
+        }
+      />
 
       {/* Header section */}
-      <div className="mb-6 space-y-4">
-        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1.5 flex-wrap">
-              <Badge variant="secondary" className="text-xs font-medium">
-                {areaName}
-              </Badge>
-              <span>•</span>
-              <span>{t("project.capNhatLuc")} {createdAt}</span>
-            </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="m-0 text-base sm:text-lg font-bold text-foreground leading-snug">
-                {title}
-              </h1>
-              <Badge variant="success" className="text-xs">
-                {t("project.dangHoatDong")}
-              </Badge>
-            </div>
-          </div>
-
-          <div className="shrink-0 flex items-center gap-2">
-            <Button
-              onClick={() => {
-                const lang = i18n.language ? i18n.language.split('-')[0] : 'vi';
-                navigate(`/${lang}/project/${projectId}/dashboard`);
-              }}
-            >
-              <Icon icon="lucide:sparkles" width="16" aria-hidden="true" />
-              <span>{t("project.phanTichChuyenSau")}</span>
-            </Button>
-          </div>
-        </div>
-
+      <div className="space-y-4">
         {/* Key Metrics Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-card border border-border bg-surface">
           <div>
