@@ -146,25 +146,21 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Keep the shared product typography compact and consistent across routes. */
+/* Keep the shared product typography compact and consistent across routes without blocking utility classes. */
 :where(h1, h2, h3, h4, h5, h6) {
   font-size: var(--ds-font-size-heading);
 }
 
-:where(small, .small, .text-xs, .fs-6) {
-  font-size: var(--ds-font-size-caption) !important;
+:where(small, .small, .fs-6) {
+  font-size: var(--ds-font-size-caption);
 }
 
-/* Bootstrap's unlayered heading rules can outrank Tailwind utilities. Keep
-   headings inside the authenticated app on the product's compact 13–16px scale. */
-.app-main h1,
-.app-main h2,
-.app-main h3,
-.app-main h4,
-.app-main h5,
-.app-main h6 {
+/* Default heading styles for .app-main: applies base typography without blocking utility classes like text-xl, text-2xl, font-bold */
+.app-main :where(h1, h2, h3, h4, h5, h6):not([class*="text-"]) {
+  font-size: var(--ds-font-size-heading);
+}
+.app-main :where(h1, h2, h3, h4, h5, h6) {
   font-family: var(--ds-font-sans);
-  font-size: var(--ds-font-size-heading) !important;
   line-height: 1.35;
 }
 

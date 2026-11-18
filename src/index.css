@@ -284,8 +284,8 @@ h2,
 h3,
 .page-title,
 .font-display {
-  font-family: var(--font-display) !important;
-  font-weight: 600 !important;
+  font-family: var(--font-display);
+  font-weight: 600;
 }
 
 /* 3. Body text defaults */
@@ -306,20 +306,20 @@ select {
 .sidebar-link,
 .menu-item,
 .nav-item {
-  font-family: var(--font-display) !important;
-  font-weight: 500 !important;
+  font-family: var(--font-display);
+  font-weight: 500;
 }
 
 /* 5. Button */
 .btn,
 button,
 .btn-custom {
-  font-family: var(--font-display) !important;
-  font-weight: 500 !important;
+  font-family: var(--font-display);
+  font-weight: 500;
 }
 .btn-fw-600,
 .btn-primary-glow {
-  font-weight: 600 !important;
+  font-weight: 600;
 }
 
 /* 6. Table data */
@@ -328,21 +328,21 @@ button,
 table,
 td,
 th {
-  font-family: var(--font-display) !important;
-  font-weight: 400 !important;
+  font-family: var(--font-display);
+  font-weight: 400;
 }
 .table th,
 th,
 .table-header {
-  font-weight: 500 !important;
+  font-weight: 500;
 }
 
 /* 7. Badge/tag */
 .badge,
 .tag,
 .badge-custom {
-  font-family: var(--font-display) !important;
-  font-weight: 500 !important;
+  font-family: var(--font-display);
+  font-weight: 500;
 }
 
 /* ─── Skeleton shimmer ────────────────────────────────────────────── */
