@@ -25,9 +25,12 @@ export default function StateCard({
   variant = 'neutral',
   actions,
   className = '',
+  role,
+  live = true,
 }) {
+  const semanticRole = role || (variant === 'error' ? 'alert' : 'status');
   return (
-    <section className={`shared-state-card shared-state-card--${variant} ${className}`.trim()}>
+    <section role={semanticRole} aria-live={live ? (semanticRole === 'alert' ? 'assertive' : 'polite') : undefined} className={`shared-state-card shared-state-card--${variant} ${className}`.trim()}>
       {icon && (
         <span className="shared-state-card__icon" aria-hidden="true">
           <Icon icon={icon} width="24" />

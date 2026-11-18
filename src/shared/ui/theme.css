@@ -39,6 +39,13 @@
   --ds-warning: var(--ds-amber-800);
   --ds-warning-subtle: var(--ds-amber-100);
   --ds-font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --ds-font-size-caption: 13px;
+  --ds-font-size-body: 14px;
+  --ds-font-size-emphasis: 15px;
+  --ds-font-size-heading: 16px;
+  --ds-page-gutter: clamp(1rem, 2vw, 2rem);
+  --ds-motion-fast: 150ms;
+  --ds-motion-base: 200ms;
   --ds-radius-control: 0.5rem;
   --ds-radius-card: 0.75rem;
   --ds-radius-panel: 1rem;
@@ -66,6 +73,7 @@
   --dark-border: var(--border);
   --brand-accent: var(--primary);
   --glow-accent: color-mix(in srgb, var(--ds-primary) 8%, transparent);
+  --font-display: var(--ds-font-sans);
 }
 
 @theme inline {
@@ -87,6 +95,16 @@
   --color-warning: var(--ds-warning);
   --color-warning-subtle: var(--ds-warning-subtle);
   --font-sans: var(--ds-font-sans);
+  --text-xs: var(--ds-font-size-caption);
+  --text-sm: var(--ds-font-size-body);
+  --text-base: var(--ds-font-size-body);
+  --text-lg: var(--ds-font-size-emphasis);
+  --text-xl: var(--ds-font-size-heading);
+  --text-2xl: var(--ds-font-size-heading);
+  --text-3xl: var(--ds-font-size-heading);
+  --text-4xl: var(--ds-font-size-heading);
+  --text-5xl: var(--ds-font-size-heading);
+  --text-6xl: var(--ds-font-size-heading);
   --radius-control: var(--ds-radius-control);
   --radius-card: var(--ds-radius-card);
   --radius-panel: var(--ds-radius-panel);
@@ -120,8 +138,20 @@
 
 body {
   font-family: var(--ds-font-sans);
+  font-size: var(--ds-font-size-body);
   color: var(--ds-foreground);
   background: var(--ds-background);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Keep the shared product typography compact and consistent across routes. */
+:where(h1, h2, h3, h4, h5, h6) {
+  font-size: var(--ds-font-size-heading) !important;
+}
+
+:where(small, .small, .text-xs, .fs-6) {
+  font-size: var(--ds-font-size-caption) !important;
 }
 
 /* Bootstrap surfaces used by legacy feature pages share the same design tokens. */
@@ -136,6 +166,13 @@ body {
   --bs-border-color: var(--ds-border);
   --bs-body-color: var(--ds-foreground);
   --bs-body-bg: var(--ds-background);
+  --bs-body-font-size: var(--ds-font-size-body);
+  --bs-h1-font-size: var(--ds-font-size-heading);
+  --bs-h2-font-size: var(--ds-font-size-heading);
+  --bs-h3-font-size: var(--ds-font-size-heading);
+  --bs-h4-font-size: var(--ds-font-size-heading);
+  --bs-h5-font-size: var(--ds-font-size-heading);
+  --bs-h6-font-size: var(--ds-font-size-heading);
   --bs-border-radius: var(--ds-radius-control);
   --bs-border-radius-lg: var(--ds-radius-card);
   --bs-border-radius-xl: var(--ds-radius-panel);
@@ -196,6 +233,20 @@ body {
 .form-select:focus {
   border-color: var(--ds-primary);
   box-shadow: 0 0 0 0.2rem var(--ds-focus);
+}
+
+.form-control[aria-invalid="true"],
+.form-select[aria-invalid="true"],
+input[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--ds-danger);
+}
+
+.form-control[aria-invalid="true"]:focus,
+.form-select[aria-invalid="true"]:focus,
+input[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--ds-danger) 20%, transparent);
 }
 
 .form-check-input:checked {
@@ -272,6 +323,7 @@ body {
 
 .app-main {
   min-width: 0;
+  padding-inline: var(--ds-page-gutter);
 }
 
 .app-main :where(.container, .container-fluid) {
@@ -281,6 +333,53 @@ body {
 .app-main :where(.card, .glass-card, .journal-dark-card) {
   border-color: var(--ds-border);
   border-radius: var(--ds-radius-card);
+  background-color: var(--ds-surface);
+}
+
+/* Admin keeps its task-specific navigation but shares researcher surface and control rules. */
+.admin-layout {
+  color: var(--ds-foreground);
+  font-family: var(--ds-font-sans);
+}
+
+.admin-content > * {
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+.admin-content :where(.admin-card, .card, .modal-content, .dropdown-menu) {
+  border-color: var(--ds-border);
+  border-radius: var(--ds-radius-card);
+  box-shadow: var(--ds-shadow-card);
+}
+
+.admin-content :where(input:not([type="checkbox"]):not([type="radio"]), select, textarea, .form-control, .form-select) {
+  border-color: var(--ds-border);
+  border-radius: var(--ds-radius-control);
+  color: var(--ds-foreground);
+  background-color: var(--ds-surface);
+}
+
+.admin-content :where(input, select, textarea, .form-control, .form-select):focus {
+  border-color: var(--ds-primary);
+  box-shadow: 0 0 0 0.2rem var(--ds-focus);
+}
+
+.admin-content :where(.admin-table th, table thead th) {
+  color: var(--ds-muted-foreground);
+  background-color: var(--ds-background);
+}
+
+.admin-content :where(.admin-table tbody tr:hover, table tbody tr:hover) > * {
+  background-color: var(--ds-primary-subtle-hover);
+}
+
+.admin-content :where(a:not(.btn):not([class*="nav-link"])) {
+  color: var(--ds-primary);
+}
+
+.admin-content :where(a:not(.btn):not([class*="nav-link"]):hover) {
+  color: var(--ds-primary-hover);
 }
 
 .app-main :where(.breadcrumb-item a, .breadcrumb-item span, a.link-primary) {

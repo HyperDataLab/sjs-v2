@@ -1,7 +1,7 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { FiBarChart2, FiFileText, FiFolder, FiGlobe, FiMenu, FiSearch, FiUsers, FiX, FiLogOut } from 'react-icons/fi';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import Logo from './Logo';
@@ -24,16 +24,32 @@ export default function DashboardShell({ children }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { logout } = useAuth();
+  const reduceMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const drawerCloseRef = useRef(null);
   const base = `/${lang}`;
 
   useEffect(() => {
     if (!mobileOpen) return undefined;
+    const previousFocus = document.activeElement;
+    drawerCloseRef.current?.focus();
     const closeOnEscape = (event) => {
       if (event.key === 'Escape') setMobileOpen(false);
+      if (event.key === 'Tab') {
+        const panel = document.querySelector('[data-mobile-nav-panel]');
+        const focusable = panel?.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+        if (!focusable?.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
     };
     window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape);
+      if (previousFocus instanceof HTMLElement) previousFocus.focus();
+    };
   }, [mobileOpen]);
 
   const sidebar = (
@@ -71,16 +87,16 @@ export default function DashboardShell({ children }) {
       <div className="fixed inset-y-0 left-0 z-30 hidden w-[232px] md:block">{sidebar}</div>
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div className="fixed inset-0 z-[var(--ds-z-overlay)] bg-foreground/35 md:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMobileOpen(false)}>
-            <motion.div role="dialog" aria-modal="true" aria-label={t('navigation.menu', 'Main navigation')} className="h-full w-[min(82vw,280px)] bg-surface shadow-popover" initial={{ x: -280 }} animate={{ x: 0 }} exit={{ x: -280 }} transition={{ type: 'tween', duration: 0.2, ease: 'easeOut' }} onClick={(event) => event.stopPropagation()}>
-              <div className="flex items-center justify-between border-b border-border p-4"><Logo size={30} fontSize="1.05rem" /><Button variant="ghost" size="icon" aria-label={t('navigation.close', 'Close navigation')} onClick={() => setMobileOpen(false)}><FiX /></Button></div>
+          <motion.div className="fixed inset-0 z-[var(--ds-z-overlay)] bg-foreground/35 md:hidden" initial={reduceMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduceMotion ? undefined : { opacity: 0 }} onClick={() => setMobileOpen(false)}>
+            <motion.div data-mobile-nav-panel role="dialog" aria-modal="true" aria-label={t('navigation.menu', 'Main navigation')} className="h-full w-[min(82vw,280px)] bg-surface shadow-popover" initial={reduceMotion ? false : { x: -280 }} animate={{ x: 0 }} exit={reduceMotion ? undefined : { x: -280 }} transition={{ type: 'tween', duration: reduceMotion ? 0 : 0.2, ease: 'easeOut' }} onClick={(event) => event.stopPropagation()}>
+              <div className="flex items-center justify-between border-b border-border p-4"><Logo size={30} fontSize="1.05rem" /><Button ref={drawerCloseRef} variant="ghost" size="icon" aria-label={t('navigation.close', 'Close navigation')} onClick={() => setMobileOpen(false)}><FiX /></Button></div>
               {sidebar}
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
       <DashboardShellContext.Provider value>
-        <motion.main className="app-main min-h-screen px-4 py-5 md:ml-[232px] md:px-6 md:py-6" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
+        <motion.main className="app-main min-h-screen py-5 md:ml-[232px] md:py-6" initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.2 }}>
           {children}
         </motion.main>
       </DashboardShellContext.Provider>

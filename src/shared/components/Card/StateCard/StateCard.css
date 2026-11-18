@@ -60,11 +60,11 @@
 }
 
 .shared-state-card--warning .shared-state-card__icon {
-  background: rgba(245, 158, 11, 0.12);
-  color: #b45309;
+  background: var(--ds-warning-subtle);
+  color: var(--ds-warning);
 }
 
 .shared-state-card--error .shared-state-card__icon {
-  background: rgba(220, 53, 69, 0.12);
-  color: #b02a37;
+  background: var(--ds-danger-subtle);
+  color: var(--ds-danger);
 }

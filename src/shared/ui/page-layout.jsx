@@ -8,7 +8,7 @@ function PageHeader({ title, description, actions, className = '' }) {
   return (
     <header className={cn('flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between', className)}>
       <div className="min-w-0">
-        <h1 className="m-0 text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-[1.75rem]">{title}</h1>
+        <h1 className="m-0 text-2xl font-bold leading-tight tracking-tight text-foreground">{title}</h1>
         {description && <p className="mb-0 mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{description}</p>}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}

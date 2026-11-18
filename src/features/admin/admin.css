@@ -4,7 +4,7 @@
 
 /* Container tổng, full height, nền trắng theo --bg-main */
 .admin-layout {
-  --admin-card-radius: 1rem;
+  --admin-card-radius: var(--ds-radius-card, 0.75rem);
   display: flex;
   min-height: 100vh;
   background-color: var(--ds-background, #f8fafc);
@@ -2352,9 +2352,9 @@
 }
 
 .admin-btn--primary:hover {
-  background-color: var(--bg-card);
-  border-color: var(--primary);
-  color: var(--primary);
+  background-color: var(--ds-primary-hover);
+  border-color: var(--ds-primary-hover);
+  color: var(--ds-white);
 }
 
 @media (max-width: 768px) {

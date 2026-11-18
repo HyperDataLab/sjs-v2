@@ -9,6 +9,7 @@ import SocialAuthButton from '../components/SocialAuthButton';
 import { toast } from '../../../shared/utils/toast';
 import ROUTES from '../../../app/routes/routePaths';
 import { startHyperdatalabSso } from '../services/hyperdatalabSso';
+import { Alert } from '../../../shared/ui/alert';
 const DASHBOARD_PAGE = ROUTES.DASHBOARD;
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -83,7 +84,7 @@ export default function LoginPage() {
         <SocialAuthButton onClick={handleLoginWithSso} disabled={isLoading || ssoLoading} label={t('auth.dangNhapBangSso')} />
       </div>
 
-      {error && <div role="alert" className="text-danger small mb-3">{error}</div>}
+      {error && <Alert variant="destructive" className="mb-3 py-3">{error}</Alert>}
 
       {/* Đường phân cách giữa SSO và form email/password. */}
       <div className="d-flex align-items-center justify-content-center mb-4 text-xs font-semibold select-none text-muted-custom" style={{

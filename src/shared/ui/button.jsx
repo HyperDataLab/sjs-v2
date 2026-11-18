@@ -21,10 +21,17 @@ const buttonVariants = cva('inline-flex items-center justify-center gap-2 rounde
   defaultVariants: { variant: 'default', size: 'default' },
 });
 
-const Button = React.forwardRef(({ className = '', variant, size, asChild = false, ...props }, ref) => {
+function Spinner({ className = '', label = 'Loading' }) {
+  return <span aria-label={label} role="status" className={cn('inline-block size-4 animate-spin rounded-full border-2 border-current border-r-transparent', className)} />;
+}
+
+const Button = React.forwardRef(({ className = '', variant, size, asChild = false, isLoading = false, loadingText, children, disabled, ...props }, ref) => {
   const Comp = asChild ? Slot : 'button';
-  return <Comp ref={ref} className={cn(buttonVariants({ variant, size }), className)} {...props} />;
+  return <Comp ref={ref} className={cn(buttonVariants({ variant, size }), className)} disabled={disabled || (isLoading && !asChild)} aria-busy={isLoading || undefined} {...props}>
+    {isLoading && <Spinner label={loadingText || 'Loading'} className="shrink-0" />}
+    {isLoading && loadingText ? loadingText : children}
+  </Comp>;
 });
 Button.displayName = 'Button';
 
-export { Button, buttonVariants };
+export { Button, Spinner, buttonVariants };

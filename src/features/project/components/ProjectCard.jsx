@@ -1,32 +1,52 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import { EntityCard } from '../../../shared/components/Card';
+import { Card, CardHeader, CardContent } from '../../../shared/ui/card';
+import { Badge } from '../../../shared/ui/badge';
+import { Button } from '../../../shared/ui/button';
+
 const ProjectCard = ({
   project,
   onDelete,
   onRestore,
   isRecent = false,
-  currentUser = null
+  currentUser = null,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const handleDelete = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    onDelete(project.project_id || project.id);
-  };
-  const handleRestore = e => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (onRestore) onRestore(project.project_id || project.id);
-  };
-  const title = project.title || 'Untitled Project';
-  const areaName = project.subject_area?.name || project.subject_area || t("project.chuaXacDinhLinhVuc");
-  const createdAt = project.created_at ? new Date(project.created_at).toLocaleDateString('vi-VN') : 'N/A';
 
-  // Try to find counts
+  const projectId = project.project_id || project.id;
+  const title = project.title || 'Untitled Project';
+  const areaName = project.subject_area?.name || project.subject_area || t('project.chuaXacDinhLinhVuc');
+  const createdAt = project.created_at ? new Date(project.created_at).toLocaleDateString('vi-VN') : 'N/A';
   const keywordCount = project.keywords_count || project.watch_keywords?.length || 0;
+  const isDeleted = project.status === 'DELETED';
+
+  const handleDelete = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete(projectId);
+  };
+
+  const handleRestore = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onRestore) onRestore(projectId);
+  };
+
+  const handleCardClick = () => {
+    try {
+      const storageKey = 'recently_viewed_projects';
+      const raw = localStorage.getItem(storageKey);
+      let list = raw ? JSON.parse(raw) : [];
+      list = list.filter((id) => id !== projectId);
+      list.unshift(projectId);
+      list = list.slice(0, 3);
+      localStorage.setItem(storageKey, JSON.stringify(list));
+    } catch (e) {
+      console.error(t('project.loiLuuDuAnXemGanDay'), e);
+    }
+  };
 
   const getInitials = (first, last, email) => {
     if (first && last) return `${first[0]}${last[0]}`.toUpperCase();
@@ -39,7 +59,7 @@ const ProjectCard = ({
     const members = project.members || [];
     const allUsers = [];
     if (owner) allUsers.push({ ...owner, isOwner: true });
-    members.forEach(m => allUsers.push(m));
+    members.forEach((m) => allUsers.push(m));
 
     if (allUsers.length === 0) return null;
 
@@ -51,160 +71,181 @@ const ProjectCard = ({
       e.preventDefault();
       e.stopPropagation();
       handleCardClick();
-      navigate(`/projects/${project.project_id || project.id}?tab=members`);
+      navigate(`/projects/${projectId}?tab=members`);
     };
 
     return (
-      <div 
-        className="d-flex align-items-center" 
+      <button
+        type="button"
+        className="inline-flex items-center border-0 bg-transparent p-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-primary rounded-full"
         onClick={handleMembersClick}
-        title={t("project.quanLyThanhVien", "Quản lý thành viên")}
-        style={{ cursor: 'pointer' }}
+        title={t('project.quanLyThanhVien', 'Quản lý thành viên')}
+        aria-label={t('project.quanLyThanhVien', 'Quản lý thành viên')}
       >
-        {displayUsers.map((u, idx) => (
-          <div 
-            key={idx} 
-            className="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
-            style={{
-              width: '26px', height: '26px', fontSize: '10px',
-              backgroundColor: u.isOwner ? '#0071BC' : '#6b7280',
-              marginLeft: idx > 0 ? '-8px' : '0',
-              border: '2px solid white',
-              zIndex: 10 - idx
-            }}
-            title={`${u.first_name || ''} ${u.last_name || ''} ${u.isOwner ? '(Owner)' : ''}`}
-          >
-            {getInitials(u.first_name, u.last_name, u.email)}
-          </div>
-        ))}
-        {extraCount > 0 && (
-          <div 
-            className="rounded-circle d-flex align-items-center justify-content-center text-secondary fw-medium shadow-sm bg-light"
-            style={{
-              width: '26px', height: '26px', fontSize: '10px',
-              marginLeft: '-8px',
-              border: '2px solid white',
-              zIndex: 0
-            }}
-          >
-            +{extraCount}
-          </div>
-        )}
-      </div>
+        <span className="flex items-center -space-x-2">
+          {displayUsers.map((u, idx) => (
+            <span
+              key={idx}
+              className={`inline-flex size-6.5 items-center justify-center rounded-full text-xs font-semibold ring-2 ring-surface text-white shadow-xs ${
+                u.isOwner ? 'bg-primary' : 'bg-muted-foreground'
+              }`}
+              title={`${u.first_name || ''} ${u.last_name || ''} ${u.isOwner ? '(Owner)' : ''}`}
+            >
+              {getInitials(u.first_name, u.last_name, u.email)}
+            </span>
+          ))}
+          {extraCount > 0 && (
+            <span className="inline-flex size-6.5 items-center justify-center rounded-full bg-surface-muted text-xs font-medium text-muted-foreground ring-2 ring-surface shadow-xs">
+              +{extraCount}
+            </span>
+          )}
+        </span>
+      </button>
     );
   };
-  const handleCardClick = () => {
-    try {
-      const storageKey = 'recently_viewed_projects';
-      const raw = localStorage.getItem(storageKey);
-      let list = raw ? JSON.parse(raw) : [];
-      const projectId = project.project_id || project.id;
-      list = list.filter(id => id !== projectId);
-      list.unshift(projectId);
-      list = list.slice(0, 3); // Giới hạn tối đa 3 dự án xem gần nhất
-      localStorage.setItem(storageKey, JSON.stringify(list));
-    } catch (e) {
-      console.error(t("project.loiLuuDuAnXemGanDay"), e);
-    }
-  };
+
+  // Compact recent project card
   if (isRecent) {
-    return <Link to={`/projects/${project.project_id || project.id}`} className="text-decoration-none h-100 d-block" onClick={handleCardClick}>
-        <div className="glass-card rounded-4 border shadow-sm p-3 h-100 d-flex align-items-center gap-3 project-card-recent-hover">
-          <div className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style={{
-          width: '46px',
-          height: '46px',
-          backgroundColor: 'var(--primary-light)',
-          color: 'var(--primary)'
-        }}>
-            <Icon icon="lucide:folder-open" width="22" />
+    return (
+      <Link
+        to={`/projects/${projectId}`}
+        className="group block h-full no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-card"
+        onClick={handleCardClick}
+      >
+        <Card className="flex h-full items-center gap-3.5 p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-primary-subtle/30 hover:shadow-card">
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-primary">
+            <Icon icon="lucide:folder-open" width="20" aria-hidden="true" />
           </div>
-          <div className="flex-grow-1 min-w-0" style={{
-          minWidth: 0
-        }}>
-            <h6 className="fw-bold text-main mb-1 text-truncate">{title}</h6>
-            <div className="d-flex align-items-center gap-2 text-truncate">
-              <span className="badge fw-medium text-truncate" style={{
-              fontSize: '0.65rem',
-              backgroundColor: 'var(--bg-chip)',
-              color: 'var(--text-muted)'
-            }}>
+          <div className="min-w-0 flex-1">
+            <h3 className="m-0 truncate text-base font-semibold text-foreground transition-colors group-hover:text-primary">
+              {title}
+            </h3>
+            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+              <span className="truncate rounded-sm bg-surface-muted px-1.5 py-0.5 font-medium text-foreground">
                 {areaName}
               </span>
-              <span className="text-muted-custom small flex-shrink-0">• {createdAt}</span>
+              <span className="shrink-0">• {createdAt}</span>
             </div>
           </div>
-          <div className="flex-shrink-0 text-muted-custom recent-arrow-icon">
-            <Icon icon="lucide:chevron-right" width="20" />
+          <div className="shrink-0 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary">
+            <Icon icon="lucide:chevron-right" width="18" aria-hidden="true" />
           </div>
-        </div>
-      </Link>;
+        </Card>
+      </Link>
+    );
   }
-  const isDeleted = project.status === 'DELETED';
-  const meta = (
-    <div className="d-flex align-items-center gap-2">
-      <span className="badge rounded-pill fw-medium" style={{
-        backgroundColor: 'var(--primary-light)',
-        color: 'var(--primary)'
-      }}>
-        {areaName}
-      </span>
-      {isDeleted && (
-        <span className="badge rounded-pill bg-danger text-white fw-medium" style={{ fontSize: '0.7rem' }}>
-          {t("project.daXoa", "Đã xóa")}
-        </span>
-      )}
-    </div>
-  );
-  
-  // Kiểm tra quyền owner
-  const currentUserId = currentUser?.user_id || currentUser?.id;
-  const isOwner = project.user_role === 'OWNER' || (currentUser && (
-    (project.user_id && project.user_id === currentUserId) || 
-    (project.owner && project.owner.user_id === currentUserId) ||
-    (project.owner_id && project.owner_id === currentUserId)
-  ));
 
-  const actions = isOwner ? (isDeleted ? (
-    <button className="btn btn-sm btn-link text-success p-0 ms-2 hover-primary" onClick={handleRestore} title={t("project.khoiPhucDuAn", "Khôi phục dự án")}>
-      <Icon icon="lucide:refresh-cw" width="18" />
-    </button>
-  ) : (
-    <button className="btn btn-sm btn-link text-muted p-0 ms-2 hover-danger" onClick={handleDelete} title={t("project.xoaDuAn", "Xóa dự án")}>
-      <Icon icon="lucide:trash-2" width="18" />
-    </button>
-  )) : null;
-  const description = keywordCount > 0 ? <div>
-      <span className="text-muted-custom small d-block mb-1">{t("project.tuKhoaTheoDoi")}{keywordCount}):</span>
-      <div className="d-flex flex-wrap gap-1">
-        {project.watch_keywords?.slice(0, 3).map((kw, idx) => <span key={idx} className="badge bg-light text-muted border fw-normal" style={{
-        fontSize: '0.75rem'
-      }}>
-            {kw.keyword || kw}
-          </span>)}
-        {keywordCount > 3 && <span className="badge bg-light text-muted border fw-normal" style={{
-        fontSize: '0.75rem'
-      }}>
-            +{keywordCount - 3}
-          </span>}
-      </div>
-    </div> : null;
-  const footer = <div className="d-flex justify-content-between align-items-center w-100 mt-2">
-      <div className="d-flex align-items-center gap-2">
-        {renderAvatarGroup()}
-        <div className="d-flex flex-column justify-content-center" style={{ lineHeight: '1.2' }}>
-          <span className="text-muted-custom" style={{ fontSize: '0.7rem' }}>
-            Tạo bởi <span className="fw-semibold text-main">{project.owner?.last_name || 'Admin'}</span>
-          </span>
-          <span className="text-muted-custom" style={{ fontSize: '0.65rem' }}>{createdAt}</span>
+  // Check ownership
+  const currentUserId = currentUser?.user_id || currentUser?.id;
+  const isOwner =
+    project.user_role === 'OWNER' ||
+    (currentUser &&
+      ((project.user_id && project.user_id === currentUserId) ||
+        (project.owner && project.owner.user_id === currentUserId) ||
+        (project.owner_id && project.owner_id === currentUserId)));
+
+  return (
+    <Link
+      to={`/projects/${projectId}`}
+      className="group block h-full no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-card"
+      onClick={handleCardClick}
+    >
+      <Card className="flex h-full flex-col justify-between p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-card">
+        <div>
+          {/* Header row: badge and actions */}
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <Badge variant="secondary" className="font-medium text-xs">
+                {areaName}
+              </Badge>
+              {isDeleted && (
+                <Badge variant="destructive" className="font-medium text-xs">
+                  {t('project.daXoa', 'Đã xóa')}
+                </Badge>
+              )}
+            </div>
+
+            {isOwner && (
+              <div className="flex items-center gap-1 shrink-0 -mr-1.5 -mt-1.5">
+                {isDeleted ? (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 text-success hover:bg-success-subtle hover:text-success"
+                    onClick={handleRestore}
+                    title={t('project.khoiPhucDuAn', 'Khôi phục dự án')}
+                    aria-label={t('project.khoiPhucDuAn', 'Khôi phục dự án')}
+                  >
+                    <Icon icon="lucide:refresh-cw" width="16" />
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 text-muted-foreground hover:bg-danger-subtle hover:text-danger"
+                    onClick={handleDelete}
+                    title={t('project.xoaDuAn', 'Xóa dự án')}
+                    aria-label={t('project.xoaDuAn', 'Xóa dự án')}
+                  >
+                    <Icon icon="lucide:trash-2" width="16" />
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Title */}
+          <h3 className="m-0 mb-3 text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
+            {title}
+          </h3>
+
+          {/* Keywords */}
+          {keywordCount > 0 && (
+            <div className="mb-4">
+              <span className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                {t('project.tuKhoaTheoDoi')} ({keywordCount}):
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {project.watch_keywords?.slice(0, 3).map((kw, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center rounded-control border border-border bg-surface-muted px-2 py-0.5 text-xs text-foreground"
+                  >
+                    {kw.keyword || kw}
+                  </span>
+                ))}
+                {keywordCount > 3 && (
+                  <span className="inline-flex items-center rounded-control border border-border bg-surface-muted px-2 py-0.5 text-xs text-muted-foreground">
+                    +{keywordCount - 3}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-      <span className="small fw-medium d-flex align-items-center gap-1 mt-1" style={{
-      color: 'var(--primary)'
-    }}>{t("article.chiTiet1")}<Icon icon="lucide:arrow-right" width="14" />
-      </span>
-    </div>;
-  return <Link to={`/projects/${project.project_id || project.id}`} className="text-decoration-none h-100 d-block" onClick={handleCardClick}>
-      <EntityCard className="h-100" title={title} meta={meta} actions={actions} description={description} footer={footer} bodyClassName="flex-column align-items-stretch" />
-    </Link>;
+
+        {/* Footer */}
+        <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            {renderAvatarGroup()}
+            <div className="min-w-0 flex flex-col justify-center leading-tight">
+              <span className="truncate text-xs text-muted-foreground">
+                Tạo bởi <strong className="font-medium text-foreground">{project.owner?.last_name || 'Admin'}</strong>
+              </span>
+              <span className="text-xs text-muted-foreground">{createdAt}</span>
+            </div>
+          </div>
+
+          <span className="inline-flex items-center gap-1 shrink-0 text-xs font-medium text-primary group-hover:underline">
+            {t('article.chiTiet1')}
+            <Icon icon="lucide:arrow-right" width="14" aria-hidden="true" />
+          </span>
+        </div>
+      </Card>
+    </Link>
+  );
 };
+
 export default ProjectCard;

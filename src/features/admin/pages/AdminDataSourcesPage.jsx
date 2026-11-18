@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Alert, Button, Card, Form, Spinner } from 'react-bootstrap';
+import { Card, Form, Spinner } from 'react-bootstrap';
 import Icon from '../../../shared/components/Icon';
 import api from '../../../shared/services/api';
+import { Alert } from '../../../shared/ui/alert';
+import { Button } from '../../../shared/ui/button';
 
 const statusPath = '/admin/integrations/openalex';
 const importPath = '/admin/imports/scimago';
@@ -93,7 +95,7 @@ export default function AdminDataSourcesPage() {
           <p>Manage the OpenAlex API key and import journal rankings for in-depth analysis.</p>
         </div>
       </div>
-      {message && <Alert variant={message.type} dismissible onClose={() => setMessage(null)}>{message.text}</Alert>}
+      {message && <Alert variant={message.type === 'danger' ? 'destructive' : message.type} onDismiss={() => setMessage(null)}>{message.text}</Alert>}
 
       <div className="admin-data-sources__grid">
         <Card className="admin-data-sources__card">
@@ -113,11 +115,11 @@ export default function AdminDataSourcesPage() {
                     <Form.Text>The key is validated with OpenAlex and stored encrypted. It is never shown after saving.</Form.Text>
                   </Form.Group>
                   <div className="admin-data-sources__actions">
-                    <Button type="submit" disabled={savingKey || !apiKey.trim() || (!keyStatus?.encryptionReady && !keyStatus?.keyUnreadable)}>
-                      {savingKey ? <><Spinner size="sm" /> Validating…</> : 'Validate and rotate key'}
+                    <Button type="submit" disabled={!apiKey.trim() || (!keyStatus?.encryptionReady && !keyStatus?.keyUnreadable)} isLoading={savingKey} loadingText="Validating…">
+                      Validate and rotate key
                     </Button>
-                    {(keyStatus?.source === 'admin' || keyStatus?.keyUnreadable) && <Button variant="outline-secondary" onClick={clearKey} disabled={clearingKey}>{clearingKey ? 'Removing…' : 'Use Worker environment key'}</Button>}
-                    <Button variant="outline-secondary" onClick={loadKeyStatus} disabled={loadingKey}>Refresh</Button>
+                    {(keyStatus?.source === 'admin' || keyStatus?.keyUnreadable) && <Button variant="outline" onClick={clearKey} isLoading={clearingKey} loadingText="Removing…">Use Worker environment key</Button>}
+                    <Button variant="outline" onClick={loadKeyStatus} isLoading={loadingKey} loadingText="Refreshing…">Refresh</Button>
                   </div>
                 </Form>
               </>
@@ -135,7 +137,7 @@ export default function AdminDataSourcesPage() {
                 <Form.Group className="admin-data-sources__year"><Form.Label>Ranking year</Form.Label><Form.Control type="number" min="1990" max="2100" value={year} onChange={event => setYear(event.target.value)} /></Form.Group>
               </div>
               {file && <div className="admin-data-sources__file">Selected: <strong>{file.name}</strong> · {(file.size / 1024 / 1024).toFixed(2)} MB</div>}
-              <div className="admin-data-sources__actions"><Button type="submit" disabled={importing || !file}>{importing ? <><Spinner size="sm" /> Importing…</> : 'Import rankings'}</Button></div>
+              <div className="admin-data-sources__actions"><Button type="submit" disabled={!file} isLoading={importing} loadingText="Importing…">Import rankings</Button></div>
             </Form>
           </Card.Body>
         </Card>
