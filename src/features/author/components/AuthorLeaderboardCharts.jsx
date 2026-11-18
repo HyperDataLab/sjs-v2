@@ -108,7 +108,23 @@ export default function AuthorLeaderboardCharts({
     return Math.max(topVal, 1);
   }, [sortedAuthors, activeMetric]);
 
-  // 1. Data for ComposedChart (Area + Bar + Line mapped to Index 0–1800 as in Recharts documentation)
+  // 1. Data for Left BarChart (All sorted authors with direct metric keys)
+  const leaderboardBarData = useMemo(() => {
+    return sortedAuthors.map((author) => {
+      const words = author.name.split(/\s+/).filter(Boolean);
+      const shortName = words.length > 2 ? `${words[0]} ${words[words.length - 1]}` : author.name;
+      return {
+        id: author.id,
+        name: shortName,
+        fullName: author.name,
+        publications: author.publications,
+        citations: author.citations,
+        h_index: author.h_index,
+      };
+    });
+  }, [sortedAuthors]);
+
+  // 2. Data for ComposedChart (Area + Bar + Line mapped to Index 0–1800 as in Recharts documentation)
   const composedData = useMemo(() => {
     if (!sortedAuthors || sortedAuthors.length === 0) return [];
 
@@ -151,11 +167,16 @@ export default function AuthorLeaderboardCharts({
       return {
         id: author.id,
         name: shortName,
+        shortName,
         fullName: author.name,
         // Exact keys from the user's Recharts sample code:
         amt,
         pv,
         uv,
+        // Direct metrics for filtering and bar chart view:
+        publications: author.publications,
+        citations: author.citations,
+        h_index: author.h_index,
         // Raw real metrics for tooltip:
         rawPublications: author.publications,
         rawCitations: author.citations,
@@ -433,12 +454,12 @@ export default function AuthorLeaderboardCharts({
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
                         layout="vertical"
-                        data={composedData}
+                        data={leaderboardBarData}
                         margin={{ top: 5, right: 30, bottom: 5, left: 10 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
                         <XAxis type="number" stroke="#94a3b8" tick={{ fontSize: 10, fill: '#64748b' }} tickFormatter={formatShortNum} />
-                        <YAxis type="category" dataKey="shortName" stroke="#94a3b8" width={100} tick={{ fontSize: 10, fill: '#64748b' }} />
+                        <YAxis type="category" dataKey="name" stroke="#94a3b8" width={100} tick={{ fontSize: 10, fill: '#64748b' }} />
                         <RechartsTooltip
                           formatter={(val) => [formatNum(val), metricLabel]}
                           contentStyle={{ borderRadius: '8px', fontSize: '12px', border: '1px solid #e2e8f0' }}
@@ -449,7 +470,7 @@ export default function AuthorLeaderboardCharts({
                           radius={[0, 4, 4, 0]}
                           barSize={14}
                         >
-                          {composedData.map((entry, idx) => (
+                          {leaderboardBarData.map((entry, idx) => (
                             <Cell key={`bar-${entry.id}`} fill={idx === 0 ? '#0071BC' : '#38BDF8'} />
                           ))}
                         </Bar>
@@ -493,7 +514,6 @@ export default function AuthorLeaderboardCharts({
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                       <XAxis
                         dataKey="name"
-                        scale="band"
                         label={{ value: 'Authors', position: 'insideBottomRight', offset: 0, fontSize: 11, fill: '#64748b' }}
                         stroke="#94a3b8"
                         tick={{ fontSize: 11, fill: '#64748b' }}
@@ -517,14 +537,14 @@ export default function AuthorLeaderboardCharts({
                                   <div className="flex items-center justify-between text-blue-600 font-medium">
                                     <span className="flex items-center gap-1.5">
                                       <span className="size-2 rounded bg-blue-500 inline-block" />
-                                      amt (Impact Index):
+                                      Impact Index (amt):
                                     </span>
                                     <strong>{item?.amt}</strong>
                                   </div>
                                   <div className="flex items-center justify-between text-orange-600 font-medium">
                                     <span className="flex items-center gap-1.5">
                                       <span className="size-2 rounded bg-orange-500 inline-block" />
-                                      pv (Publications):
+                                      Publications (pv):
                                     </span>
                                     <span>
                                       <strong>{item?.pv}</strong>
@@ -536,7 +556,7 @@ export default function AuthorLeaderboardCharts({
                                   <div className="flex items-center justify-between text-emerald-600 font-medium">
                                     <span className="flex items-center gap-1.5">
                                       <span className="size-2 rounded-full bg-emerald-500 inline-block" />
-                                      uv (Citations):
+                                      Citations (uv):
                                     </span>
                                     <span>
                                       <strong>{item?.uv}</strong>
@@ -564,14 +584,14 @@ export default function AuthorLeaderboardCharts({
                       <Area
                         type="monotone"
                         dataKey="amt"
-                        name="amt"
+                        name="Total Impact (amt)"
                         fill="#3b82f6"
                         stroke="#2563eb"
                         fillOpacity={0.45}
                       />
                       <Bar
                         dataKey="pv"
-                        name="pv"
+                        name="Publications (pv)"
                         barSize={20}
                         fill="#f97316"
                         radius={[4, 4, 0, 0]}
@@ -579,7 +599,7 @@ export default function AuthorLeaderboardCharts({
                       <Line
                         type="monotone"
                         dataKey="uv"
-                        name="uv"
+                        name="Citations (uv)"
                         stroke="#10b981"
                         strokeWidth={2.5}
                         dot={{ r: 4.5, fill: '#10b981', stroke: '#ffffff', strokeWidth: 1.5 }}
