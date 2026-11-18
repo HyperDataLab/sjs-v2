@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { Table } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
-import { Badge } from '../../../shared/ui/badge';
 
 export default function JournalTable({
   journals = [],
@@ -15,66 +14,72 @@ export default function JournalTable({
   const renderAccessBadge = (journal) => {
     if (journal.is_open_access) {
       return (
-        <Badge variant="success" className="text-xs font-medium">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span className="size-1.5 rounded-full bg-emerald-600" />
           Open Access
-        </Badge>
+        </span>
       );
     }
     return (
-      <Badge variant="outline" className="text-xs font-medium text-muted-foreground">
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-50 text-slate-600 border border-slate-200">
         Subscription
-      </Badge>
+      </span>
     );
   };
 
   const renderQuartileBadge = (quartile = '') => {
-    if (!quartile) return '—';
-    if (quartile === 'Q1') {
+    if (!quartile) return <span className="text-muted-foreground text-xs">—</span>;
+    const q = String(quartile).trim().toUpperCase();
+    if (q === 'Q1') {
       return (
-        <Badge variant="success" className="text-xs font-bold px-2 py-0.5">
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
           Q1
-        </Badge>
+        </span>
       );
     }
-    if (quartile === 'Q2') {
+    if (q === 'Q2') {
       return (
-        <Badge variant="info" className="text-xs font-bold px-2 py-0.5">
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">
           Q2
-        </Badge>
+        </span>
       );
     }
-    if (quartile === 'Q3') {
+    if (q === 'Q3') {
       return (
-        <Badge variant="warning" className="text-xs font-bold px-2 py-0.5">
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs">
           Q3
-        </Badge>
+        </span>
+      );
+    }
+    if (q === 'Q4') {
+      return (
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+          Q4
+        </span>
       );
     }
     return (
-      <Badge variant="secondary" className="text-xs font-bold px-2 py-0.5">
+      <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-bold bg-surface-muted text-muted-foreground border border-border">
         {quartile}
-      </Badge>
+      </span>
     );
   };
 
   return (
-    <section className="catalog-surface catalog-table-card rounded-card border border-border bg-surface shadow-sm">
+    <section className="catalog-table-card rounded-card border border-border bg-surface shadow-xs overflow-hidden">
       <div className="table-responsive">
-        <Table hover className="catalog-table align-middle mb-0 text-start">
+        <Table hover className="catalog-table align-middle mb-0 text-start w-full">
           <thead>
-            <tr className="border-b border-border text-xs text-muted-foreground uppercase font-semibold">
-              <th className="px-4 py-3">Journal</th>
-              <th className="px-3 py-3">ISSN</th>
-              <th className="px-3 py-3">Publisher</th>
-              <th className="px-3 py-3">Country</th>
-              <th className="px-3 py-3">Quartile</th>
-              <th className="px-3 py-3">Metric</th>
-              <th className="px-3 py-3">Year</th>
-              <th className="px-3 py-3">Access</th>
+            <tr className="border-b border-border bg-surface-muted/60 text-xs text-muted-foreground uppercase font-bold tracking-wider">
+              <th className="px-4 py-3 text-start">Journal & ISSN</th>
+              <th className="px-3 py-3 text-start">Publisher & Region</th>
+              <th className="px-3 py-3 text-center">Quartile</th>
+              <th className="px-3 py-3 text-center">SJR Metric</th>
+              <th className="px-3 py-3 text-center">Access</th>
               <th className="px-4 py-3 text-end">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-border/60">
             {journals.map((journal) => {
               const id = journal.id || journal.journal_id;
               const isFollowed = !!followedJournals[id];
@@ -82,49 +87,71 @@ export default function JournalTable({
                 <tr
                   key={id}
                   onClick={() => navigate(`/journals/${id}`)}
-                  className="cursor-pointer transition-colors hover:bg-surface-muted/50"
+                  className="cursor-pointer transition-colors hover:bg-primary-subtle/20 group"
                 >
-                  <td className="px-4 py-3">
-                    <div className="catalog-journal-name font-semibold text-foreground hover:text-primary transition-colors text-sm">
+                  {/* Journal Name & ISSN */}
+                  <td className="px-4 py-3.5 max-w-sm">
+                    <div className="font-bold text-foreground group-hover:text-primary transition-colors text-sm line-clamp-2 leading-snug">
                       {journal.display_name}
                     </div>
+                    {journal.issn ? (
+                      <div className="text-[11px] font-mono text-muted-foreground mt-1 flex items-center gap-1.5">
+                        <span className="uppercase text-[10px] font-semibold text-muted-foreground/80">ISSN:</span>
+                        <span className="font-medium text-foreground/80">{journal.issn}</span>
+                      </div>
+                    ) : null}
                   </td>
-                  <td className="px-3 py-3 text-muted-custom catalog-mono text-xs">
-                    {journal.issn || '—'}
+
+                  {/* Publisher & Country */}
+                  <td className="px-3 py-3.5">
+                    <div className="text-xs font-medium text-foreground truncate max-w-[220px]" title={journal.publisher}>
+                      {journal.publisher || '—'}
+                    </div>
+                    {journal.country ? (
+                      <div className="text-[11px] text-muted-foreground mt-1 flex items-center gap-1">
+                        <Icon icon="lucide:globe" width="12" className="text-muted-foreground shrink-0" />
+                        <span className="truncate max-w-[180px]">{journal.country}</span>
+                      </div>
+                    ) : null}
                   </td>
-                  <td className="px-3 py-3 text-main text-xs">
-                    {journal.publisher || '—'}
-                  </td>
-                  <td className="px-3 py-3 text-main text-xs">
-                    {journal.country || '—'}
-                  </td>
-                  <td className="px-3 py-3">
+
+                  {/* Quartile Badge */}
+                  <td className="px-3 py-3.5 text-center whitespace-nowrap">
                     {renderQuartileBadge(journal.quartile)}
                   </td>
-                  <td className="px-3 py-3 font-semibold text-main catalog-mono text-xs">
-                    {journal.metric_value ?? '—'}
+
+                  {/* Metric Value & Year */}
+                  <td className="px-3 py-3.5 text-center whitespace-nowrap">
+                    <div className="font-mono text-xs font-bold text-foreground">
+                      {journal.metric_value ? Number(journal.metric_value).toFixed(2) : '—'}
+                    </div>
+                    {journal.metric_year ? (
+                      <div className="text-[10px] text-muted-foreground">
+                        {journal.metric_year}
+                      </div>
+                    ) : null}
                   </td>
-                  <td className="px-3 py-3 text-main text-xs">
-                    {journal.metric_year || '—'}
-                  </td>
-                  <td className="px-3 py-3">
+
+                  {/* Access Type Badge */}
+                  <td className="px-3 py-3.5 text-center whitespace-nowrap">
                     {renderAccessBadge(journal)}
                   </td>
-                  <td className="px-4 py-3 text-end">
-                    <div className="d-inline-flex align-items-center">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          onFollow(id);
-                        }}
-                        className={`catalog-follow-btn ${isFollowed ? 'is-followed' : ''}`}
-                      >
-                        <Icon icon={isFollowed ? 'lucide:check' : 'lucide:plus'} width="13" />
-                        <span>{isFollowed ? t("catalog.daTheoDoi") : t("catalog.theoDoi")}</span>
-                      </button>
-                    </div>
+
+                  {/* Follow Action Button */}
+                  <td className="px-4 py-3.5 text-end whitespace-nowrap">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onFollow(id);
+                      }}
+                      className={`catalog-follow-btn ${isFollowed ? 'is-followed' : ''}`}
+                      title={isFollowed ? 'Unfollow journal' : 'Follow journal'}
+                    >
+                      <Icon icon={isFollowed ? 'lucide:check' : 'lucide:plus'} width="13" />
+                      <span>{isFollowed ? t("catalog.daTheoDoi", "Following") : t("catalog.theoDoi", "Follow")}</span>
+                    </button>
                   </td>
                 </tr>
               );

@@ -6,7 +6,6 @@ import { useCatalogSearch } from '../hooks/useCatalogSearch';
 import FilterPanel from '../components/FilterPanel';
 import JournalTable from '../components/JournalTable';
 import AuthRequiredModal from '../../../shared/components/AuthRequiredModal';
-import Header from '../../landing/components/Header';
 import useAuth from '../../auth/hooks/useAuth';
 import AdminPagination from '../../../shared/components/Pagination';
 import { Button } from '../../../shared/ui/button';
@@ -61,168 +60,176 @@ export default function CatalogSearchPage() {
   const totalPages = Math.ceil(total / pageLimit) || 1;
 
   return (
-    <div className="min-vh-100 text-main catalog-search-page">
-      {/* Navbar Header (renders null inside DashboardShell) */}
-      <Header />
-
-      <PageContainer className="catalog-shell">
-        {/* Unified Design System PageHeader with Breadcrumbs */}
-        <PageHeader
-          breadcrumbs={[
-            { label: t("home"), to: "/" },
-            { label: t("search") }
-          ]}
-          title={t("catalog.danhMucTimKiem")}
-          description={t("catalog.timKiemJournalLocTheoLinhVucXe")}
-        />
-
-        {/* Catalog Main Layout */}
-        <div className="w-100 space-y-4">
-          {/* Toolbar Filter Panel */}
-          <FilterPanel
-            searchInput={searchInput}
-            setSearchInput={setSearchInput}
-            onSearchSubmit={handleSearchSubmit}
-            subjectAreas={subjectAreas}
-            subjectCategories={subjectCategories}
-            selectedAreas={selectedAreas}
-            selectedCategories={selectedCategories}
-            selectedAccess={selectedAccess}
-            selectedQuartiles={selectedQuartiles}
-            onAreaSelect={onAreaSelect}
-            onCategorySelect={onCategorySelect}
-            onAccessSelect={onAccessSelect}
-            onQuartileSelect={onQuartileSelect}
-            selectedYear={selectedYear}
-            selectedZone={selectedZone}
-            zones={zones}
-            onYearSelect={onYearSelect}
-            onZoneSelect={onZoneSelect}
-            isOaDiamond={isOaDiamond}
-            onOaDiamondToggle={handleOaDiamondToggle}
-            onClearAll={handleClearAll}
-            loading={loadingFilters}
-          />
-
-          {/* Toolbar Panel */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-start py-2 border-b border-border">
-            {/* Summary Counter text */}
-            <div className="text-xs text-muted-foreground">
-              {loadingJournals ? (
-                <span>{t("catalog.dangTimKiemTapChi")}</span>
-              ) : (
-                <span>
-                  {t("catalog.timThay", "Found ")}
-                  <strong className="text-foreground">{total}</strong> {t("catalog.tapChiCount", "journals")} · {t("pagination.page", "Page")}{" "}
-                  <span className="font-semibold text-foreground">{page}/{totalPages}</span>
-                </span>
-              )}
-            </div>
-
-            {/* Sort Dropdown */}
-            <Dropdown align="end">
-              <Dropdown.Toggle
-                variant="outline"
-                id="sort-dropdown"
-                className="btn btn-sm border border-border bg-surface text-foreground text-xs d-flex items-center gap-1.5"
-              >
-                <Icon icon="lucide:arrow-up-down" width="14" />
-                <span>
-                  {sort === 'metric' && t("catalog.macDinh")}
-                  {sort === 'name' && t("catalog.tenAz")}
-                </span>
-              </Dropdown.Toggle>
-              <Dropdown.Menu className="border border-border bg-surface shadow-popover rounded-card p-1 text-xs">
-                <Dropdown.Item onClick={() => handleSortChange('metric')} className="rounded-control text-xs">
-                  {t("catalog.macDinh")}
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => handleSortChange('name')} className="rounded-control text-xs">
-                  {t("catalog.tenAz")}
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+    <PageContainer>
+      {/* 1. Standard Page Header */}
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Workspace', to: '/dashboard' },
+          { label: 'Journal Catalog' }
+        ]}
+        title={t("catalog.danhMucTimKiem", "Journal Catalog & Search")}
+        description={t("catalog.timKiemJournalLocTheoLinhVucXe", "Search international scientific journals, Scimago quartile rankings, and citation metrics.")}
+        badge={
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted-foreground shadow-2xs">
+            <span className="size-2 rounded-full bg-success" />
+            <span>Indexed Database:</span>
+            <strong className="text-foreground">{total ? Number(total).toLocaleString() : '270,000+'}</strong>
+            <span>journals</span>
           </div>
+        }
+      />
 
-          {/* Main Result Area */}
+      {/* 2. Integrated Control Filter Panel */}
+      <FilterPanel
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+        onSearchSubmit={handleSearchSubmit}
+        subjectAreas={subjectAreas}
+        subjectCategories={subjectCategories}
+        selectedAreas={selectedAreas}
+        selectedCategories={selectedCategories}
+        selectedAccess={selectedAccess}
+        selectedQuartiles={selectedQuartiles}
+        onAreaSelect={onAreaSelect}
+        onCategorySelect={onCategorySelect}
+        onAccessSelect={onAccessSelect}
+        onQuartileSelect={onQuartileSelect}
+        selectedYear={selectedYear}
+        selectedZone={selectedZone}
+        zones={zones}
+        onYearSelect={onYearSelect}
+        onZoneSelect={onZoneSelect}
+        isOaDiamond={isOaDiamond}
+        onOaDiamondToggle={handleOaDiamondToggle}
+        onClearAll={handleClearAll}
+        loading={loadingFilters}
+      />
+
+      {/* 3. Toolbar: Results Counter + Sort Options */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border">
+        <div className="text-xs text-muted-foreground">
           {loadingJournals ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map((s) => (
-                <div key={s} className="p-4 rounded-card border border-border bg-surface space-y-2.5">
-                  <Skeleton className="h-5 w-3/5 rounded-control" />
-                  <Skeleton className="h-3.5 w-2/5 rounded-control" />
-                  <div className="flex items-center gap-2 pt-1">
-                    <Skeleton className="h-5 w-12 rounded-control" />
-                    <Skeleton className="h-5 w-24 rounded-control" />
-                    <Skeleton className="h-5 w-28 rounded-control" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : error && journals.length === 0 ? (
-            <StatePanel
-              variant="error"
-              icon={
-                <Icon
-                  icon={error?.includes(t("catalog.dangNhap")) ? 'lucide:lock' : 'lucide:alert-triangle'}
-                  width="32"
-                  className="text-danger"
-                />
-              }
-              title={
-                error?.includes(t("catalog.dangNhap"))
-                  ? t("catalog.canDangNhapDeTimKiem")
-                  : t("catalog.khongTheTaiDuLieuTimKiem")
-              }
-              description={error}
-              actions={
-                error?.includes(t("catalog.dangNhap")) ? (
-                  <Button onClick={() => (navigate('/login'))}>
-                    {t("signIn")}
-                  </Button>
-                ) : (
-                  <Button variant="outline" onClick={() => fetchJournals()}>
-                    {t("article.thuLai")}
-                  </Button>
-                )
-              }
-            />
-          ) : journals.length === 0 ? (
-            <StatePanel
-              variant="neutral"
-              icon={<Icon icon="lucide:folder-search" width="32" className="text-muted-foreground" />}
-              title={t("catalog.khongTimThayJournalPhuHop")}
-              description={t("catalog.hayThuThayDoiTuKhoaTimKiemHoac")}
-              actions={
-                <Button variant="outline" onClick={handleClearAll}>
-                  {t("article.xoaBoLoc")}
-                </Button>
-              }
-            />
+            <span className="flex items-center gap-1.5">
+              <Icon icon="lucide:loader-2" width="14" className="animate-spin text-primary" />
+              <span>{t("catalog.dangTimKiemTapChi", "Searching journals database...")}</span>
+            </span>
           ) : (
-            <JournalTable
-              journals={journals}
-              followedJournals={followedJournals}
-              onFollow={handleFollowJournal}
-            />
-          )}
-
-          {/* Pagination Controls */}
-          {totalPages > 1 && !loadingJournals && (
-            <div className="mt-5">
-              <AdminPagination
-                totalItems={total}
-                currentPage={page}
-                limit={pageLimit}
-                onPageChange={handlePageChange}
-                entityName="journals"
-              />
-            </div>
+            <span>
+              {t("catalog.timThay", "Found ")}
+              <strong className="text-foreground font-bold">{Number(total || 0).toLocaleString()}</strong> {t("catalog.tapChiCount", "journals")}
+              <span className="mx-1.5">•</span>
+              {t("pagination.page", "Page")} <strong className="text-foreground">{page}</strong> of <strong className="text-foreground">{totalPages}</strong>
+            </span>
           )}
         </div>
-      </PageContainer>
+
+        {/* Sort Dropdown */}
+        <Dropdown align="end">
+          <Dropdown.Toggle
+            variant="light"
+            id="sort-dropdown"
+            className="h-8 px-3 rounded-control border border-border bg-surface text-foreground text-xs font-medium flex items-center gap-1.5 shadow-2xs hover:border-primary/40"
+          >
+            <Icon icon="lucide:arrow-up-down" width="13" className="text-muted-foreground" />
+            <span>
+              {sort === 'metric' && t("catalog.macDinh", "Sort: SJR Metric")}
+              {sort === 'name' && t("catalog.tenAz", "Sort: Name (A-Z)")}
+            </span>
+            <Icon icon="lucide:chevron-down" width="12" className="text-muted-foreground" />
+          </Dropdown.Toggle>
+          <Dropdown.Menu className="border border-border bg-surface shadow-popover rounded-card p-1 text-xs">
+            <Dropdown.Item
+              onClick={() => handleSortChange('metric')}
+              className={`rounded-control text-xs py-1.5 px-3 ${sort === 'metric' ? 'bg-primary-subtle text-primary font-bold' : ''}`}
+            >
+              {t("catalog.macDinh", "Sort: SJR Metric (Default)")}
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => handleSortChange('name')}
+              className={`rounded-control text-xs py-1.5 px-3 ${sort === 'name' ? 'bg-primary-subtle text-primary font-bold' : ''}`}
+            >
+              {t("catalog.tenAz", "Sort: Name (A-Z)")}
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
+      {/* 4. Table Result Area */}
+      {loadingJournals ? (
+        <div className="rounded-card border border-border bg-surface p-4 space-y-4 shadow-xs">
+          {[1, 2, 3, 4, 5].map((s) => (
+            <div key={s} className="flex items-center justify-between gap-4 py-2 border-b border-border/40 last:border-0">
+              <div className="space-y-1.5 flex-1">
+                <Skeleton className="h-4 w-3/5 rounded-control" />
+                <Skeleton className="h-3 w-1/4 rounded-control" />
+              </div>
+              <Skeleton className="h-6 w-12 rounded-control shrink-0" />
+              <Skeleton className="h-6 w-16 rounded-control shrink-0" />
+              <Skeleton className="h-6 w-20 rounded-control shrink-0" />
+              <Skeleton className="h-7 w-24 rounded-control shrink-0" />
+            </div>
+          ))}
+        </div>
+      ) : error && journals.length === 0 ? (
+        <StatePanel
+          variant="error"
+          icon={
+            <Icon
+              icon={error?.includes(t("catalog.dangNhap")) ? 'lucide:lock' : 'lucide:alert-triangle'}
+              width="36"
+              className="text-danger"
+            />
+          }
+          title={
+            error?.includes(t("catalog.dangNhap"))
+              ? t("catalog.canDangNhapDeTimKiem", "Authentication Required")
+              : t("catalog.khongTheTaiDuLieuTimKiem", "Failed to load journals")
+          }
+          description={error}
+          action={
+            error?.includes(t("catalog.dangNhap")) ? {
+              label: t("signIn", "Sign In"),
+              onClick: () => navigate('/login')
+            } : {
+              label: t("article.thuLai", "Try Again"),
+              onClick: () => fetchJournals()
+            }
+          }
+        />
+      ) : journals.length === 0 ? (
+        <StatePanel
+          variant="neutral"
+          icon={<Icon icon="lucide:folder-search" width="36" className="text-muted-foreground" />}
+          title={t("catalog.khongTimThayJournalPhuHop", "No journals matching your criteria")}
+          description={t("catalog.hayThuThayDoiTuKhoaTimKiemHoac", "Try adjusting your search keywords, field filters, or quartile selection.")}
+          action={{
+            label: t("article.xoaBoLoc", "Clear all filters"),
+            onClick: handleClearAll
+          }}
+        />
+      ) : (
+        <JournalTable
+          journals={journals}
+          followedJournals={followedJournals}
+          onFollow={handleFollowJournal}
+        />
+      )}
+
+      {/* 5. Pagination Controls */}
+      {totalPages > 1 && !loadingJournals && (
+        <div className="pt-2 flex justify-center sm:justify-end">
+          <AdminPagination
+            totalItems={total}
+            currentPage={page}
+            limit={pageLimit}
+            onPageChange={handlePageChange}
+            entityName="journals"
+          />
+        </div>
+      )}
 
       {/* Guest Authentication Interception Modal */}
       <AuthRequiredModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
-    </div>
+    </PageContainer>
   );
 }

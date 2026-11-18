@@ -1,11 +1,12 @@
 .catalog-search-page {
-  background: var(--bg-main);
-  padding-top: 100px;
-  padding-bottom: 80px;
+  background: transparent;
+  padding-top: 0;
+  padding-bottom: 2rem;
 }
 
 .catalog-shell {
-  max-width: 1180px;
+  width: 100%;
+  max-width: none;
 }
 
 .catalog-breadcrumb {
@@ -32,11 +33,11 @@
 .catalog-title {
   color: var(--text-main);
   font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 1.05;
-  margin-bottom: 0.65rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
   text-wrap: balance;
 }
 
@@ -70,11 +71,10 @@
   flex: 1 1 auto;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.5rem;
   min-width: 0;
-  justify-content: center;
-  border: 1px solid var(--border) !important;
-  border-radius: 999px !important;
+  border: none !important;
+  border-radius: 0 !important;
 }
 
 .catalog-filter-dropdown .dropdown-toggle::after,
@@ -83,33 +83,36 @@
 }
 
 .catalog-filter-button {
-  min-height: 42px;
-  max-width: 230px;
-  border: none !important;
+  min-height: 38px;
+  max-width: 240px;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--ds-radius-control, 8px) !important;
   background: var(--bg-card) !important;
   color: var(--text-main) !important;
   display: inline-flex !important;
   align-items: center;
   justify-content: space-between;
-  gap: 0.55rem;
+  gap: 0.5rem;
   font-family: var(--font-display) !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  padding: 0.52rem 0.8rem !important;
-  box-shadow: none !important;
-}
-
-.catalog-filter-button-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 0.45rem 0.75rem !important;
+  box-shadow: 0 1px 2px rgb(16 24 40 / 4%) !important;
+  transition: all 0.15s ease-in-out !important;
 }
 
 .catalog-filter-button:hover,
 .catalog-filter-button:focus,
-.catalog-filter-button.show,
-.catalog-filter-button.is-active {
+.catalog-filter-button.show {
+  border-color: var(--primary) !important;
+  background: var(--ds-surface-muted, #f8fafc) !important;
+}
 
+.catalog-filter-button.is-active {
+  border-color: var(--primary) !important;
+  background: var(--primary-light, #e0f2fe) !important;
+  color: var(--primary) !important;
+  font-weight: 600 !important;
 }
 
 .catalog-filter-button:disabled {
@@ -468,25 +471,37 @@
 }
 
 .catalog-follow-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-main);
+  background: var(--primary-light, #e0f2fe);
+  border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
+  border-radius: var(--ds-radius-control, 8px);
+  color: var(--primary);
   display: inline-flex;
   align-items: center;
   gap: 0.38rem;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 0.34rem 0.8rem;
+  padding: 0.32rem 0.75rem;
   white-space: nowrap;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
 }
 
 .catalog-follow-btn:hover {
-
-  transform: none;
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
 }
 
 .catalog-follow-btn.is-followed {
+  background: var(--ds-surface-muted, #f1f5f9);
+  border-color: var(--border);
   color: var(--text-muted);
+}
+
+.catalog-follow-btn.is-followed:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
 }
 
 .catalog-state-card {
