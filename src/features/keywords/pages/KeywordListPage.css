@@ -138,7 +138,7 @@
 }
 
 .keyword-search-submit,
-.keyword-card-action,
+.keyword-list-page .keyword-card-action,
 .keyword-retry-btn {
   border: 1px solid var(--btn-dark) !important;
   background: var(--btn-dark) !important;
@@ -148,7 +148,7 @@
 }
 
 .keyword-search-submit:hover,
-.keyword-card-action:hover,
+.keyword-list-page .keyword-card-action:hover,
 .keyword-retry-btn:hover {
   opacity: 0.92;
   transform: translateY(-1px);
@@ -197,26 +197,26 @@
   color: var(--primary) !important;
 }
 
-.keyword-card,
-.keyword-state-card,
-.keyword-skeleton-card {
+.keyword-list-page .keyword-card,
+.keyword-list-page .keyword-state-card,
+.keyword-list-page .keyword-skeleton-card {
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--bg-card);
 }
 
-.keyword-card {
+.keyword-list-page .keyword-card {
   height: 100%;
   padding: 1.25rem;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-.keyword-card:hover {
+.keyword-list-page .keyword-card:hover {
   border-color: var(--primary);
   transform: translateY(-2px);
 }
 
-.keyword-card-label {
+.keyword-list-page .keyword-card-label {
   margin-bottom: 0.55rem;
   color: var(--text-muted);
   font-size: 13px;
@@ -225,7 +225,7 @@
   text-transform: uppercase;
 }
 
-.keyword-card-title {
+.keyword-list-page .keyword-card-title {
   margin: 0;
   color: var(--text-main);
   font-family: var(--font-display);
@@ -234,51 +234,51 @@
   line-height: 1.35;
 }
 
-.keyword-card-icon {
+.keyword-list-page .keyword-card-icon {
   color: var(--text-muted);
 }
 
-.keyword-count-badge,
-.keyword-topic-badge {
+.keyword-list-page .keyword-count-badge,
+.keyword-list-page .keyword-topic-badge {
   border: 1px solid var(--border) !important;
   border-radius: 999px !important;
   padding: 0.34rem 0.55rem !important;
   font-weight: 700 !important;
 }
 
-.keyword-count-badge {
+.keyword-list-page .keyword-count-badge {
   background: var(--btn-dark) !important;
   color: var(--bg-card) !important;
 }
 
-.keyword-topic-badge {
+.keyword-list-page .keyword-topic-badge {
   background: var(--bg-chip) !important;
   color: var(--text-main) !important;
 }
 
-.keyword-card-action {
+.keyword-list-page .keyword-card-action {
   border-radius: 10px !important;
   padding: 0.62rem 1rem !important;
   font-size: 14px !important;
 }
 
-.keyword-state-card {
+.keyword-list-page .keyword-state-card {
   padding: 3rem 1.5rem;
   text-align: center;
 }
 
-.keyword-state-icon {
+.keyword-list-page .keyword-state-icon {
   color: var(--primary);
 }
 
-.keyword-state-title {
+.keyword-list-page .keyword-state-title {
   color: var(--text-main);
   font-family: var(--font-display);
   font-size: 16px;
   font-weight: 700;
 }
 
-.keyword-skeleton-card {
+.keyword-list-page .keyword-skeleton-card {
   padding: 1.25rem;
 }
 

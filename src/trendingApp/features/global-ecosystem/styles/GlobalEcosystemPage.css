@@ -247,7 +247,7 @@
   z-index: 10;
 }
 
-.legend-title {
+.heatmap-legend .legend-title {
   display: block;
   font-size: var(--font-size-card-title);
   font-weight: var(--font-weight-semibold);

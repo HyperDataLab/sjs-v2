@@ -1,8 +1,5 @@
-:root {
-  --header-height: 72px;
-}
-
 .wallet-layout-page {
+  --header-height: 72px;
   min-height: 100vh;
   padding-top: var(--header-height);
   background: #f7f8fb;

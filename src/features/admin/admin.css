@@ -7,7 +7,7 @@
   --admin-card-radius: var(--ds-radius-card, 0.75rem);
   display: flex;
   min-height: 100vh;
-  background-color: var(--ds-background, #f8fafc);
+  background-color: #ffffff;
   color: var(--text-main);
   font-family: var(--font-display);
 }
@@ -18,13 +18,16 @@
   display: flex;
   flex-direction: column;
   min-width: 0; /* tránh overflow khi table quá rộng */
+  background-color: #ffffff;
 }
 
 /* Vùng nội dung chính, có padding và nền trắng */
 .admin-content {
   flex: 1;
-  padding: clamp(1rem, 2vw, 2rem);
-  background: var(--ds-background, #f8fafc);
+  min-height: calc(100vh - 140px);
+  padding: 28px;
+  background-color: #ffffff;
+  background-image: none;
 }
 
 /* ───────────────────────────────────────────────────────────────
@@ -2415,15 +2418,15 @@
 
 /* === CUSTOM BUTTON STYLES === */
 
-/* Nút màu đen đặc */
-.btn-dark-solid {
+/* Nút màu đen đặc (scoped to admin layout) */
+.admin-layout .btn-dark-solid {
   background-color: var(--btn-dark) !important;
   border-color: var(--btn-dark) !important;
   color: #ffffff !important;
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.btn-dark-solid:hover {
+.admin-layout .btn-dark-solid:hover {
   background-color: var(--text-main) !important;
   border-color: var(--text-main) !important;
 }

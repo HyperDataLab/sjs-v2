@@ -98,7 +98,7 @@ const ProjectListPage = () => {
     .filter(Boolean);
 
   return (
-    <PageContainer className="grid-bg max-w-[1200px] py-8">
+    <PageContainer className="py-6">
       {/* Breadcrumb */}
       <nav aria-label="breadcrumb" className="mb-4">
         <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">

@@ -66,7 +66,7 @@
 .journal-stats-skeleton,
 .journal-search-panel,
 .journal-table-shell,
-.journal-empty-state,
+.journal-list-page .journal-empty-state,
 .journal-loading-panel {
   border: 1px solid var(--border) !important;
   border-radius: 14px !important;
@@ -111,11 +111,11 @@
 .journal-table-row:hover { background: var(--bg-section); }
 .journal-index { color: var(--text-muted); font-size: 14px; font-weight: 650; }
 .journal-name { color: var(--text-main); font-family: var(--font-display); font-size: 15px; font-weight: 700; }
-.journal-issn, .journal-cell-muted, .journal-metric-label { color: var(--text-muted); }
+.journal-issn, .journal-cell-muted, .journal-list-page .journal-metric-label { color: var(--text-muted); }
 .journal-issn { margin-top: .15rem; font-size: 13px; }
 .journal-cell-muted { font-size: 14px; font-weight: 500; }
-.journal-metric-value { color: var(--text-main); font-size: 14px; font-weight: 700; }
-.journal-metric-label { font-size: 13px; }
+.journal-list-page .journal-metric-value { color: var(--text-main); font-size: 14px; font-weight: 700; }
+.journal-list-page .journal-metric-label { font-size: 13px; }
 .journal-quartile-badge, .journal-oa-badge { border-radius: 6px !important; font-size: 13px !important; font-weight: 700 !important; }
 .journal-quartile-badge { border: 1px solid var(--border) !important; background: var(--bg-chip) !important; color: var(--text-muted) !important; }
 .journal-quartile-badge--q1 { border-color: var(--q1-color) !important; background: var(--q1-color) !important; color: var(--bg-card) !important; }
@@ -125,6 +125,6 @@
 .journal-oa-badge { display: inline-flex !important; align-items: center; gap: .3rem; border: 1px solid var(--border) !important; background: var(--primary-light) !important; color: var(--primary) !important; }
 .journal-detail-link { color: var(--primary) !important; font-size: 14px !important; font-weight: 700 !important; text-decoration: none !important; }
 
-.journal-empty-state { padding: 3rem 1.5rem; text-align: center; }
+.journal-list-page .journal-empty-state { padding: 3rem 1.5rem; text-align: center; }
 .journal-empty-title { color: var(--text-main); font-family: var(--font-display); font-weight: 700; }
 .journal-pagination { --bs-pagination-bg: var(--bg-card); --bs-pagination-border-color: var(--border); --bs-pagination-color: var(--text-muted); --bs-pagination-hover-color: var(--primary); --bs-pagination-hover-bg: var(--primary-light); --bs-pagination-hover-border-color: var(--primary); --bs-pagination-active-bg: var(--primary); --bs-pagination-active-border-color: var(--primary); --bs-pagination-active-color: var(--bg-card); }

@@ -15,8 +15,8 @@ export default function RecentProjectsCard({ projects = [], loading, error, onVi
 
   return <Card className="h-full min-w-0">
     <CardHeader className="flex flex-row items-center justify-between gap-3">
-      <CardTitle className="flex items-center gap-2"><Icon icon="lucide:folder-open" width={16} className="text-[#0071BC]" />{t('dashboard.projectsGanDay')}</CardTitle>
-      {onViewAll && <Button variant="ghost" size="sm" onClick={onViewAll} className="text-[#0071BC]">{t('dashboard.xemTatCa')}</Button>}
+      <CardTitle className="flex min-w-0 flex-1 items-center gap-2 leading-snug"><Icon icon="lucide:folder-open" width={16} className="shrink-0 text-primary" /><span>{t('dashboard.projectsGanDay')}</span></CardTitle>
+      {onViewAll && <Button variant="ghost" size="sm" onClick={onViewAll} className="shrink-0 text-primary">{t('dashboard.xemTatCa')}</Button>}
     </CardHeader>
     <CardContent>
       {loading ? <div role="status" aria-label={t('common.dangCapNhat', 'Loading')} className="space-y-4">{[1, 2, 3].map((i) => <div key={i} className="h-14 animate-pulse rounded-lg bg-slate-100" />)}</div>

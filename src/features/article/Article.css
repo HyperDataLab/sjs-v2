@@ -759,7 +759,7 @@
 }
 
 /* Keyword Card layout in Keywords tab */
-.keyword-card {
+.article-detail-page .keyword-card {
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--bg-card);
@@ -768,12 +768,12 @@
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-.keyword-card:hover {
+.article-detail-page .keyword-card:hover {
   border-color: var(--primary);
   transform: translateY(-2px);
 }
 
-.keyword-card-label {
+.article-detail-page .keyword-card-label {
   margin-bottom: 0.55rem;
   color: var(--text-muted);
   font-size: 13px;
@@ -782,7 +782,7 @@
   text-transform: uppercase;
 }
 
-.keyword-card-title {
+.article-detail-page .keyword-card-title {
   margin: 0;
   color: var(--text-main);
   font-family: var(--font-display);
@@ -791,11 +791,11 @@
   line-height: 1.35;
 }
 
-.keyword-card-icon {
+.article-detail-page .keyword-card-icon {
   color: var(--text-muted);
 }
 
-.keyword-card-action {
+.article-detail-page .keyword-card-action {
   border: 1px solid var(--btn-dark) !important;
   background: var(--btn-dark) !important;
   color: var(--bg-card) !important;
@@ -806,7 +806,7 @@
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.keyword-card-action:hover {
+.article-detail-page .keyword-card-action:hover {
   opacity: 0.92;
   transform: translateY(-1px);
 }

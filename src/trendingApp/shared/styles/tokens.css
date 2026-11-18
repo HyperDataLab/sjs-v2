@@ -28,15 +28,15 @@
   /* Typography */
   --font-family-base: var(--ds-font-sans);
   
-  --font-size-page-title: 28px;
-  --font-size-section-title: 18px;
-  --font-size-card-title: 12px;
-  --font-size-kpi-value: 40px;
+  --font-size-page-title: 16px;
+  --font-size-section-title: 16px;
+  --font-size-card-title: 13px;
+  --font-size-kpi-value: 16px;
   --font-size-body: 14px;
-  --font-size-metadata: 12px;
-  --font-size-tab: 16px;
+  --font-size-metadata: 13px;
+  --font-size-tab: 14px;
   --font-size-ranking: 14px;
-  --font-size-legend: 11px;
+  --font-size-legend: 13px;
   
   --font-weight-regular: 400;
   --font-weight-medium: 500;

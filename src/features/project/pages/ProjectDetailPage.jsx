@@ -422,7 +422,7 @@ const ProjectDetailPage = () => {
 
   if (loading) {
     return (
-      <PageContainer className="grid-bg flex min-h-[50vh] max-w-screen-xl items-center justify-center py-10">
+      <PageContainer className="flex min-h-[50vh] items-center justify-center py-10">
         <Icon icon="lucide:loader-2" className="animate-spin text-primary" width="36" />
       </PageContainer>
     );
@@ -430,7 +430,7 @@ const ProjectDetailPage = () => {
 
   if (error || !project) {
     return (
-      <PageContainer className="grid-bg max-w-screen-xl py-8">
+      <PageContainer className="py-8">
         <Alert variant="destructive" className="items-center">
           <Icon icon="lucide:alert-triangle" width="24" className="shrink-0" />
           <div className="flex-1">
@@ -457,7 +457,7 @@ const ProjectDetailPage = () => {
   const growthYear = overviewData?.summary?.growthYear;
 
   return (
-    <PageContainer className="grid-bg max-w-screen-xl py-6">
+    <PageContainer className="py-6">
       {/* Breadcrumb */}
       <nav aria-label="breadcrumb" className="mb-4">
         <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
