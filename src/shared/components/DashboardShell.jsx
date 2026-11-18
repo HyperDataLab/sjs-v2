@@ -85,10 +85,10 @@ export default function DashboardShell({ children }) {
             to={`${base}/${path}`}
             onClick={() => setMobileOpen(false)}
             className={({ isActive }) =>
-              `group flex h-9 min-h-[36px] w-full items-center gap-2.5 rounded-control border-l-3 px-2.5 py-1.5 text-left text-xs transition-colors ${
+              `group flex h-9 min-h-[36px] w-full items-center gap-2.5 rounded-control px-2.5 py-1.5 text-left text-xs transition-colors ${
                 isActive
-                  ? 'border-primary bg-primary-subtle font-semibold !text-primary'
-                  : 'border-transparent font-medium !text-muted-foreground hover:bg-surface-muted hover:!text-foreground'
+                  ? 'bg-primary-subtle font-semibold !text-primary'
+                  : 'font-medium !text-muted-foreground hover:bg-surface-muted hover:!text-foreground'
               }`
             }
           >
