@@ -90,29 +90,46 @@ export default function DashboardShell({ children }) {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground md:flex">
+      {/* Mobile Top Header */}
       <header className="sticky top-0 z-[var(--ds-z-sticky)] flex min-h-16 items-center justify-between border-b border-border bg-surface px-4 md:hidden">
         <Logo size={30} fontSize="1.05rem" />
         <Button variant="ghost" size="icon" aria-label={t('navigation.open', 'Open navigation')} aria-expanded={mobileOpen} onClick={() => setMobileOpen(true)}><FiMenu /></Button>
       </header>
-      <div className="fixed inset-y-0 left-0 z-30 hidden w-[248px] md:block">{sidebar}</div>
-      <header className="app-topbar sticky top-0 z-[var(--ds-z-sticky)] flex max-md:hidden min-h-16 items-center justify-between border-b border-border bg-surface/95 px-6 md:px-8 backdrop-blur ml-[248px]">
-        <div className="flex min-w-0 items-center gap-2 text-sm">
-          <span className="text-muted-foreground">{t('navigation.workspace', 'Workspace')}</span>
-          <span aria-hidden="true" className="text-subtle-foreground">/</span>
-          <span className="truncate font-semibold text-foreground">{pageTitle}</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <button type="button" onClick={() => navigate(`${base}/search`)} className="flex h-10 min-w-[230px] items-center gap-2 rounded-control border border-border bg-background px-3 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary-subtle-hover" aria-label={t('navigation.search', 'Search')}>
-            <FiSearch aria-hidden="true" />
-            <span>{t('navigation.searchManuscripts', 'Search manuscripts, authors, or IDs…')}</span>
-          </button>
-          <button type="button" onClick={() => navigate(`${base}/profile`)} className="flex h-10 items-center gap-2 rounded-control border-0 bg-transparent px-2 text-sm text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground" aria-label={t('navigation.account', 'Account')}>
-            <span className="grid h-8 w-8 place-items-center rounded-full bg-primary-subtle font-semibold text-primary">R</span>
-            <span className="hidden lg:inline">{t('navigation.account', 'Account')}</span>
-          </button>
-        </div>
-      </header>
+
+      {/* Desktop Sticky Sidebar (Flex item, zero margin needed for main) */}
+      <div className="hidden md:block w-[248px] shrink-0">
+        <div className="sticky top-0 h-screen">{sidebar}</div>
+      </div>
+
+      {/* Main Content Column */}
+      <div className="flex flex-1 flex-col min-w-0">
+        <header className="app-topbar sticky top-0 z-[var(--ds-z-sticky)] flex max-md:hidden min-h-16 items-center justify-between border-b border-border bg-surface/95 px-6 md:px-8 backdrop-blur">
+          <div className="flex min-w-0 items-center gap-2 text-sm">
+            <span className="text-muted-foreground">{t('navigation.workspace', 'Workspace')}</span>
+            <span aria-hidden="true" className="text-subtle-foreground">/</span>
+            <span className="truncate font-semibold text-foreground">{pageTitle}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <button type="button" onClick={() => navigate(`${base}/search`)} className="flex h-10 min-w-[230px] items-center gap-2 rounded-control border border-border bg-background px-3 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary-subtle-hover" aria-label={t('navigation.search', 'Search')}>
+              <FiSearch aria-hidden="true" />
+              <span>{t('navigation.searchManuscripts', 'Search manuscripts, authors, or IDs…')}</span>
+            </button>
+            <button type="button" onClick={() => navigate(`${base}/profile`)} className="flex h-10 items-center gap-2 rounded-control border-0 bg-transparent px-2 text-sm text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground" aria-label={t('navigation.account', 'Account')}>
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-primary-subtle font-semibold text-primary">R</span>
+              <span className="hidden lg:inline">{t('navigation.account', 'Account')}</span>
+            </button>
+          </div>
+        </header>
+
+        <DashboardShellContext.Provider value>
+          <motion.main className="app-main flex-1 min-w-0" initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.2 }}>
+            {children}
+          </motion.main>
+        </DashboardShellContext.Provider>
+      </div>
+
+      {/* Mobile Navigation Drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div className="fixed inset-0 z-[var(--ds-z-overlay)] bg-foreground/35 md:hidden" initial={reduceMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduceMotion ? undefined : { opacity: 0 }} onClick={() => setMobileOpen(false)}>
@@ -123,11 +140,6 @@ export default function DashboardShell({ children }) {
           </motion.div>
         )}
       </AnimatePresence>
-      <DashboardShellContext.Provider value>
-        <motion.main className="app-main min-h-screen md:ml-[248px]" initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.2 }}>
-          {children}
-        </motion.main>
-      </DashboardShellContext.Provider>
     </div>
   );
 }
