@@ -29,7 +29,7 @@ export default function AuthorListPage() {
     fetchSubjectAreas,
   } = useAuthors();
   const [viewMode, setViewModeState] = useState(() => {
-    return searchParams.get('view') || localStorage.getItem('author_view_mode') || 'grid';
+    return searchParams.get('view') || localStorage.getItem('author_view_mode') || 'table';
   });
 
   const setViewMode = (mode) => {
@@ -40,7 +40,7 @@ export default function AuthorListPage() {
       // ignore storage access errors
     }
     const nextParams = new URLSearchParams(searchParams);
-    if (mode === 'grid') {
+    if (mode === 'table') {
       nextParams.delete('view');
     } else {
       nextParams.set('view', mode);
@@ -50,8 +50,9 @@ export default function AuthorListPage() {
   const searchVal = searchParams.get('search') || '';
   const pageVal = parseInt(searchParams.get('page') || '1', 10);
   const limitVal = parseInt(searchParams.get('limit') || '10', 10);
-  const sortVal = searchParams.get('sort') || 'impact';
+  const sortVal = searchParams.get('sort') || 'articles';
   const subjectAreaVal = searchParams.get('subject_area') || '';
+  const periodVal = searchParams.get('period') || '';
   const countryVal = searchParams.get('country') || '';
   const [searchInput, setSearchInput] = useState(searchVal);
 
@@ -62,13 +63,14 @@ export default function AuthorListPage() {
       limit: limitVal,
       sort: sortVal,
       subject_area: subjectAreaVal,
+      period: periodVal,
       country: countryVal,
     };
     const filteredParams = Object.fromEntries(
       Object.entries(params).filter(([, value]) => value !== '')
     );
     fetchAuthors(filteredParams);
-  }, [searchVal, pageVal, limitVal, sortVal, subjectAreaVal, countryVal, fetchAuthors]);
+  }, [searchVal, pageVal, limitVal, sortVal, subjectAreaVal, periodVal, countryVal, fetchAuthors]);
 
   useEffect(() => {
     if (!subjectAreas || subjectAreas.length === 0) {
@@ -165,17 +167,47 @@ export default function AuthorListPage() {
       <PageHeader
         title={t("author.danhSachNhaKhoaHocTacGia", "Authors & Researchers Directory")}
         description={t("author.traCuuThongTinChiSoHocThuatHin", "Explore author profiles, scientific contributions, h-index rankings, and publication impact.")}
-        actions={
-          <div className="text-end">
-            <div className="text-xs text-muted-foreground">{t("author.tongTacGia", "Total Authors")}</div>
-            <div className="text-sm font-bold text-foreground">
-              {totalAuthors ? totalAuthors.toLocaleString() : '—'} authors
-            </div>
+      />
+
+      <AuthorNavigationTabs
+        activeTab="list"
+        rightContent={
+          <div className="flex items-center gap-1 bg-surface border border-border p-1 rounded-control shadow-2xs">
+            <button
+              type="button"
+              onClick={() => setViewMode('list')}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs transition-colors border-0 cursor-pointer",
+                viewMode === 'list' || viewMode === 'table'
+                  ? "bg-primary text-white font-semibold shadow-xs"
+                  : "bg-transparent text-muted-foreground hover:text-foreground hover:bg-surface-muted"
+              )}
+              title={t("viewList", "List View")}
+              aria-label="List View"
+              aria-pressed={viewMode === 'list' || viewMode === 'table'}
+            >
+              <Icon icon="lucide:list" width={14} />
+              <span>List</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('grid')}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs transition-colors border-0 cursor-pointer",
+                viewMode === 'grid' || viewMode === 'cards'
+                  ? "bg-primary text-white font-semibold shadow-xs"
+                  : "bg-transparent text-muted-foreground hover:text-foreground hover:bg-surface-muted"
+              )}
+              title={t("viewGrid", "Grid View")}
+              aria-label="Grid View"
+              aria-pressed={viewMode === 'grid' || viewMode === 'cards'}
+            >
+              <Icon icon="lucide:layout-grid" width={14} />
+              <span>Grid</span>
+            </button>
           </div>
         }
       />
-
-      <AuthorNavigationTabs activeTab="list" />
 
       {/* 4 Stat Cards */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -198,7 +230,7 @@ export default function AuthorListPage() {
       {/* Filter bar */}
       <Card className="p-3 sm:p-3.5 shadow-card">
         <form onSubmit={handleSearchSubmit}>
-          <div className="flex flex-col sm:flex-row items-center gap-2.5">
+          <div className="flex flex-col lg:flex-row items-center gap-2.5">
             <div className="relative flex-1 w-full">
               <Icon icon="lucide:search" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" width={15} />
               <input
@@ -210,18 +242,53 @@ export default function AuthorListPage() {
               />
             </div>
 
-            <div className="w-full sm:w-[220px] shrink-0">
+            {/* Date Period Filter */}
+            <div className="relative inline-flex items-center w-full sm:w-auto shrink-0">
+              <Icon icon="lucide:calendar" className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+              <select
+                value={periodVal}
+                onChange={(e) => handleFilterChange('period', e.target.value)}
+                className="w-full sm:w-[130px] h-9 pl-8 pr-8 text-xs bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground appearance-none cursor-pointer"
+              >
+                <option value="">{t("allTime", "All time")}</option>
+                <option value="2021-2026">2021 – 2026</option>
+                <option value="2016-2020">2016 – 2020</option>
+                <option value="2011-2015">2011 – 2015</option>
+                <option value="2000-2010">2000 – 2010</option>
+              </select>
+              <Icon icon="lucide:chevron-down" className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground pointer-events-none" />
+            </div>
+
+            {/* Research Fields Filter */}
+            <div className="relative inline-flex items-center w-full sm:w-[200px] shrink-0">
+              <Icon icon="lucide:layers" className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
               <select
                 value={subjectAreaVal}
                 onChange={(e) => handleFilterChange('subject_area', e.target.value)}
-                className="w-full h-9 px-2.5 text-xs bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground"
+                className="w-full h-9 pl-8 pr-8 text-xs bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground appearance-none cursor-pointer truncate"
               >
-                <option value="">{t("admin.chonLinhVuc", "All subject areas")}</option>
+                <option value="">{t("admin.chonLinhVuc", "All research fields")}</option>
                 {(subjectAreas || []).map((area) => {
                   const val = area.display_name || area.name || '';
                   return <option key={val} value={val}>{val}</option>;
                 })}
               </select>
+              <Icon icon="lucide:chevron-down" className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground pointer-events-none" />
+            </div>
+
+            {/* Sort by Filter */}
+            <div className="relative inline-flex items-center w-full sm:w-auto shrink-0">
+              <Icon icon="lucide:arrow-up-down" className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+              <select
+                value={sortVal}
+                onChange={(e) => handleFilterChange('sort', e.target.value)}
+                className="w-full sm:w-[160px] h-9 pl-8 pr-8 text-xs bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground appearance-none cursor-pointer"
+              >
+                <option value="articles">{t("sortPublications", "Sort: Publications")}</option>
+                <option value="citations">{t("sortCitations", "Sort: Citations")}</option>
+                <option value="impact">{t("sortHIndex", "Sort: H-index")}</option>
+              </select>
+              <Icon icon="lucide:chevron-down" className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground pointer-events-none" />
             </div>
 
             <Button type="submit" size="sm" className="h-9 px-4 gap-1.5 shrink-0 w-full sm:w-auto text-xs">
@@ -232,64 +299,9 @@ export default function AuthorListPage() {
         </form>
       </Card>
 
-      {/* View Mode Toolbar: Count & Toggle (Grid / List) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
-        <div className="text-xs text-muted-foreground">
-          {loadingAuthors ? (
-            <span className="flex items-center gap-1.5">
-              <Icon icon="lucide:loader-2" width="13" className="animate-spin text-primary" />
-              <span>{t("dangTai", "Loading authors...")}</span>
-            </span>
-          ) : (
-            <span>
-              {t("catalog.timThay", "Found ")}
-              <strong className="text-foreground font-bold">{Number(totalAuthors || 0).toLocaleString()}</strong> {t("author.tacGia", "authors")}
-              <span className="mx-1.5">•</span>
-              {t("pagination.page", "Page")} <strong className="text-foreground">{pageVal}</strong> of <strong className="text-foreground">{totalPagesCount}</strong>
-            </span>
-          )}
-        </div>
-
-        {/* View Mode Toggle: Grid vs List */}
-        <div className="flex items-center gap-1 bg-surface border border-border p-1 rounded-control shadow-2xs self-end sm:self-auto">
-          <button
-            type="button"
-            onClick={() => setViewMode('grid')}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs transition-colors border-0 cursor-pointer",
-              viewMode === 'grid'
-                ? "bg-primary text-white font-semibold shadow-xs"
-                : "bg-transparent text-muted-foreground hover:text-foreground hover:bg-surface-muted"
-            )}
-            title={t("viewGrid", "Grid View")}
-            aria-label="Grid View"
-            aria-pressed={viewMode === 'grid'}
-          >
-            <Icon icon="lucide:layout-grid" width={14} />
-            <span>Grid</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode('list')}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs transition-colors border-0 cursor-pointer",
-              viewMode === 'list'
-                ? "bg-primary text-white font-semibold shadow-xs"
-                : "bg-transparent text-muted-foreground hover:text-foreground hover:bg-surface-muted"
-            )}
-            title={t("viewList", "List View")}
-            aria-label="List View"
-            aria-pressed={viewMode === 'list'}
-          >
-            <Icon icon="lucide:list" width={14} />
-            <span>List</span>
-          </button>
-        </div>
-      </div>
-
       {/* Authors List (Responsive 4 columns) */}
       <div>
-        {viewMode === 'grid' ? (
+        {viewMode === 'grid' || viewMode === 'cards' ? (
           loadingAuthors ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {Array.from({ length: limitVal }).map((_, idx) => (
@@ -327,6 +339,8 @@ export default function AuthorListPage() {
             error={errorAuthors}
             onRetry={() => fetchAuthors()}
             startIndex={startIndex}
+            currentSort={sortVal}
+            onSortChange={(newSort) => handleFilterChange('sort', newSort)}
           />
         )}
       </div>

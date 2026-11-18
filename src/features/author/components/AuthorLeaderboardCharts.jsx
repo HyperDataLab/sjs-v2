@@ -20,14 +20,6 @@ import { Icon } from '@iconify/react';
 import { Card } from '../../../shared/ui/card';
 import { Skeleton } from '../../../shared/ui/skeleton';
 
-// Helper to extract 2-letter initials from author name
-const getInitials = (name = '') => {
-  const parts = String(name).trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return 'AU';
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-};
-
 // Formatter for large numbers (e.g. 2,738 or 1.5M)
 const formatNum = (val) => {
   if (val === null || val === undefined) return '0';
@@ -58,7 +50,6 @@ export default function AuthorLeaderboardCharts({
   const navigate = useNavigate();
 
   const [activeMetric, setActiveMetric] = useState('publications'); // 'publications' | 'citations' | 'h_index'
-  const [authorViewMode, setAuthorViewMode] = useState('list'); // 'list' | 'barchart'
   const [hoveredAuthorId, setHoveredAuthorId] = useState(null);
 
   // Normalize real author data from API
@@ -101,20 +92,20 @@ export default function AuthorLeaderboardCharts({
     return list;
   }, [normalizedAuthors, activeMetric]);
 
-  // Max value for progress bar scaling
-  const maxMetricVal = useMemo(() => {
-    if (sortedAuthors.length === 0) return 1;
-    const topVal = sortedAuthors[0]?.[activeMetric] || 1;
-    return Math.max(topVal, 1);
-  }, [sortedAuthors, activeMetric]);
-
   // 1. Data for Left BarChart (All sorted authors with direct metric keys)
   const leaderboardBarData = useMemo(() => {
-    return sortedAuthors.map((author) => {
+    return sortedAuthors.map((author, idx) => {
       const words = author.name.split(/\s+/).filter(Boolean);
-      const shortName = words.length > 2 ? `${words[0]} ${words[words.length - 1]}` : author.name;
+      let shortName = author.name;
+      if (words.length > 2) {
+        shortName = `${words[0]} ${words[words.length - 1]}`;
+      }
+      if (shortName.length > 16) {
+        shortName = shortName.slice(0, 14) + '…';
+      }
       return {
         id: author.id,
+        rank: idx + 1,
         name: shortName,
         fullName: author.name,
         publications: author.publications,
@@ -228,7 +219,7 @@ export default function AuthorLeaderboardCharts({
             <select
               value={period || 'all'}
               onChange={(e) => onPeriodChange?.(e.target.value)}
-              className="h-9 rounded-control border border-border bg-surface pl-8 pr-7 text-xs font-medium text-foreground transition-colors focus:border-primary focus:outline-none"
+              className="appearance-none h-9 rounded-control border border-border bg-surface pl-8 pr-8 text-xs font-medium text-foreground transition-colors focus:border-primary focus:outline-none cursor-pointer"
               aria-label="Filter by period"
             >
               <option value="all">{t('author.tatCaThoiGian', 'All years')}</option>
@@ -244,7 +235,7 @@ export default function AuthorLeaderboardCharts({
             <select
               value={selectedArea}
               onChange={onAreaChange}
-              className="h-9 rounded-control border border-border bg-surface pl-8 pr-7 text-xs font-medium text-foreground transition-colors focus:border-primary focus:outline-none max-w-[220px] truncate"
+              className="appearance-none h-9 rounded-control border border-border bg-surface pl-8 pr-8 text-xs font-medium text-foreground transition-colors focus:border-primary focus:outline-none max-w-[220px] truncate cursor-pointer"
               aria-label="Filter by research field"
             >
               <option value="">{t('author.tatCaLinhVuc', 'All research fields')}</option>
@@ -262,7 +253,7 @@ export default function AuthorLeaderboardCharts({
             <select
               value={limit || 10}
               onChange={(e) => onLimitChange?.(Number(e.target.value))}
-              className="h-9 rounded-control border border-border bg-surface pl-8 pr-7 text-xs font-medium text-foreground transition-colors focus:border-primary focus:outline-none"
+              className="appearance-none h-9 rounded-control border border-border bg-surface pl-8 pr-8 text-xs font-medium text-foreground transition-colors focus:border-primary focus:outline-none cursor-pointer"
               aria-label="Limit top authors"
             >
               <option value={10}>Top 10</option>
@@ -349,10 +340,10 @@ export default function AuthorLeaderboardCharts({
         <>
           {/* ── 2. Top Grid: Top authors list (Left) + Research impact (Right) ── */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-            {/* Left: Top authors by [metric] */}
+            {/* Left: Top authors by [metric] - Pure Recharts BarChart */}
             <Card className="lg:col-span-6 p-4 sm:p-5 border border-border bg-surface shadow-card flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-1.5">
                     <h3 className="text-sm sm:text-base font-bold text-foreground capitalize">
                       {t('author.topTacGiaTheo', 'Top authors by')} {metricLabel}
@@ -362,122 +353,84 @@ export default function AuthorLeaderboardCharts({
                     </span>
                   </div>
 
-                  {/* Switch between Progress List and Recharts BarChart */}
-                  <div className="inline-flex rounded-md border border-border bg-surface-muted/60 p-0.5 text-[11px]">
-                    <button
-                      type="button"
-                      onClick={() => setAuthorViewMode('list')}
-                      className={`px-2 py-0.5 rounded font-medium cursor-pointer transition-colors ${
-                        authorViewMode === 'list' ? 'bg-surface text-foreground shadow-2xs font-bold' : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                      title="Ranking List"
-                    >
-                      List
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setAuthorViewMode('barchart')}
-                      className={`px-2 py-0.5 rounded font-medium cursor-pointer transition-colors ${
-                        authorViewMode === 'barchart' ? 'bg-surface text-foreground shadow-2xs font-bold' : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                      title="Recharts Horizontal BarChart"
-                    >
-                      BarChart
-                    </button>
-                  </div>
+                  <span className="text-[11px] font-medium text-muted-foreground bg-surface-muted px-2 py-0.5 rounded">
+                    Rankings
+                  </span>
                 </div>
 
-                {authorViewMode === 'list' ? (
-                  /* Custom Ranking Bar List */
-                  <div className="space-y-2.5">
-                    {sortedAuthors.map((author, idx) => {
-                      const rank = idx + 1;
-                      const value = author[activeMetric];
-                      const percentage = Math.max(6, (value / maxMetricVal) * 100);
-                      const isHovered = hoveredAuthorId === author.id;
-                      const isTop1 = rank === 1;
-
-                      return (
-                        <div
-                          key={author.id}
-                          onMouseEnter={() => setHoveredAuthorId(author.id)}
-                          onMouseLeave={() => setHoveredAuthorId(null)}
-                          onClick={() => navigate(`/authors/${author.id}`)}
-                          className={`group flex items-center gap-2.5 sm:gap-3 py-1 px-1.5 rounded-lg transition-colors cursor-pointer ${
-                            isHovered ? 'bg-surface-muted' : 'hover:bg-surface-muted/60'
-                          }`}
-                        >
-                          {/* Rank Badge */}
-                          <div
-                            className={`flex size-6 shrink-0 items-center justify-center rounded text-xs font-bold tracking-tight ${
-                              isTop1
-                                ? 'bg-primary text-white'
-                                : rank <= 3
-                                ? 'bg-primary-subtle text-primary'
-                                : 'bg-surface-muted text-muted-foreground'
-                            }`}
-                          >
-                            {String(rank).padStart(2, '0')}
-                          </div>
-
-                          {/* Avatar with Initials */}
-                          <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-primary text-[11px] font-bold border border-border">
-                            {getInitials(author.name)}
-                          </div>
-
-                          {/* Name */}
-                          <div className="w-28 sm:w-36 shrink-0 truncate text-xs font-semibold text-foreground group-hover:text-primary transition-colors" title={author.name}>
-                            {author.name}
-                          </div>
-
-                          {/* Horizontal Bar */}
-                          <div className="relative flex-1 flex items-center h-4.5">
-                            <div
-                              style={{ width: `${percentage}%` }}
-                              className={`h-4 rounded-r-md transition-all duration-300 ${
-                                isTop1 ? 'bg-primary' : 'bg-primary/50 group-hover:bg-primary/70'
-                              }`}
-                            />
-                          </div>
-
-                          {/* Numeric Count */}
-                          <div className="w-16 text-right text-xs font-bold text-foreground tabular-nums shrink-0">
-                            {formatNum(value)}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  /* Recharts Horizontal BarChart */
-                  <div className="h-[320px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        layout="vertical"
-                        data={leaderboardBarData}
-                        margin={{ top: 5, right: 30, bottom: 5, left: 10 }}
+                {/* Recharts Horizontal BarChart */}
+                <div className="h-[320px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      layout="vertical"
+                      data={leaderboardBarData}
+                      margin={{ top: 10, right: 30, bottom: 10, left: 15 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
+                      <XAxis
+                        type="number"
+                        stroke="#94a3b8"
+                        tick={{ fontSize: 10, fill: '#64748b' }}
+                        tickFormatter={formatShortNum}
+                      />
+                      <YAxis
+                        type="category"
+                        dataKey="name"
+                        stroke="#94a3b8"
+                        width={110}
+                        tick={{ fontSize: 11, fill: '#475569', fontWeight: 500 }}
+                      />
+                      <RechartsTooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const item = payload[0]?.payload;
+                            return (
+                              <div className="rounded-lg border border-border bg-white p-3 shadow-lg text-xs space-y-1.5 min-w-[200px]">
+                                <p className="font-bold text-foreground border-b border-border pb-1">
+                                  #{item?.rank} {item?.fullName}
+                                </p>
+                                <div className="space-y-1">
+                                  <div className="flex items-center justify-between font-semibold text-primary">
+                                    <span>{metricLabel}:</span>
+                                    <strong>{formatNum(item?.[activeMetric])}</strong>
+                                  </div>
+                                  <div className="flex items-center justify-between text-muted-foreground text-[11px] pt-1 border-t border-border/50">
+                                    <span>Publications:</span>
+                                    <strong>{formatNum(item?.publications)}</strong>
+                                  </div>
+                                  <div className="flex items-center justify-between text-muted-foreground text-[11px]">
+                                    <span>Citations:</span>
+                                    <strong>{formatNum(item?.citations)}</strong>
+                                  </div>
+                                  <div className="flex items-center justify-between text-muted-foreground text-[11px]">
+                                    <span>H-index:</span>
+                                    <strong>{item?.h_index}</strong>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Bar
+                        dataKey={activeMetric}
+                        fill="#0071BC"
+                        radius={[0, 4, 4, 0]}
+                        barSize={16}
+                        onClick={(data) => navigate(`/authors/${data.id}`)}
+                        className="cursor-pointer"
                       >
-                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
-                        <XAxis type="number" stroke="#94a3b8" tick={{ fontSize: 10, fill: '#64748b' }} tickFormatter={formatShortNum} />
-                        <YAxis type="category" dataKey="name" stroke="#94a3b8" width={100} tick={{ fontSize: 10, fill: '#64748b' }} />
-                        <RechartsTooltip
-                          formatter={(val) => [formatNum(val), metricLabel]}
-                          contentStyle={{ borderRadius: '8px', fontSize: '12px', border: '1px solid #e2e8f0' }}
-                        />
-                        <Bar
-                          dataKey={activeMetric}
-                          fill="#0071BC"
-                          radius={[0, 4, 4, 0]}
-                          barSize={14}
-                        >
-                          {leaderboardBarData.map((entry, idx) => (
-                            <Cell key={`bar-${entry.id}`} fill={idx === 0 ? '#0071BC' : '#38BDF8'} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
+                        {leaderboardBarData.map((entry, idx) => (
+                          <Cell
+                            key={`bar-${entry.id}`}
+                            fill={idx === 0 ? '#0071BC' : idx < 3 ? '#2563EB' : '#60A5FA'}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </Card>
 

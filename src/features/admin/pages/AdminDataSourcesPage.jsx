@@ -9,6 +9,7 @@ import { Card } from '../../../shared/ui/card';
 
 const statusPath = '/admin/integrations/openalex';
 const importPath = '/admin/imports/scimago';
+const IMPORT_SESSION_STORAGE_KEY = 'admin.scimagoImportSession';
 const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
 const MAX_CHUNK_BYTES = 256 * 1024;
 const MAX_CHUNK_ROWS = 50;
@@ -60,6 +61,31 @@ function makeCsvBatches(records) {
   return batches;
 }
 
+function readStoredImportSession() {
+  try {
+    const stored = JSON.parse(window.sessionStorage.getItem(IMPORT_SESSION_STORAGE_KEY) || 'null');
+    if (!stored?.importId || !Array.isArray(stored.uploadedIndexes)) return null;
+    return { ...stored, uploadedBatches: new Set(stored.uploadedIndexes) };
+  } catch {
+    return null;
+  }
+}
+
+function storeImportSession(session) {
+  try {
+    window.sessionStorage.setItem(IMPORT_SESSION_STORAGE_KEY, JSON.stringify({
+      importId: session.importId,
+      fileName: session.fileName,
+      fileSize: session.fileSize,
+      fileLastModified: session.fileLastModified,
+      year: session.year,
+      uploadedIndexes: [...session.uploadedBatches],
+    }));
+  } catch {
+    // Import can still continue in memory if browser storage is unavailable.
+  }
+}
+
 async function postChunkWithRetry(url, body, onRetry) {
   let lastError;
   for (let attempt = 1; attempt <= MAX_CHUNK_ATTEMPTS; attempt += 1) {
@@ -81,7 +107,7 @@ async function postChunkWithRetry(url, body, onRetry) {
   throw lastError;
 }
 
-async function uploadCsvBatches(importId, batches, uploadedBatches, onProgress) {
+async function uploadCsvBatches(importId, batches, uploadedBatches, onProgress, onBatchUploaded) {
   let completed = uploadedBatches.size;
   for (let batchIndex = 0; batchIndex < batches.length; batchIndex += 1) {
     if (uploadedBatches.has(batchIndex)) continue;
@@ -92,6 +118,7 @@ async function uploadCsvBatches(importId, batches, uploadedBatches, onProgress) 
       onProgress({ completed, batchIndex, attempt, delay, error });
     });
     uploadedBatches.add(batchIndex);
+    onBatchUploaded?.(batchIndex);
     completed += 1;
     onProgress({ completed, batchIndex, attempt: 0, delay: 0 });
     // A small gap prevents a long import from continuously hammering Firestore-backed routes.
@@ -168,33 +195,37 @@ export default function AdminDataSourcesPage() {
     }
     setImporting(true); setMessage(null); setImportProgress({ percent: 0, completed: 0, total: 0, phase: 'Reading CSV...' });
     try {
-      let session = importSessionRef.current;
+      let session = importSessionRef.current || readStoredImportSession();
       const sameFile = session
         && session.fileName === file.name
         && session.fileSize === file.size
         && session.fileLastModified === file.lastModified
         && session.year === Number(year);
 
-      if (!sameFile) {
+      if (!sameFile || !session.batches) {
         const records = splitCsvRecords(await file.text());
         if (records.length < 2) throw new Error('The SCImago CSV must contain a header and at least one data row.');
         const header = records.shift();
         const batches = makeCsvBatches(records);
-        setImportProgress({ percent: 0, completed: 0, total: batches.length, phase: 'Starting import...' });
-
-        const startResponse = await api.post(importPath, { file_name: file.name, header, year: Number(year) });
-        const started = startResponse.data?.data || startResponse.data;
-        if (!started?.import_id) throw new Error('The Worker did not return an import ID.');
-        session = {
-          importId: started.import_id,
-          batches,
-          uploadedBatches: new Set(),
-          fileName: file.name,
-          fileSize: file.size,
-          fileLastModified: file.lastModified,
-          year: Number(year),
-        };
+        if (sameFile) {
+          session = { ...session, batches };
+        } else {
+          setImportProgress({ percent: 0, completed: 0, total: batches.length, phase: 'Starting import...' });
+          const startResponse = await api.post(importPath, { file_name: file.name, header, year: Number(year) });
+          const started = startResponse.data?.data || startResponse.data;
+          if (!started?.import_id) throw new Error('The Worker did not return an import ID.');
+          session = {
+            importId: started.import_id,
+            uploadedBatches: new Set(),
+            fileName: file.name,
+            fileSize: file.size,
+            fileLastModified: file.lastModified,
+            year: Number(year),
+          };
+        }
+        session.batches = batches;
         importSessionRef.current = session;
+        storeImportSession(session);
       }
 
       const { importId, batches, uploadedBatches } = session;
@@ -214,12 +245,13 @@ export default function AdminDataSourcesPage() {
         total: batches.length,
         phase: uploadedBatches.size ? 'Resuming the unfinished batches...' : `Importing in order, one batch at a time...`,
       });
-      await uploadCsvBatches(importId, batches, uploadedBatches, describeProgress);
+      await uploadCsvBatches(importId, batches, uploadedBatches, describeProgress, () => storeImportSession(session));
       const completeResponse = await api.post(`${importPath}/${importId}/complete`, { total_chunks: batches.length });
       const result = completeResponse.data?.data || completeResponse.data;
       setImportProgress({ percent: 100, completed: batches.length, total: batches.length, phase: 'Import complete' });
       setMessage({ type: 'success', text: `Import complete: ${result.imported || 0} journal records processed; ${result.unmatched || 0} ISSNs did not match the journal catalog.` });
       importSessionRef.current = null;
+      window.sessionStorage.removeItem(IMPORT_SESSION_STORAGE_KEY);
       setFile(null);
       form.reset();
     } catch (error) {
@@ -322,7 +354,19 @@ export default function AdminDataSourcesPage() {
                     type="file"
                     accept=".csv,text/csv"
                     disabled={importing}
-                    onChange={event => { setFile(event.target.files?.[0] || null); importSessionRef.current = null; setMessage(null); setImportProgress(null); }}
+                    onChange={event => {
+                      const nextFile = event.target.files?.[0] || null;
+                      const stored = readStoredImportSession();
+                      const canResume = nextFile && stored
+                        && stored.fileName === nextFile.name
+                        && stored.fileSize === nextFile.size
+                        && stored.fileLastModified === nextFile.lastModified;
+                      setFile(nextFile);
+                      importSessionRef.current = canResume ? stored : null;
+                      if (!canResume) window.sessionStorage.removeItem(IMPORT_SESSION_STORAGE_KEY);
+                      setMessage(null);
+                      setImportProgress(null);
+                    }}
                     className="w-full text-xs text-foreground file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-primary-foreground hover:file:opacity-90 cursor-pointer"
                   />
                 </div>

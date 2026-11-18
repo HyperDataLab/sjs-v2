@@ -276,7 +276,7 @@ export default function GeographyWorldMap({
   return (
     <div className="rounded-xl border border-border bg-surface p-5 shadow-xs flex flex-col h-full min-w-0 relative">
       {/* Card Header with View Switcher */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border/70">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border/70 shrink-0">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <Icon icon="lucide:globe" width={18} className="text-primary shrink-0" />
@@ -511,7 +511,7 @@ export default function GeographyWorldMap({
           )}
 
           {/* Activity Density Legend Bar */}
-          <div className="mt-3 pt-2.5 border-t border-border/60 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
+          <div className="mt-3 pt-2.5 border-t border-border/60 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground shrink-0">
             <div className="flex items-center gap-2">
               <span className="font-semibold text-foreground text-[11px] uppercase tracking-wider">
                 {t('zone.matDoXuatBan', 'Publication Density')}:

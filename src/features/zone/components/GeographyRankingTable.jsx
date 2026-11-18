@@ -30,7 +30,7 @@ export default function GeographyRankingTable({
   data = [],
   loading = false,
   selectedCountry = null,
-  onSelectCountry
+  onSelectCountry,
 }) {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,9 +55,9 @@ export default function GeographyRankingTable({
   }, [rankedData, searchTerm]);
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-5 shadow-xs flex flex-col h-full min-w-0">
+    <div className="rounded-xl border border-border bg-surface p-5 shadow-xs flex flex-col min-w-0">
       {/* Header */}
-      <div className="flex items-center justify-between gap-2 pb-3 border-b border-border/70">
+      <div className="flex items-center justify-between gap-2 pb-3 border-b border-border/70 shrink-0">
         <div>
           <div className="flex items-center gap-2">
             <Icon icon="lucide:list-ordered" width={18} className="text-primary shrink-0" />
@@ -72,7 +72,7 @@ export default function GeographyRankingTable({
       </div>
 
       {/* Search Input */}
-      <div className="relative mt-3.5 mb-2.5">
+      <div className="relative mt-3.5 mb-2.5 shrink-0">
         <Icon
           icon="lucide:search"
           width="14"
@@ -98,14 +98,14 @@ export default function GeographyRankingTable({
       </div>
 
       {/* Table Headers */}
-      <div className="grid grid-cols-12 gap-2 px-2 py-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/60">
+      <div className="grid grid-cols-12 gap-2 px-2 py-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/60 shrink-0">
         <span className="col-span-2 text-center">{t("zone.hang", "Rank")}</span>
         <span className="col-span-6">{t("journal.quocGia", "Country")}</span>
         <span className="col-span-4 text-right">Articles</span>
       </div>
 
       {/* Table Body */}
-      <div className="overflow-y-auto max-h-[500px] divide-y divide-border/40 space-y-0.5 pr-1">
+      <div className="overflow-y-auto max-h-[380px] divide-y divide-border/40 space-y-0.5 pr-1 custom-scrollbar">
         {loading ? (
           <div className="space-y-2 py-3">
             {[1, 2, 3, 4, 5, 6, 7].map((i) => (
