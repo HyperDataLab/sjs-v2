@@ -7,7 +7,7 @@ const Card = React.forwardRef(({ className = '', ...props }, ref) => (
 Card.displayName = 'Card';
 
 const CardHeader = ({ className = '', ...props }) => <div className={cn('p-5 pb-2', className)} {...props} />;
-const CardTitle = ({ className = '', ...props }) => <h2 className={cn('m-0 text-base font-bold text-foreground', className)} {...props} />;
+const CardTitle = ({ className = '', ...props }) => <h2 className={cn('m-0 text-sm font-semibold text-foreground', className)} {...props} />;
 const CardDescription = ({ className = '', ...props }) => <p className={cn('mt-1 text-sm text-muted-foreground', className)} {...props} />;
 const CardContent = ({ className = '', ...props }) => <div className={cn('p-5', className)} {...props} />;
 

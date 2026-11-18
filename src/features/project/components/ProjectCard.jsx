@@ -203,15 +203,15 @@ const ProjectCard = ({
       className="group block h-full no-underline !text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-card"
       onClick={handleCardClick}
     >
-      <Card className="flex h-full flex-col justify-between p-5 transition-colors hover:border-primary/50 shadow-xs border border-border bg-surface">
+      <Card className="flex h-full flex-col justify-between p-3.5 transition-colors hover:border-primary/50 shadow-xs border border-border bg-surface">
         <div>
           {/* Top Row: [Icon] title [● Active] [⋮] */}
           <div className="flex items-start justify-between gap-2.5">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-control bg-primary-subtle text-primary">
-                <Icon icon="lucide:folder-kanban" width="18" aria-hidden="true" />
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-control bg-primary-subtle text-primary">
+                <Icon icon="lucide:folder-kanban" width="16" aria-hidden="true" />
               </div>
-              <h3 className="m-0 text-base font-bold !text-foreground group-hover:!text-primary transition-colors truncate">
+              <h3 className="m-0 text-sm font-semibold !text-foreground group-hover:!text-primary transition-colors truncate">
                 {title}
               </h3>
             </div>

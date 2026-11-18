@@ -44,6 +44,47 @@ body {
     color 0.3s ease;
 }
 
+/* ─── Definitively Neutralize Bootstrap 5 Unlayered Oversized Headings ─── */
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: var(--font-display);
+  font-weight: inherit;
+  line-height: 1.35;
+}
+
+h1, .h1 { font-size: 1.25rem; font-weight: 700; }     /* 20px */
+h2, .h2 { font-size: 1rem; font-weight: 600; }        /* 16px */
+h3, .h3 { font-size: 0.875rem; font-weight: 600; }    /* 14px */
+h4, .h4 { font-size: 0.8125rem; font-weight: 600; }   /* 13px */
+h5, .h5 { font-size: 0.75rem; font-weight: 600; }     /* 12px */
+h6, .h6 { font-size: 0.6875rem; font-weight: 600; }   /* 11px */
+
+@media (min-width: 1200px) {
+  h1, .h1 { font-size: 1.25rem; }
+  h2, .h2 { font-size: 1rem; }
+  h3, .h3 { font-size: 0.875rem; }
+  h4, .h4 { font-size: 0.8125rem; }
+  h5, .h5 { font-size: 0.75rem; }
+  h6, .h6 { font-size: 0.6875rem; }
+}
+
+/* Ensure headings with Tailwind size classes always win over Bootstrap */
+:is(h1, h2, h3, h4, h5, h6)[class*="text-xs"],
+:is(h1, h2, h3, h4, h5, h6)[class*="text-\[10px\]"],
+:is(h1, h2, h3, h4, h5, h6)[class*="text-\[11px\]"] { font-size: 0.75rem !important; }
+:is(h1, h2, h3, h4, h5, h6)[class*="text-sm"] { font-size: 0.875rem !important; }
+:is(h1, h2, h3, h4, h5, h6)[class*="text-base"] { font-size: 1rem !important; }
+:is(h1, h2, h3, h4, h5, h6)[class*="text-lg"] { font-size: 1.125rem !important; }
+:is(h1, h2, h3, h4, h5, h6)[class*="text-xl"] { font-size: 1.25rem !important; }
+:is(h1, h2, h3, h4, h5, h6)[class*="text-2xl"] { font-size: 1.5rem !important; }
+:is(h1, h2, h3, h4, h5, h6)[class*="text-3xl"] { font-size: 1.875rem !important; }
+
 /* Custom background grid pattern for light mode */
 .grid-bg {
   background-color: var(--bg-main);
