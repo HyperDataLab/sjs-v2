@@ -24,7 +24,7 @@ export default function TrendingAnalyticsLayout() {
 
   return (
     <DashboardProvider projectId={id}>
-      <PageContainer className="trending-analytics-shell max-w-screen-2xl">
+      <PageContainer className="trending-analytics-shell">
         <PageHeader
           title="In-depth analysis"
           description="Trending System · Project analytics"

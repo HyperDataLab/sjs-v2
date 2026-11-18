@@ -1641,22 +1641,7 @@
  *     SCImago-inspired, token-driven, light academic admin surface.
  * ─────────────────────────────────────────────────────────────── */
 
-.admin-layout {
-  min-height: 100vh;
-  background-color: #ffffff;
-}
 
-.admin-main {
-  min-width: 0;
-  background-color: #ffffff;
-}
-
-.admin-content {
-  min-height: calc(100vh - 140px);
-  padding: 28px;
-  background-color: #ffffff;
-  background-image: none;
-}
 
 .admin-sidebar {
   width: 260px;
