@@ -78,17 +78,17 @@ export default function DashboardPage() {
     navigate(`/catalog?search=${encodeURIComponent(keyword)}`);
   };
   return (
-    <PageContainer className="max-w-[1500px]">
-      <Card className="overflow-hidden p-6 sm:p-8">
-        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-          <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary-subtle px-3 py-1 text-xs font-semibold text-primary">
+    <PageContainer className="max-w-[1440px]">
+      <Card className="dashboard-welcome relative overflow-hidden border-l-4 border-l-primary p-6 sm:p-8">
+        <div className="flex flex-col items-start justify-between gap-5 md:flex-row md:items-center">
+          <div className="min-w-0">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary-subtle px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
               <Icon icon="lucide:sparkles" width={14} /><span>Trending System Analytics</span>
             </div>
-            <h1 className="mb-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">{t("dashboard.chaoMungBanDenVoiResearchpulse")}</h1>
+            <h1 className="mb-2 text-base font-semibold leading-snug tracking-tight text-foreground" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>{t("dashboard.chaoMungBanDenVoiResearchpulse")}</h1>
             <p className="m-0 max-w-2xl text-sm leading-6 text-muted-foreground">{t("dashboard.khamPhaXuHuongXepHangTapChiVaC")}</p>
           </div>
-          <Button onClick={handleCreateProject} className="shrink-0"><Icon icon="lucide:plus" width={18} />{t("dashboard.taoProject")}</Button>
+          <Button onClick={handleCreateProject} className="dashboard-welcome__cta shrink-0"><Icon icon="lucide:plus" width={16} />{t("dashboard.taoProject")}</Button>
         </div>
       </Card>
       <DashboardStatCards stats={summaryStats} loading={loadingProjects} />

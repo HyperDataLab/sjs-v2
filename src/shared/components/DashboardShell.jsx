@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { FiBarChart2, FiFileText, FiFolder, FiGlobe, FiMenu, FiSearch, FiUsers, FiX, FiLogOut } from 'react-icons/fi';
 import { useEffect, useRef, useState } from 'react';
 import { createContext } from 'react';
@@ -21,6 +21,7 @@ export const DashboardShellContext = createContext(false);
 
 export default function DashboardShell({ children }) {
   const { lang = 'en' } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { logout } = useAuth();
@@ -28,6 +29,9 @@ export default function DashboardShell({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const drawerCloseRef = useRef(null);
   const base = `/${lang}`;
+  const activePath = location.pathname.replace(/\/$/, '').split('/').at(-1);
+  const activeItem = items.find(({ path }) => path === activePath);
+  const pageTitle = activeItem ? t(`navigation.${activeItem.path}`, activeItem.label) : t('navigation.projects', 'Projects');
 
   useEffect(() => {
     if (!mobileOpen) return undefined;
@@ -53,15 +57,15 @@ export default function DashboardShell({ children }) {
   }, [mobileOpen]);
 
   const sidebar = (
-    <aside className="flex h-full flex-col border-r border-border bg-surface px-3 py-5" aria-label="Primary navigation">
-      <div className="border-b border-border px-2 pb-6"><Logo size={30} fontSize="1.05rem" /></div>
-      <nav className="flex flex-col gap-1 pt-5">
+    <aside className="app-sidebar flex h-full flex-col border-r border-border bg-surface px-4 py-5" aria-label="Primary navigation">
+      <div className="border-b border-border px-2 pb-5"><Logo size={30} fontSize="1.05rem" /></div>
+      <nav className="flex flex-col gap-1 pt-4">
         {items.map(({ label, path, icon: Icon }) => (
           <NavLink
             key={path}
             to={`${base}/${path}`}
             onClick={() => setMobileOpen(false)}
-            className={({ isActive }) => `flex min-h-11 w-full items-center gap-3 rounded-control px-3 py-2.5 text-left text-sm font-semibold no-underline transition-colors ${isActive ? 'bg-primary-subtle text-primary' : 'text-muted-foreground hover:bg-surface-muted hover:text-foreground'}`}
+            className={({ isActive }) => `group flex min-h-11 w-full items-center gap-3 rounded-control border-l-2 px-3 py-2.5 text-left text-sm font-medium no-underline transition-colors ${isActive ? 'border-primary bg-primary-subtle text-primary' : 'border-transparent text-muted-foreground hover:bg-surface-muted hover:text-foreground'}`}
           >
             <Icon aria-hidden="true" /> <span>{t(`navigation.${path}`, label)}</span>
           </NavLink>
@@ -84,7 +88,24 @@ export default function DashboardShell({ children }) {
         <Logo size={30} fontSize="1.05rem" />
         <Button variant="ghost" size="icon" aria-label={t('navigation.open', 'Open navigation')} aria-expanded={mobileOpen} onClick={() => setMobileOpen(true)}><FiMenu /></Button>
       </header>
-      <div className="fixed inset-y-0 left-0 z-30 hidden w-[232px] md:block">{sidebar}</div>
+      <div className="fixed inset-y-0 left-0 z-30 hidden w-[248px] md:block">{sidebar}</div>
+      <header className="app-topbar sticky top-0 z-[var(--ds-z-sticky)] hidden min-h-16 items-center justify-between border-b border-border bg-surface/95 px-7 backdrop-blur md:ml-[248px] md:flex">
+        <div className="flex min-w-0 items-center gap-2 text-sm">
+          <span className="text-muted-foreground">{t('navigation.workspace', 'Workspace')}</span>
+          <span aria-hidden="true" className="text-subtle-foreground">/</span>
+          <span className="truncate font-semibold text-foreground">{pageTitle}</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={() => navigate(`${base}/search`)} className="flex h-10 min-w-[230px] items-center gap-2 rounded-control border border-border bg-background px-3 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary-subtle-hover" aria-label={t('navigation.search', 'Search')}>
+            <FiSearch aria-hidden="true" />
+            <span>{t('navigation.searchManuscripts', 'Search manuscripts, authors, or IDs…')}</span>
+          </button>
+          <button type="button" onClick={() => navigate(`${base}/profile`)} className="flex h-10 items-center gap-2 rounded-control border-0 bg-transparent px-2 text-sm text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground" aria-label={t('navigation.account', 'Account')}>
+            <span className="grid h-8 w-8 place-items-center rounded-full bg-primary-subtle font-semibold text-primary">R</span>
+            <span className="hidden lg:inline">{t('navigation.account', 'Account')}</span>
+          </button>
+        </div>
+      </header>
       <AnimatePresence>
         {mobileOpen && (
           <motion.div className="fixed inset-0 z-[var(--ds-z-overlay)] bg-foreground/35 md:hidden" initial={reduceMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={reduceMotion ? undefined : { opacity: 0 }} onClick={() => setMobileOpen(false)}>
@@ -96,7 +117,7 @@ export default function DashboardShell({ children }) {
         )}
       </AnimatePresence>
       <DashboardShellContext.Provider value>
-        <motion.main className="app-main min-h-screen py-5 md:ml-[232px] md:py-6" initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.2 }}>
+        <motion.main className="app-main min-h-screen py-5 md:ml-[248px] md:py-6" initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.2 }}>
           {children}
         </motion.main>
       </DashboardShellContext.Provider>

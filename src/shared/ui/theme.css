@@ -39,6 +39,7 @@
   --ds-warning: var(--ds-amber-800);
   --ds-warning-subtle: var(--ds-amber-100);
   --ds-font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --ds-font-serif: Georgia, "Times New Roman", serif;
   --ds-font-size-caption: 13px;
   --ds-font-size-body: 14px;
   --ds-font-size-emphasis: 15px;
@@ -147,7 +148,7 @@ body {
 
 /* Keep the shared product typography compact and consistent across routes. */
 :where(h1, h2, h3, h4, h5, h6) {
-  font-size: var(--ds-font-size-heading) !important;
+  font-size: var(--ds-font-size-heading);
 }
 
 :where(small, .small, .text-xs, .fs-6) {
@@ -324,6 +325,27 @@ textarea[aria-invalid="true"]:focus {
 .app-main {
   min-width: 0;
   padding-inline: var(--ds-page-gutter);
+}
+
+.app-topbar {
+  box-shadow: 0 1px 2px rgb(16 24 40 / 3%);
+}
+
+.app-sidebar nav a,
+.app-sidebar nav a:hover,
+.app-sidebar nav a:focus-visible {
+  text-decoration: none;
+}
+
+.dashboard-welcome {
+  background:
+    radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--ds-primary-subtle) 68%, white) 0, transparent 46%),
+    var(--ds-surface);
+}
+
+.dashboard-welcome__cta {
+  min-height: 44px;
+  border-radius: var(--ds-radius-control);
 }
 
 .app-main :where(.container, .container-fluid) {
