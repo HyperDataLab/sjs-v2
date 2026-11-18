@@ -169,6 +169,7 @@ export default function useAuthors() {
           apiParams.sort_by = 'works_count';
           apiParams.order = 'desc';
         }
+        delete apiParams.sort;
         const response = await getAuthorsApi(apiParams);
         if (response.data && typeof response.data === 'object' && response.data.success !== false) {
           const payload = response.data.data;

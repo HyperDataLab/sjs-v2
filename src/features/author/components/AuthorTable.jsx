@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Icon } from '@iconify/react';
 import AuthorTableRow from './AuthorTableRow';
 import AuthorCard from './AuthorCard';
+import Pagination from '../../../shared/components/Pagination';
 import { Skeleton } from '../../../shared/ui/skeleton';
 import { StatePanel } from '../../../shared/ui/state-panel';
 import { Button } from '../../../shared/ui/button';
@@ -15,6 +16,7 @@ export default function AuthorTable({
   startIndex = 1,
   currentSort = 'articles',
   onSortChange = null,
+  pagination = null,
 }) {
   const { t } = useTranslation();
 
@@ -48,15 +50,15 @@ export default function AuthorTable({
 
   return (
     <div className="space-y-4">
-      {/* Desktop Table View matching sketch */}
+      {/* Desktop Table View */}
       <div className="hidden md:block rounded-xl border border-border bg-surface shadow-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-border bg-surface-muted/40 text-xs font-semibold text-muted-foreground select-none">
                 <th className="py-3 px-4 w-12 text-center">#</th>
-                <th className="py-3 px-4 min-w-[160px] text-left">Author</th>
-                <th className="py-3 px-4 min-w-[200px] text-left">Affiliation</th>
+                <th className="py-3 px-4 min-w-[200px] text-left">Author</th>
+                <th className="py-3 px-4 min-w-[240px] text-left">Affiliation</th>
                 
                 {/* Sortable Publications Column */}
                 <th
@@ -102,9 +104,6 @@ export default function AuthorTable({
                     )}
                   </div>
                 </th>
-
-                {/* Actions */}
-                <th className="py-3 px-4 w-24 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -132,12 +131,6 @@ export default function AuthorTable({
                     <td className="py-3 px-4">
                       <Skeleton className="h-4 w-8 rounded" />
                     </td>
-                    <td className="py-3 px-4 text-right">
-                      <div className="flex justify-end gap-1.5">
-                        <Skeleton className="size-8 rounded-lg" />
-                        <Skeleton className="size-8 rounded-lg" />
-                      </div>
-                    </td>
                   </tr>
                 ))
               ) : (
@@ -152,10 +145,24 @@ export default function AuthorTable({
             </tbody>
           </table>
         </div>
+
+        {/* Embedded Pagination inside table card */}
+        {pagination && pagination.totalItems > 0 && (
+          <div className="border-t border-border px-4 py-3 bg-surface">
+            <Pagination
+              totalItems={pagination.totalItems}
+              currentPage={pagination.currentPage}
+              limit={pagination.limit}
+              onPageChange={pagination.onPageChange}
+              entityName={t("author.tacGia", "authors")}
+              className="pt-0"
+            />
+          </div>
+        )}
       </div>
 
       {/* Mobile Card View fallback */}
-      <div className="block md:hidden">
+      <div className="block md:hidden space-y-3">
         {loading ? (
           <div className="grid grid-cols-1 gap-3">
             {Array.from({ length: 4 }).map((_, idx) => (
@@ -176,6 +183,19 @@ export default function AuthorTable({
             {authors.filter(Boolean).map((author, idx) => (
               <AuthorCard key={author.author_id ?? author.id ?? idx} author={author} />
             ))}
+          </div>
+        )}
+
+        {pagination && pagination.totalItems > 0 && (
+          <div className="p-3 bg-surface rounded-xl border border-border">
+            <Pagination
+              totalItems={pagination.totalItems}
+              currentPage={pagination.currentPage}
+              limit={pagination.limit}
+              onPageChange={pagination.onPageChange}
+              entityName={t("author.tacGia", "authors")}
+              className="pt-0"
+            />
           </div>
         )}
       </div>

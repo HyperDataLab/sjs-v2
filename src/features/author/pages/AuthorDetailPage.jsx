@@ -1,4 +1,6 @@
-﻿import { useNavigate } from "react-router-dom";
+﻿import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import useAuthors from "../hooks/useAuthors";
 import Header from "../../landing/components/Header";
 import Icon from "../../../shared/components/Icon";
 import { Breadcrumbs } from "../../../shared/ui/breadcrumb";
@@ -49,11 +51,48 @@ import "./AuthorDetailPage.css";
  */
 export default function AuthorDetailPage() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const { currentAuthor, fetchAuthorDetail } = useAuthors();
 
-  // Prototype renders rich mock dataset directly to eliminate empty states
-  const author = MOCK_AUTHOR;
-  const metrics = MOCK_METRICS;
-  const affiliations = MOCK_AFFILIATIONS;
+  useEffect(() => {
+    if (id) {
+      fetchAuthorDetail(id);
+    }
+  }, [id, fetchAuthorDetail]);
+
+  const rawName = currentAuthor?.display_name || currentAuthor?.full_name || currentAuthor?.name || '';
+  const authorName = rawName && rawName.trim() ? rawName.trim() : (currentAuthor?.openalex_id ? `Author ${currentAuthor.openalex_id}` : MOCK_AUTHOR.full_name);
+  const institution = currentAuthor?.institution_1 || currentAuthor?.last_known_institution || currentAuthor?.affiliation || MOCK_AUTHOR.institution_1;
+
+  const author = currentAuthor ? {
+    ...MOCK_AUTHOR,
+    ...currentAuthor,
+    id: currentAuthor.author_id || currentAuthor.id || id,
+    full_name: authorName,
+    institution_1: institution,
+    orcid: currentAuthor.orcid || MOCK_AUTHOR.orcid,
+  } : MOCK_AUTHOR;
+
+  const metrics = currentAuthor ? {
+    ...MOCK_METRICS,
+    publications: currentAuthor.works_count ?? currentAuthor.article_count ?? MOCK_METRICS.publications,
+    citations: currentAuthor.cited_by_count ?? currentAuthor.citation_count ?? MOCK_METRICS.citations,
+    hIndex: currentAuthor.h_index ?? MOCK_METRICS.hIndex,
+    i10Index: currentAuthor.i10_index ?? MOCK_METRICS.i10Index,
+  } : MOCK_METRICS;
+
+  const affiliations = currentAuthor && institution ? [
+    {
+      id: 1,
+      institution: institution,
+      department: currentAuthor.institution_2 || currentAuthor.department || MOCK_AFFILIATIONS[0].department,
+      role: MOCK_AFFILIATIONS[0].role,
+      location: MOCK_AFFILIATIONS[0].location,
+      since: MOCK_AFFILIATIONS[0].since,
+      logoInitials: institution.slice(0, 2).toUpperCase(),
+    }
+  ] : MOCK_AFFILIATIONS;
+
   const researchCenters = MOCK_RESEARCH_CENTERS;
   const interests = MOCK_RESEARCH_INTERESTS;
   const researchAreas = MOCK_RESEARCH_AREAS;

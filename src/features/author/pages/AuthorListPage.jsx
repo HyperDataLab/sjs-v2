@@ -341,11 +341,17 @@ export default function AuthorListPage() {
             startIndex={startIndex}
             currentSort={sortVal}
             onSortChange={(newSort) => handleFilterChange('sort', newSort)}
+            pagination={{
+              totalItems: totalAuthors,
+              currentPage: pageVal,
+              limit: limitVal,
+              onPageChange: handlePageChange,
+            }}
           />
         )}
       </div>
 
-      {authors.length > 0 && totalPagesCount > 1 && (
+      {(viewMode === 'grid' || viewMode === 'cards') && authors.length > 0 && totalPagesCount > 1 && (
         <div className="pt-2">
           <AdminPagination
             totalItems={totalAuthors}

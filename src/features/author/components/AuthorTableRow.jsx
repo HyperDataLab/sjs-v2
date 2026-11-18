@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 
@@ -33,85 +33,32 @@ const formatNum = (val) => {
   return Number(val).toLocaleString();
 };
 
+const cleanStr = (val) => String(val ?? '').replace(/[\t\r\n]+/g, ' ').trim();
+
 export default function AuthorTableRow({
   author,
   index
 }) {
   const navigate = useNavigate();
-  const [isBookmarked, setIsBookmarked] = useState(false);
 
   if (!author) return null;
 
-  const id = String(author.author_id ?? author.id ?? '');
-  const name = author.display_name ?? author.full_name ?? author.author_name ?? author.name ?? 'Unknown Author';
-  const institution1 = author.institution_1 ?? author.affiliation ?? author.institution ?? author.last_known_institution ?? '';
-  const institution2 = author.institution_2 ?? author.department ?? '';
-  const institutionText = institution2 ? `${institution1} - ${institution2}` : institution1 || '—';
-  
+  const id = String(author.author_id ?? author.id ?? author.openalex_id ?? '');
+  const rawName = cleanStr(author.display_name || author.full_name || author.name || author.author_name || '');
+  const name = rawName || (author.openalex_id ? `Author ${author.openalex_id}` : (id ? `Author #${id}` : 'Unknown Author'));
+
+  const rawInst1 = cleanStr(author.institution_1 ?? author.last_known_institution ?? author.affiliation ?? author.institution ?? '');
+  const rawInst2 = cleanStr(author.institution_2 ?? author.department ?? '');
+  const institutionText = rawInst2 ? `${rawInst1} - ${rawInst2}` : rawInst1;
+  const hasInstitution = Boolean(institutionText && institutionText !== '-' && institutionText !== '—');
+
   const hIndex = author.h_index ?? author.hindex ?? 0;
   const citations = author.citation_count ?? author.cited_by_count ?? author.citations ?? 0;
   const articlesCount = author.article_count ?? author.works_count ?? author.papers ?? 0;
   const avatarTheme = getAvatarTheme(name);
 
-  useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('bookmarked_authors') || '[]');
-      setIsBookmarked(saved.includes(id));
-    } catch {
-      // ignore
-    }
-  }, [id]);
-
-  const handleToggleBookmark = (e) => {
-    e.stopPropagation();
-    try {
-      const saved = JSON.parse(localStorage.getItem('bookmarked_authors') || '[]');
-      let next;
-      if (saved.includes(id)) {
-        next = saved.filter(item => item !== id);
-        setIsBookmarked(false);
-      } else {
-        next = [...saved, id];
-        setIsBookmarked(true);
-      }
-      localStorage.setItem('bookmarked_authors', JSON.stringify(next));
-    } catch {
-      setIsBookmarked(!isBookmarked);
-    }
-  };
-
   const handleRowClick = () => {
     if (id) navigate(`/authors/${id}`);
-  };
-
-  // Rank badge styling
-  const renderRankBadge = (rank) => {
-    if (rank === 1) {
-      return (
-        <span className="flex size-6 items-center justify-center rounded-full bg-amber-100 text-amber-800 text-xs font-bold border border-amber-300 shadow-2xs">
-          1
-        </span>
-      );
-    }
-    if (rank === 2) {
-      return (
-        <span className="flex size-6 items-center justify-center rounded-full bg-slate-200 text-slate-800 text-xs font-bold border border-slate-300 shadow-2xs">
-          2
-        </span>
-      );
-    }
-    if (rank === 3) {
-      return (
-        <span className="flex size-6 items-center justify-center rounded-full bg-orange-100 text-orange-900 text-xs font-bold border border-orange-300 shadow-2xs">
-          3
-        </span>
-      );
-    }
-    return (
-      <span className="text-xs font-semibold text-muted-foreground w-6 text-center inline-block">
-        {rank}
-      </span>
-    );
   };
 
   return (
@@ -119,9 +66,9 @@ export default function AuthorTableRow({
       onClick={handleRowClick}
       className="group border-b border-border hover:bg-surface-muted/60 transition-colors cursor-pointer"
     >
-      {/* 1. # Rank */}
-      <td className="py-3 px-4 w-12 text-center">
-        {renderRankBadge(index)}
+      {/* 1. # Rank (Clean plain number, no circle) */}
+      <td className="py-3 px-4 w-12 text-center text-xs font-semibold text-muted-foreground tabular-nums">
+        {index}
       </td>
 
       {/* 2. Author (Initials Avatar + Bold Name) */}
@@ -138,12 +85,16 @@ export default function AuthorTableRow({
 
       {/* 3. Affiliation */}
       <td className="py-3 px-4">
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground max-w-[260px]">
-          <Icon icon="lucide:landmark" className="size-4 shrink-0 text-muted-foreground/70" />
-          <span className="truncate" title={institutionText}>
-            {institutionText}
-          </span>
-        </div>
+        {hasInstitution ? (
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground max-w-[280px]">
+            <Icon icon="lucide:landmark" className="size-4 shrink-0 text-muted-foreground/70" />
+            <span className="truncate" title={institutionText}>
+              {institutionText}
+            </span>
+          </div>
+        ) : (
+          <span className="text-muted-foreground/50 text-xs">—</span>
+        )}
       </td>
 
       {/* 4. Publications */}
@@ -159,34 +110,6 @@ export default function AuthorTableRow({
       {/* 6. H-index */}
       <td className="py-3 px-4 text-xs font-medium text-foreground/80 tabular-nums">
         {hIndex}
-      </td>
-
-      {/* 7. Actions (Eye + Bookmark buttons) */}
-      <td className="py-3 px-4 text-right">
-        <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={() => navigate(`/authors/${id}`)}
-            className="size-8 rounded-lg border border-border bg-surface hover:bg-surface-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            title="View Profile"
-            aria-label="View Profile"
-          >
-            <Icon icon="lucide:eye" width={15} />
-          </button>
-          <button
-            type="button"
-            onClick={handleToggleBookmark}
-            className="size-8 rounded-lg border border-border bg-surface hover:bg-surface-muted flex items-center justify-center text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-            title={isBookmarked ? "Remove Bookmark" : "Bookmark Author"}
-            aria-label="Bookmark Author"
-          >
-            <Icon
-              icon="lucide:bookmark"
-              width={15}
-              className={isBookmarked ? "text-primary fill-primary" : ""}
-            />
-          </button>
-        </div>
       </td>
     </tr>
   );

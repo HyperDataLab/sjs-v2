@@ -9,10 +9,14 @@ export default function AuthorCard({ author }) {
   const navigate = useNavigate();
   if (!author) return null;
 
-  const id = author.author_id ?? author.id;
-  const name = author.display_name ?? author.full_name ?? author.name ?? t("typeAuthor");
-  const institution1 = author.institution_1 ?? author.affiliation ?? author.institution ?? '—';
-  const institution2 = author.institution_2 ?? author.department ?? '';
+  const cleanStr = (val) => String(val ?? '').replace(/[\t\r\n]+/g, ' ').trim();
+  const id = author.author_id ?? author.id ?? author.openalex_id;
+  const rawName = cleanStr(author.display_name || author.full_name || author.name || '');
+  const name = rawName || (author.openalex_id ? `Author ${author.openalex_id}` : (id ? `Author #${id}` : t("typeAuthor")));
+  const rawInst1 = cleanStr(author.institution_1 ?? author.last_known_institution ?? author.affiliation ?? author.institution ?? '');
+  const rawInst2 = cleanStr(author.institution_2 ?? author.department ?? '');
+  const institution1 = rawInst1 && rawInst1 !== '-' ? rawInst1 : '—';
+  const institution2 = rawInst2 && rawInst2 !== '-' ? rawInst2 : '';
   const hIndex = author.h_index ?? author.hindex ?? 0;
   const citations = author.citation_count ?? author.citations ?? 0;
   const articlesCount = author.article_count ?? author.papers ?? 0;
