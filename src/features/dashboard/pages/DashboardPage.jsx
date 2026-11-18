@@ -95,10 +95,25 @@ export default function DashboardPage() {
         </div>
       </Card>
       <DashboardStatCards stats={summaryStats} loading={loadingProjects} />
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="min-w-0 xl:col-span-2"><PublicationTrendChart analytics={analytics} loading={loadingAnalytics} isFetching={isFetchingAnalytics}
-          error={errorAnalytics} onRetry={() => refetchAnalytics()} selectedRange={trendRange} onRangeChange={setTrendRange} /></div>
-        <RecentProjectsCard projects={projects} loading={loadingProjects} error={errorProjects} onViewAll={() => navigate("/projects")} onProjectClick={handleProjectClick} />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="min-w-0 lg:col-span-2">
+          <PublicationTrendChart
+            analytics={analytics}
+            loading={loadingAnalytics}
+            isFetching={isFetchingAnalytics}
+            error={errorAnalytics}
+            onRetry={() => refetchAnalytics()}
+            selectedRange={trendRange}
+            onRangeChange={setTrendRange}
+          />
+        </div>
+        <RecentProjectsCard
+          projects={projects}
+          loading={loadingProjects}
+          error={errorProjects}
+          onViewAll={() => navigate("/projects")}
+          onProjectClick={handleProjectClick}
+        />
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <TrendingKeywordsCard keywords={trendingKeywords} loading={loadingKeywords} isFetching={isFetchingKeywords}

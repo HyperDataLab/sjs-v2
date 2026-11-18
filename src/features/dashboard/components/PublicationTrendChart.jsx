@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Icon } from '@iconify/react';
-import { Card } from '../../../shared/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '../../../shared/ui/card';
 import ChartRangeDropdown from './ChartRangeDropdown';
 
 const LINE_COLORS = ['var(--primary)', '#3b82f6', '#10b981', '#a855f7'];
@@ -168,19 +168,19 @@ export default function PublicationTrendChart({
   ) : null;
 
   return (
-    <Card className="h-full flex flex-col overflow-hidden">
-      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-border px-4 py-2.5 min-h-[46px]">
-        <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground">
+    <Card className="h-full min-w-0 flex flex-col overflow-hidden">
+      <CardHeader>
+        <CardTitle>
           <Icon icon="lucide:trending-up" width={16} className="text-primary" />
           <span>{t("dashboard.xuHuongPublication")}</span>
-        </div>
+        </CardTitle>
         <div className="flex items-center gap-2.5">
           {legend}
           {onRangeChange && <ChartRangeDropdown value={selectedRange} onChange={onRangeChange} />}
         </div>
-      </div>
+      </CardHeader>
 
-      <div className="p-3.5 flex-1 flex flex-col justify-between">
+      <CardContent className="flex-1 flex flex-col justify-between">
         <div className="flex justify-between items-center mb-1.5 text-[11px] text-muted-foreground">
           <p className="m-0 truncate">{t("dashboard.soBaiBaoTheoNamTrongProjectsCu")}</p>
           {isFetching && (
@@ -227,7 +227,7 @@ export default function PublicationTrendChart({
             </div>
           )}
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 }

@@ -85,6 +85,15 @@ h6, .h6 { font-size: 0.6875rem; font-weight: 600; }   /* 11px */
 :is(h1, h2, h3, h4, h5, h6)[class*="text-2xl"] { font-size: 1.5rem !important; }
 :is(h1, h2, h3, h4, h5, h6)[class*="text-3xl"] { font-size: 1.875rem !important; }
 
+/* ─── Neutralize Bootstrap Padding Collisions on Design System Cards ─── */
+:is([class*="rounded-card"]) :is([class*="min-h-\[46px\]"]) {
+  padding-top: 0.625rem !important;
+  padding-bottom: 0.625rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  min-height: 46px !important;
+}
+
 /* Custom background grid pattern for light mode */
 .grid-bg {
   background-color: var(--bg-main);

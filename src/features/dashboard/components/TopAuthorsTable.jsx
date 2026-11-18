@@ -47,8 +47,8 @@ export default function TopAuthorsTable({ authors = [], loading, error, onAuthor
 
   return (
     <Card className="min-w-0 overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between gap-2.5 border-b border-border px-4 py-2.5 min-h-[46px]">
-        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground">
+      <CardHeader>
+        <CardTitle>
           <Icon icon="lucide:users" width={16} className="text-primary" />
           <span>{t('dashboard.topAuthorsTuanNay', 'Top Contributing Authors')}</span>
         </CardTitle>

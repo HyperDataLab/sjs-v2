@@ -25,8 +25,8 @@ export default function RecentProjectsCard({ projects = [], loading, error, onVi
 
   return (
     <Card className="h-full min-w-0 flex flex-col overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between gap-2 border-b border-border px-4 py-2.5 min-h-[46px]">
-        <CardTitle className="flex min-w-0 flex-1 items-center gap-2 text-xs sm:text-sm font-semibold leading-snug text-foreground">
+      <CardHeader>
+        <CardTitle>
           <Icon icon="lucide:folder-open" width={16} className="shrink-0 text-primary" />
           <span>{t('dashboard.projectsGanDay', 'Recent Projects')}</span>
         </CardTitle>
@@ -42,7 +42,7 @@ export default function RecentProjectsCard({ projects = [], loading, error, onVi
         )}
       </CardHeader>
 
-      <CardContent className="p-3.5 flex-1 flex flex-col justify-between">
+      <CardContent className="flex-1 flex flex-col justify-between">
         {loading ? (
           <div role="status" aria-label={t('common.dangCapNhat', 'Loading')} className="space-y-2.5">
             {[1, 2, 3].map((i) => (

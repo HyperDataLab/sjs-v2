@@ -41,13 +41,13 @@ export default function QuickAccessGrid() {
 
   return (
     <Card className="h-full min-w-0 flex flex-col overflow-hidden">
-      <CardHeader className="border-b border-border px-4 py-2.5 min-h-[46px] flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground">
+      <CardHeader>
+        <CardTitle>
           <Icon icon="lucide:zap" width={16} className="text-primary" />
           <span>{t('dashboard.truyCapNhanh', 'Quick Access')}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-3.5 flex-1 flex flex-col justify-between">
+      <CardContent className="flex-1 flex flex-col justify-between">
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {items.map((item) => (
             <button

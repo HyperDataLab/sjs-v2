@@ -78,8 +78,8 @@ export default function TrendingKeywordsCard({ keywords, loading, isFetching, er
 
   return (
     <Card className="h-full min-w-0 flex flex-col overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between gap-2.5 border-b border-border px-4 py-2.5 min-h-[46px]">
-        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground">
+      <CardHeader>
+        <CardTitle>
           <Icon icon="lucide:flame" width={16} className="text-primary" />
           <span>Trending Keywords</span>
         </CardTitle>
@@ -99,7 +99,7 @@ export default function TrendingKeywordsCard({ keywords, loading, isFetching, er
           )}
         </div>
       </CardHeader>
-      <CardContent className="p-3.5 flex-1 flex flex-col justify-between">
+      <CardContent className="flex-1 flex flex-col justify-between">
         {loading && !hasData ? (
           <div role="status" aria-label={t('common.dangCapNhat', 'Loading')} className="space-y-2.5 py-1">
             {[1, 2, 3, 4, 5].map((i) => (

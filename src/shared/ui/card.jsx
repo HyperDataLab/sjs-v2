@@ -6,9 +6,17 @@ const Card = React.forwardRef(({ className = '', ...props }, ref) => (
 ));
 Card.displayName = 'Card';
 
-const CardHeader = ({ className = '', ...props }) => <div className={cn('p-5 pb-2', className)} {...props} />;
-const CardTitle = ({ className = '', ...props }) => <h2 className={cn('m-0 text-sm font-semibold text-foreground', className)} {...props} />;
-const CardDescription = ({ className = '', ...props }) => <p className={cn('mt-1 text-sm text-muted-foreground', className)} {...props} />;
-const CardContent = ({ className = '', ...props }) => <div className={cn('p-5', className)} {...props} />;
+const CardHeader = ({ className = '', ...props }) => (
+  <div className={cn('flex items-center justify-between gap-2 border-b border-border px-4 py-2.5 min-h-[46px]', className)} {...props} />
+);
+const CardTitle = ({ className = '', ...props }) => (
+  <h2 className={cn('m-0 text-xs sm:text-sm font-semibold text-foreground flex items-center gap-2', className)} {...props} />
+);
+const CardDescription = ({ className = '', ...props }) => (
+  <p className={cn('mt-0.5 text-xs text-muted-foreground', className)} {...props} />
+);
+const CardContent = ({ className = '', ...props }) => (
+  <div className={cn('p-3.5', className)} {...props} />
+);
 
 export { Card, CardHeader, CardTitle, CardDescription, CardContent };
