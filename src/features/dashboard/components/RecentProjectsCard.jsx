@@ -4,15 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../../shared/ui/card';
 import { Button } from '../../../shared/ui/button';
+import { formatCount } from '../../../shared/utils/formatNumber';
 
 export default function RecentProjectsCard({ projects = [], loading, error, onViewAll, onProjectClick }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const pageSize = 4;
+  const pageSize = 3;
   const totalPages = Math.max(1, Math.ceil(projects.length / pageSize));
   const currentPage = Math.min(page, totalPages);
   const visibleProjects = projects.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
   const labels = {
     active: t('admin.hoatDong', 'Active'),
     new: 'New',
@@ -23,17 +25,23 @@ export default function RecentProjectsCard({ projects = [], loading, error, onVi
 
   return (
     <Card className="h-full min-w-0 flex flex-col overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between gap-2.5 border-b border-border px-4 py-2.5">
+      <CardHeader className="flex flex-row items-center justify-between gap-2 border-b border-border px-4 py-2.5 min-h-[46px]">
         <CardTitle className="flex min-w-0 flex-1 items-center gap-2 text-xs sm:text-sm font-semibold leading-snug text-foreground">
           <Icon icon="lucide:folder-open" width={16} className="shrink-0 text-primary" />
-          <span>{t('dashboard.projectsGanDay')}</span>
+          <span>{t('dashboard.projectsGanDay', 'Recent Projects')}</span>
         </CardTitle>
         {onViewAll && (
-          <Button variant="ghost" size="sm" onClick={onViewAll} className="shrink-0 text-[11px] text-primary font-semibold h-7 px-2">
-            {t('dashboard.xemTatCa')}
-          </Button>
+          <button
+            type="button"
+            onClick={onViewAll}
+            className="shrink-0 text-[11px] text-primary hover:text-primary-hover font-medium inline-flex items-center gap-1 transition-colors cursor-pointer"
+          >
+            <span>{t('dashboard.xemTatCa', 'See all')}</span>
+            <Icon icon="lucide:arrow-right" width={13} />
+          </button>
         )}
       </CardHeader>
+
       <CardContent className="p-3.5 flex-1 flex flex-col justify-between">
         {loading ? (
           <div role="status" aria-label={t('common.dangCapNhat', 'Loading')} className="space-y-2.5">
@@ -52,19 +60,19 @@ export default function RecentProjectsCard({ projects = [], loading, error, onVi
               <Icon icon="lucide:folder-plus" width={18} />
             </div>
             <p className="mb-0.5 text-xs font-semibold text-foreground">
-              {t('dashboard.chuaCoProjectNao')}
+              {t('dashboard.chuaCoProjectNao', 'No projects yet')}
             </p>
             <p className="m-0 text-[11px] text-muted-foreground mb-3 max-w-xs">
-              {t('dashboard.taoProjectDauTienDeBatDauTheoD')}
+              {t('dashboard.taoProjectDauTienDeBatDauTheoD', 'Create your first project to start tracking.')}
             </p>
-            <Button size="sm" onClick={() => navigate('/projects/create')} className="gap-1.5 text-xs h-8">
+            <Button size="sm" onClick={() => navigate('/projects/create')} className="gap-1.5 text-xs h-7 px-3">
               <Icon icon="lucide:plus" width={13} />
               <span>{t('dashboard.taoProject', 'Create Project')}</span>
             </Button>
           </div>
         ) : (
           <div className="flex-1 flex flex-col justify-between">
-            <div className="divide-y divide-border/50">
+            <div className="space-y-1.5">
               {visibleProjects.map((project, i) => {
                 const name = project.project_name ?? project.name ?? project.title ?? 'Untitled';
                 const initials = name
@@ -74,26 +82,29 @@ export default function RecentProjectsCard({ projects = [], loading, error, onVi
                   .map((word) => word[0].toUpperCase())
                   .join('');
                 const status = String(project.status ?? 'active').toLowerCase();
+                const journalsCount = project.journal_count ?? project.journals?.length ?? 0;
+                const articlesCount = project.article_count ?? 0;
 
                 return (
                   <button
                     key={project.project_id ?? project.id ?? i}
                     type="button"
                     onClick={() => onProjectClick?.(project)}
-                    className="flex w-full min-w-0 items-center gap-2.5 rounded-md border-0 bg-transparent px-1.5 py-2 text-left transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-primary"
+                    className="flex w-full min-w-0 items-center gap-2.5 rounded-lg border border-border/40 bg-surface px-2.5 py-2 text-left transition-colors hover:border-primary/40 hover:bg-surface-muted/40 focus-visible:outline-2 focus-visible:outline-primary cursor-pointer group"
                   >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary-subtle text-[11px] font-bold text-primary">
+                    <span className="flex size-7.5 shrink-0 items-center justify-center rounded-md bg-primary-subtle text-[11px] font-bold text-primary group-hover:bg-primary group-hover:text-white transition-colors">
                       {initials}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-xs font-semibold text-foreground" title={name}>
+                      <span className="block truncate text-xs font-semibold text-foreground group-hover:text-primary transition-colors" title={name}>
                         {name}
                       </span>
                       <span className="block truncate text-[11px] text-muted-foreground mt-0.5">
-                        {project.journal_count ?? project.journals?.length ?? 0} {t('project.tapChi')} · {project.article_count ?? 0} {t('author.baiBao')}
+                        {journalsCount} {t('project.tapChi', 'journals')} · {formatCount(articlesCount)} {t('author.baiBao', 'papers')}
                       </span>
                     </span>
-                    <span className="shrink-0 rounded-full bg-surface-muted border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                    <span className="shrink-0 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60 px-2 py-0.5 text-[10px] font-medium flex items-center gap-1">
+                      <span className="size-1.5 rounded-full bg-emerald-500" />
                       {labels[status] ?? labels.active}
                     </span>
                   </button>
@@ -104,7 +115,7 @@ export default function RecentProjectsCard({ projects = [], loading, error, onVi
                 <button
                   type="button"
                   onClick={() => navigate('/projects/create')}
-                  className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border py-2 text-[11px] font-semibold text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-primary-subtle transition-colors"
+                  className="w-full flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-border py-2 text-[11px] font-medium text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-primary-subtle/20 transition-colors cursor-pointer"
                 >
                   <Icon icon="lucide:plus" width={13} />
                   <span>{t('dashboard.taoProjectMoi', 'Create New Project')}</span>
@@ -112,31 +123,11 @@ export default function RecentProjectsCard({ projects = [], loading, error, onVi
               )}
             </div>
 
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between gap-2 pt-3 border-t border-border mt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage === 1}
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="text-[11px] h-7 px-2"
-                >
-                  {t('dashboard.truoc')}
-                </Button>
-                <span className="text-[11px] text-muted-foreground font-mono">
-                  {currentPage}/{totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage === totalPages}
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="text-[11px] h-7 px-2"
-                >
-                  {t('dashboard.sau')} →
-                </Button>
-              </div>
-            )}
+            {/* Bottom grounded footer */}
+            <div className="pt-2.5 mt-3 border-t border-border/50 flex items-center justify-between text-[11px] text-muted-foreground">
+              <span>{t('dashboard.tongSoProject', 'Total projects')}</span>
+              <span className="font-semibold text-foreground font-mono">{projects.length}</span>
+            </div>
           </div>
         )}
       </CardContent>

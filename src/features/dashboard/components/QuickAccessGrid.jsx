@@ -41,34 +41,43 @@ export default function QuickAccessGrid() {
 
   return (
     <Card className="h-full min-w-0 flex flex-col overflow-hidden">
-      <CardHeader className="border-b border-border px-4 py-2.5">
+      <CardHeader className="border-b border-border px-4 py-2.5 min-h-[46px] flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground">
           <Icon icon="lucide:zap" width={16} className="text-primary" />
           <span>{t('dashboard.truyCapNhanh', 'Quick Access')}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-3.5 flex-1 flex flex-col justify-center">
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+      <CardContent className="p-3.5 flex-1 flex flex-col justify-between">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {items.map((item) => (
             <button
               key={item.icon}
               type="button"
               onClick={() => navigate(item.path)}
-              className="flex min-w-0 items-center gap-2.5 rounded-lg border border-border bg-surface p-2.5 text-left transition-colors hover:border-primary/40 hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              className="flex min-w-0 items-center justify-between gap-2 rounded-lg border border-border/50 bg-surface p-2.5 text-left transition-colors hover:border-primary/50 hover:bg-surface-muted/40 focus-visible:outline-2 focus-visible:outline-primary cursor-pointer group"
             >
-              <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${item.iconBg}`}>
-                <Icon icon={item.icon} width={16} />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-xs font-semibold text-foreground truncate">
-                  {item.label}
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${item.iconBg}`}>
+                  <Icon icon={item.icon} width={16} />
                 </span>
-                <span className="block text-[11px] leading-snug text-muted-foreground line-clamp-1">
-                  {item.desc}
+                <span className="min-w-0">
+                  <span className="block text-xs font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                    {item.label}
+                  </span>
+                  <span className="block text-[11px] leading-snug text-muted-foreground truncate">
+                    {item.desc}
+                  </span>
                 </span>
-              </span>
+              </div>
+              <Icon icon="lucide:chevron-right" width={14} className="text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0" />
             </button>
           ))}
+        </div>
+
+        {/* Bottom grounded footer */}
+        <div className="pt-2.5 mt-3 border-t border-border/50 flex items-center justify-between text-[11px] text-muted-foreground">
+          <span>{t('dashboard.phimTatHeThong', 'Navigation Shortcuts')}</span>
+          <span className="font-semibold text-foreground font-mono">4 {t('dashboard.chucNang', 'modules')}</span>
         </div>
       </CardContent>
     </Card>

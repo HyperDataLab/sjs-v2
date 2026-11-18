@@ -169,7 +169,7 @@ export default function PublicationTrendChart({
 
   return (
     <Card className="h-full flex flex-col overflow-hidden">
-      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-border px-4 py-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-border px-4 py-2.5 min-h-[46px]">
         <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground">
           <Icon icon="lucide:trending-up" width={16} className="text-primary" />
           <span>{t("dashboard.xuHuongPublication")}</span>
