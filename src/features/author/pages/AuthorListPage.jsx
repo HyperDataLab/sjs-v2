@@ -172,43 +172,43 @@ export default function AuthorListPage() {
       <AuthorNavigationTabs activeTab="list" />
 
       {/* 4 Stat Cards */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {statCards.map((stat, idx) => (
-          <Card key={idx} className="p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group">
+          <Card key={idx} className="p-3 sm:p-3.5 flex flex-col justify-between relative overflow-hidden group">
             <div className="flex items-start justify-between gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">{stat.label}</span>
-              <div className={cn("size-8 rounded-control flex items-center justify-center shrink-0", stat.iconBg, stat.iconColor)}>
-                <Icon icon={stat.icon} width="16" height="16" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground truncate">{stat.label}</span>
+              <div className={cn("size-7 rounded-lg flex items-center justify-center shrink-0", stat.iconBg, stat.iconColor)}>
+                <Icon icon={stat.icon} width="14" height="14" />
               </div>
             </div>
-            <div className="mt-2">
-              <div className="text-2xl font-bold tracking-tight text-foreground tabular-nums">{stat.value}</div>
-              <div className="text-xs text-muted-foreground mt-0.5 truncate" title={stat.desc}>{stat.desc}</div>
+            <div className="mt-1">
+              <div className="text-lg sm:text-xl font-bold tracking-tight text-foreground tabular-nums">{stat.value}</div>
+              <div className="text-[11px] text-muted-foreground mt-0.5 truncate" title={stat.desc}>{stat.desc}</div>
             </div>
           </Card>
         ))}
       </section>
 
       {/* Filter bar */}
-      <Card className="p-4 shadow-card">
+      <Card className="p-3 sm:p-3.5 shadow-card">
         <Form onSubmit={handleSearchSubmit}>
-          <div className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center gap-2.5">
             <div className="relative flex-1 w-full">
-              <Icon icon="lucide:search" className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" width={16} />
+              <Icon icon="lucide:search" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" width={15} />
               <input
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder={t("author.timTheoTenVienNghienCuuTuKhoa", "Search by author name, institution, or keyword...")}
-                className="w-full h-11 pl-10 pr-4 text-sm bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground"
+                className="w-full h-9 pl-9 pr-3 text-xs bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground"
               />
             </div>
 
-            <div className="w-full sm:w-[260px] shrink-0">
+            <div className="w-full sm:w-[220px] shrink-0">
               <select
                 value={subjectAreaVal}
                 onChange={(e) => handleFilterChange('subject_area', e.target.value)}
-                className="w-full h-11 px-3 text-sm bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground"
+                className="w-full h-9 px-2.5 text-xs bg-background border border-border rounded-control focus:border-primary focus:outline-none transition-colors text-foreground"
               >
                 <option value="">{t("admin.chonLinhVuc", "All subject areas")}</option>
                 {(subjectAreas || []).map((area) => {
@@ -218,8 +218,8 @@ export default function AuthorListPage() {
               </select>
             </div>
 
-            <Button type="submit" size="default" className="h-11 px-6 gap-2 shrink-0 w-full sm:w-auto">
-              <Icon icon="lucide:search" width={16} aria-hidden="true" />
+            <Button type="submit" size="sm" className="h-9 px-4 gap-1.5 shrink-0 w-full sm:w-auto text-xs">
+              <Icon icon="lucide:search" width={14} aria-hidden="true" />
               <span>{t("searchBtn", "Search")}</span>
             </Button>
           </div>

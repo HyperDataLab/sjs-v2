@@ -98,26 +98,26 @@ export default function DashboardShell({ children }) {
       </header>
 
       {/* Desktop Sticky Sidebar (Flex item, zero margin needed for main) */}
-      <div className="hidden md:block w-[248px] shrink-0">
+      <div className="hidden md:block w-[230px] shrink-0">
         <div className="sticky top-0 h-screen overflow-y-auto">{sidebar}</div>
       </div>
 
       {/* Main Content Column */}
       <div className="flex flex-1 flex-col min-w-0">
-        <header className="app-topbar sticky top-0 z-[var(--ds-z-sticky)] flex max-md:hidden min-h-16 items-center border-b border-border bg-surface/95 px-6 md:px-8 backdrop-blur">
-          <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between">
-            <div className="flex min-w-0 items-center gap-2 text-sm">
+        <header className="app-topbar sticky top-0 z-[var(--ds-z-sticky)] flex max-md:hidden min-h-14 items-center border-b border-border bg-surface/95 px-4 md:px-6 backdrop-blur">
+          <div className="w-full max-w-[1360px] mx-auto flex items-center justify-between">
+            <div className="flex min-w-0 items-center gap-2 text-xs sm:text-sm">
               <span className="text-muted-foreground">{t('navigation.workspace', 'Workspace')}</span>
               <span aria-hidden="true" className="text-subtle-foreground">/</span>
               <span className="truncate font-semibold text-foreground">{pageTitle}</span>
             </div>
-            <div className="flex items-center gap-3">
-              <button type="button" onClick={() => navigate(`${base}/search`)} className="flex h-10 min-w-[230px] items-center gap-2 rounded-control border border-border bg-background px-3 text-left text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary-subtle-hover" aria-label={t('navigation.search', 'Search')}>
+            <div className="flex items-center gap-2.5">
+              <button type="button" onClick={() => navigate(`${base}/search`)} className="flex h-9 min-w-[210px] items-center gap-2 rounded-control border border-border bg-background px-3 text-left text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary-subtle-hover" aria-label={t('navigation.search', 'Search')}>
                 <FiSearch aria-hidden="true" />
                 <span>{t('navigation.searchManuscripts', 'Search manuscripts, authors, or IDs…')}</span>
               </button>
-              <button type="button" onClick={() => navigate(`${base}/profile`)} className="flex h-10 items-center gap-2 rounded-control border-0 bg-transparent px-2 text-sm text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground" aria-label={t('navigation.account', 'Account')}>
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-primary-subtle font-semibold text-primary">R</span>
+              <button type="button" onClick={() => navigate(`${base}/profile`)} className="flex h-9 items-center gap-2 rounded-control border-0 bg-transparent px-2 text-xs text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground" aria-label={t('navigation.account', 'Account')}>
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-primary-subtle text-xs font-semibold text-primary">R</span>
                 <span className="hidden lg:inline">{t('navigation.account', 'Account')}</span>
               </button>
             </div>

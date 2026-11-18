@@ -42,27 +42,27 @@ export default function AuthorCard({ author }) {
       tabIndex={0}
       onClick={handleCardClick}
       onKeyDown={handleKeyDown}
-      className="group flex h-full flex-col justify-between p-4 cursor-pointer text-left transition-colors border border-border bg-surface hover:border-primary/50 hover:bg-surface-muted/30 shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-card"
+      className="group flex h-full flex-col justify-between p-3 sm:p-3.5 cursor-pointer text-left transition-colors border border-border bg-surface hover:border-primary/50 hover:bg-surface-muted/30 shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-card"
     >
       <div>
         {/* Header row: avatar + info */}
-        <div className="flex items-start gap-3 mb-3.5">
+        <div className="flex items-start gap-2.5 mb-2.5">
           <AuthorAvatar
             name={name}
             url={avatarUrl}
-            size="md"
+            size="sm"
             bgColor={avatarColor}
             className="shrink-0"
           />
           <div className="min-w-0 flex-1">
-            <h3 className="m-0 truncate text-base font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
+            <h3 className="m-0 truncate text-xs sm:text-sm font-semibold text-foreground group-hover:text-primary transition-colors leading-snug">
               {name}
             </h3>
-            <span className="block truncate text-xs text-muted-foreground mt-0.5" title={institution1}>
+            <span className="block truncate text-[11px] text-muted-foreground mt-0.5" title={institution1}>
               {institution1}
             </span>
             {institution2 && (
-              <span className="block truncate text-xs text-muted-foreground mt-0.5" title={institution2}>
+              <span className="block truncate text-[11px] text-muted-foreground mt-0.5" title={institution2}>
                 {institution2}
               </span>
             )}
@@ -70,28 +70,28 @@ export default function AuthorCard({ author }) {
         </div>
 
         {/* Metrics row */}
-        <div className="grid grid-cols-3 gap-2 py-2.5 px-3 rounded-control border border-border bg-surface-muted/50 mb-3.5">
+        <div className="grid grid-cols-3 gap-1.5 py-1.5 px-2.5 rounded-lg border border-border bg-surface-muted/50 mb-2.5">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               H-index
             </div>
-            <div className="mt-0.5 text-sm font-bold text-foreground tabular-nums">
+            <div className="mt-0.5 text-xs font-bold text-foreground tabular-nums">
               {hIndex}
             </div>
           </div>
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               {t("author.trichDan")}
             </div>
-            <div className="mt-0.5 text-sm font-bold text-foreground tabular-nums">
+            <div className="mt-0.5 text-xs font-bold text-foreground tabular-nums">
               {formatLocalNumber(citations)}
             </div>
           </div>
           <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               {t("articles")}
             </div>
-            <div className="mt-0.5 text-sm font-bold text-foreground tabular-nums">
+            <div className="mt-0.5 text-xs font-bold text-foreground tabular-nums">
               {formatLocalNumber(articlesCount)}
             </div>
           </div>
@@ -99,10 +99,10 @@ export default function AuthorCard({ author }) {
       </div>
 
       {/* Footer tags */}
-      <div className="border-t border-border pt-3">
-        <div className="flex flex-wrap gap-1.5 items-center">
+      <div className="border-t border-border pt-2">
+        <div className="flex flex-wrap gap-1 items-center">
           {tags.length === 0 ? (
-            <span className="text-xs italic text-muted-foreground">
+            <span className="text-[11px] italic text-muted-foreground">
               {t("author.chuaCapNhatLinhVuc")}
             </span>
           ) : (
@@ -110,7 +110,7 @@ export default function AuthorCard({ author }) {
               <Badge
                 key={idx}
                 variant="secondary"
-                className="text-xs font-medium cursor-pointer hover:bg-primary-subtle hover:text-primary transition-colors"
+                className="text-[10px] py-0.5 px-1.5 font-medium cursor-pointer hover:bg-primary-subtle hover:text-primary transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   navigate(`/catalog?search=${encodeURIComponent(tag)}`);
@@ -121,7 +121,7 @@ export default function AuthorCard({ author }) {
             ))
           )}
           {tags.length > 3 && (
-            <Badge variant="outline" className="text-xs font-normal text-muted-foreground">
+            <Badge variant="outline" className="text-[10px] py-0.5 px-1 font-normal text-muted-foreground">
               +{tags.length - 3}
             </Badge>
           )}

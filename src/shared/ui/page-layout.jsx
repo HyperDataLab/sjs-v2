@@ -2,7 +2,7 @@ import { cn } from '../../lib/utils';
 import { Breadcrumbs } from './breadcrumb';
 
 function PageContainer({ className = '', ...props }) {
-  return <div className={cn('w-full max-w-[1600px] mx-auto px-6 pt-6 pb-16 md:px-8 md:pb-24 space-y-6', className)} {...props} />;
+  return <div className={cn('w-full max-w-[1360px] mx-auto px-4 pt-4 pb-12 sm:px-6 sm:pt-5 sm:pb-16 space-y-4 sm:space-y-5', className)} {...props} />;
 }
 
 function PageHeader({
@@ -18,23 +18,23 @@ function PageHeader({
   const activeBreadcrumb = breadcrumb || breadcrumbs;
 
   return (
-    <header className={cn('flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between', className)}>
+    <header className={cn('flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between', className)}>
       <div className="min-w-0 flex-1">
         {activeBreadcrumb && (
           Array.isArray(activeBreadcrumb) ? (
-            <Breadcrumbs items={activeBreadcrumb} className="mb-2" />
+            <Breadcrumbs items={activeBreadcrumb} className="mb-1.5" />
           ) : (
-            <div className="mb-2">{activeBreadcrumb}</div>
+            <div className="mb-1.5">{activeBreadcrumb}</div>
           )
         )}
-        {badge && <div className="mb-2">{badge}</div>}
+        {badge && <div className="mb-1.5">{badge}</div>}
         {title && (
-          <h1 className="m-0 text-xl sm:text-2xl font-bold leading-snug tracking-tight text-foreground">
+          <h1 className="m-0 text-lg sm:text-xl font-bold leading-snug tracking-tight text-foreground">
             {title}
           </h1>
         )}
         {description && (
-          <p className="mb-0 mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+          <p className="mb-0 mt-1 max-w-2xl text-xs sm:text-sm leading-relaxed text-muted-foreground">
             {description}
           </p>
         )}

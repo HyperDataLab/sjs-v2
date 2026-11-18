@@ -13,11 +13,11 @@ function RankBadge({ rank }) {
   ];
   return (
     <span
-      className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
+      className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold ${
         colors[rank - 1] ?? 'text-muted-foreground'
       }`}
     >
-      {rank === 1 ? <Icon icon="lucide:crown" width={14} /> : rank}
+      {rank === 1 ? <Icon icon="lucide:crown" width={12} /> : rank}
     </span>
   );
 }
@@ -27,54 +27,54 @@ export default function TopAuthorsTable({ authors = [], loading, error, onAuthor
 
   return (
     <Card className="min-w-0 overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between gap-3 border-b border-border px-5 py-4">
-        <CardTitle className="flex items-center gap-2 text-sm sm:text-base font-semibold text-foreground">
-          <Icon icon="lucide:users" width={18} className="text-primary" />
+      <CardHeader className="flex flex-row items-center justify-between gap-2.5 border-b border-border px-4 py-2.5">
+        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground">
+          <Icon icon="lucide:users" width={16} className="text-primary" />
           <span>{t('dashboard.topAuthorsTuanNay', 'Top Contributing Authors')}</span>
         </CardTitle>
         {onViewAll && (
-          <Button variant="ghost" size="sm" className="text-xs text-primary font-semibold" onClick={onViewAll}>
+          <Button variant="ghost" size="sm" className="text-[11px] text-primary font-semibold h-7 px-2" onClick={onViewAll}>
             {t('dashboard.bangXepHang', 'View Leaderboard')} →
           </Button>
         )}
       </CardHeader>
       <CardContent className="p-0">
         {loading ? (
-          <div role="status" aria-label={t('common.dangCapNhat', 'Loading')} className="p-5 space-y-3">
+          <div role="status" aria-label={t('common.dangCapNhat', 'Loading')} className="p-4 space-y-2.5">
             {[1, 2, 3, 4, 5].map((i) => (
-              <Skeleton key={i} className="h-12 rounded-lg" />
+              <Skeleton key={i} className="h-9 rounded-md" />
             ))}
           </div>
         ) : error ? (
-          <div className="py-10 text-center text-xs text-danger">
-            <Icon icon="lucide:alert-circle" width={32} className="mx-auto mb-2" />
+          <div className="py-8 text-center text-xs text-danger">
+            <Icon icon="lucide:alert-circle" width={24} className="mx-auto mb-1.5" />
             {error}
           </div>
         ) : authors.length === 0 ? (
-          <div className="py-12 text-center">
-            <div className="size-12 rounded-full bg-surface-muted text-muted-foreground flex items-center justify-center mx-auto mb-3">
-              <Icon icon="lucide:users" width={24} />
+          <div className="py-8 text-center">
+            <div className="size-9 rounded-full bg-surface-muted text-muted-foreground flex items-center justify-center mx-auto mb-2">
+              <Icon icon="lucide:users" width={18} />
             </div>
-            <p className="mb-1 text-sm font-semibold text-foreground">
+            <p className="mb-0.5 text-xs font-semibold text-foreground">
               {t('dashboard.chuaCoDuLieuTacGia')}
             </p>
-            <p className="m-0 text-xs text-muted-foreground">
+            <p className="m-0 text-[11px] text-muted-foreground">
               {t('dashboard.duLieuLeaderboardSeHienThiODay')}
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] border-collapse text-left text-sm">
-              <thead className="bg-surface-muted/60 text-[11px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border">
+            <table className="w-full min-w-[580px] border-collapse text-left text-xs">
+              <thead className="bg-surface-muted/60 text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border">
                 <tr>
-                  <th scope="col" className="px-5 py-3 w-16">#</th>
-                  <th scope="col" className="px-4 py-3">{t('typeAuthor', 'Author')}</th>
-                  <th scope="col" className="px-4 py-3">{t('author.linhVuc', 'Research Field')}</th>
-                  <th scope="col" className="px-4 py-3 text-right">{t('articles', 'Articles')}</th>
-                  <th scope="col" className="px-5 py-3 text-right">Citations</th>
+                  <th scope="col" className="px-4 py-2 w-14">#</th>
+                  <th scope="col" className="px-3 py-2">{t('typeAuthor', 'Author')}</th>
+                  <th scope="col" className="px-3 py-2">{t('author.linhVuc', 'Research Field')}</th>
+                  <th scope="col" className="px-3 py-2 text-right">{t('articles', 'Articles')}</th>
+                  <th scope="col" className="px-4 py-2 text-right">Citations</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/60">
+              <tbody className="divide-y divide-border/50">
                 {authors.map((author, i) => {
                   const name = author.display_name ?? author.full_name ?? author.author_name ?? author.name ?? 'Unknown';
                   const field = author.subject_area ?? author.primary_subject_area ?? author.field ?? author.area ?? '—';
@@ -88,40 +88,40 @@ export default function TopAuthorsTable({ authors = [], loading, error, onAuthor
                     .join('');
 
                   return (
-                    <tr key={author.author_id ?? author.id ?? i} className="transition-colors hover:bg-surface-muted/50">
-                      <td className="px-5 py-3.5">
+                    <tr key={author.author_id ?? author.id ?? i} className="transition-colors hover:bg-surface-muted/40">
+                      <td className="px-4 py-2">
                         <RankBadge rank={i + 1} />
                       </td>
-                      <td className="px-4 py-3.5">
+                      <td className="px-3 py-2">
                         <button
                           type="button"
                           onClick={() => onAuthorClick?.(author)}
-                          className="flex max-w-sm items-center gap-3 rounded border-0 bg-transparent p-0 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary group"
+                          className="flex max-w-xs items-center gap-2 rounded border-0 bg-transparent p-0 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary group"
                         >
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-xs font-bold text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-subtle text-[11px] font-bold text-primary group-hover:bg-primary group-hover:text-white transition-colors">
                             {initials}
                           </span>
                           <span className="min-w-0">
-                            <span className="block truncate font-semibold text-foreground group-hover:text-primary transition-colors" title={name}>
-                              {truncate(name, 28)}
+                            <span className="block truncate font-semibold text-foreground text-xs group-hover:text-primary transition-colors" title={name}>
+                              {truncate(name, 26)}
                             </span>
                             {author.orcid && (
-                              <span className="block truncate text-xs font-mono text-muted-foreground">
-                                {truncate(author.orcid, 32)}
+                              <span className="block truncate text-[10px] font-mono text-muted-foreground">
+                                {truncate(author.orcid, 28)}
                               </span>
                             )}
                           </span>
                         </button>
                       </td>
-                      <td className="px-4 py-3.5">
-                        <span className="inline-block rounded-full bg-surface-muted border border-border px-2.5 py-0.5 text-xs text-muted-foreground">
+                      <td className="px-3 py-2">
+                        <span className="inline-block rounded-full bg-surface-muted border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
                           {field || '—'}
                         </span>
                       </td>
-                      <td className="px-4 py-3.5 text-right font-mono text-muted-foreground tabular-nums">
+                      <td className="px-3 py-2 text-right font-mono text-muted-foreground tabular-nums text-xs">
                         {formatCount(articles)}
                       </td>
-                      <td className="px-5 py-3.5 text-right font-mono font-semibold text-primary tabular-nums">
+                      <td className="px-4 py-2 text-right font-mono font-semibold text-primary tabular-nums text-xs">
                         ↑ {formatCount(citations)}
                       </td>
                     </tr>

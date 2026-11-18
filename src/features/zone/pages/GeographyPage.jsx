@@ -177,7 +177,7 @@ export default function GeographyPage() {
         )}
 
         {/* Main Content Layout */}
-        <Row className="g-4">
+        <Row className="g-3 sm:g-3.5">
           <Col xs={12} lg={7} xl={8}>
             <GeographyTerritoryChart
               data={countryStats}

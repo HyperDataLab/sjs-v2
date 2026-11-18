@@ -41,29 +41,29 @@ export default function QuickAccessGrid() {
 
   return (
     <Card className="h-full min-w-0 flex flex-col overflow-hidden">
-      <CardHeader className="border-b border-border px-5 py-4">
-        <CardTitle className="flex items-center gap-2 text-sm sm:text-base font-semibold text-foreground">
-          <Icon icon="lucide:zap" width={18} className="text-primary" />
+      <CardHeader className="border-b border-border px-4 py-2.5">
+        <CardTitle className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground">
+          <Icon icon="lucide:zap" width={16} className="text-primary" />
           <span>{t('dashboard.truyCapNhanh', 'Quick Access')}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-5 flex-1 flex flex-col justify-center">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <CardContent className="p-3.5 flex-1 flex flex-col justify-center">
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {items.map((item) => (
             <button
               key={item.icon}
               type="button"
               onClick={() => navigate(item.path)}
-              className="flex min-w-0 items-center gap-3.5 rounded-xl border border-border bg-surface p-3.5 text-left transition-colors hover:border-primary/40 hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              className="flex min-w-0 items-center gap-2.5 rounded-lg border border-border bg-surface p-2.5 text-left transition-colors hover:border-primary/40 hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
-              <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${item.iconBg}`}>
-                <Icon icon={item.icon} width={20} />
+              <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${item.iconBg}`}>
+                <Icon icon={item.icon} width={16} />
               </span>
               <span className="min-w-0">
-                <span className="block text-sm font-semibold text-foreground truncate">
+                <span className="block text-xs font-semibold text-foreground truncate">
                   {item.label}
                 </span>
-                <span className="block text-xs leading-relaxed text-muted-foreground line-clamp-1">
+                <span className="block text-[11px] leading-snug text-muted-foreground line-clamp-1">
                   {item.desc}
                 </span>
               </span>
