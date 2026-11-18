@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import LatexText from '../../../shared/components/LatexText/LatexText';
+import { Badge } from '../../../shared/ui/badge';
 
 export default function ArticleTableRow({
   article,
@@ -13,31 +14,29 @@ export default function ArticleTableRow({
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
-  // Helper to assign topic color badge
+  // Helper to assign topic semantic badge from Design System
   const renderTopicBadge = (topic) => {
     if (!topic) {
       return (
-        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-surface-muted text-muted-foreground border border-border">
+        <Badge variant="secondary" className="text-[11px] font-medium">
           {t("article.chuaPhanLoai", "General")}
-        </span>
+        </Badge>
       );
     }
     const name = String(topic).toLowerCase();
-    let colorClass = 'bg-purple-50 text-purple-700 border-purple-200';
-    if (name.includes('machine learning') || name.includes('ml') || name.includes('intelligence')) {
-      colorClass = 'bg-primary-subtle text-primary border-primary/20';
-    } else if (name.includes('computer') || name.includes('software') || name.includes('data')) {
-      colorClass = 'bg-sky-50 text-sky-700 border-sky-200';
+    let variant = 'secondary';
+    if (name.includes('machine learning') || name.includes('ml') || name.includes('intelligence') || name.includes('computer') || name.includes('data')) {
+      variant = 'info';
     } else if (name.includes('medicine') || name.includes('bio') || name.includes('health')) {
-      colorClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      variant = 'success';
     } else if (name.includes('physic') || name.includes('math') || name.includes('engineer')) {
-      colorClass = 'bg-amber-50 text-amber-700 border-amber-200';
+      variant = 'warning';
     }
 
     return (
-      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border max-w-[150px] truncate shadow-2xs ${colorClass}`} title={topic}>
+      <Badge variant={variant} className="text-[11px] font-semibold max-w-[150px] truncate" title={topic}>
         {topic}
-      </span>
+      </Badge>
     );
   };
 
@@ -63,7 +62,7 @@ export default function ArticleTableRow({
   return (
     <tr
       onClick={() => onDetailClick(article.article_id)}
-      className="cursor-pointer transition-colors hover:bg-primary-subtle/20 group text-start"
+      className="cursor-pointer transition-colors hover:bg-primary-subtle/30 group text-start"
     >
       {/* Index */}
       <td className="px-3 py-3.5 text-center text-xs font-mono text-muted-foreground w-10">
@@ -134,14 +133,14 @@ export default function ArticleTableRow({
       {/* Open Access */}
       <td className="px-3 py-3.5 text-center whitespace-nowrap">
         {article.is_open_access ? (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <span className="size-1.5 rounded-full bg-emerald-600" />
+          <Badge variant="success" className="gap-1 text-[11px] font-bold px-2 py-0.5">
+            <span className="size-1.5 rounded-full bg-success" />
             OA
-          </span>
+          </Badge>
         ) : (
-          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-50 text-slate-600 border border-slate-200">
+          <Badge variant="outline" className="text-[11px] font-medium px-2 py-0.5">
             Closed
-          </span>
+          </Badge>
         )}
       </td>
 

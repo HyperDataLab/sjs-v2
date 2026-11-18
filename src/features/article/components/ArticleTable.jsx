@@ -7,6 +7,7 @@ import { Card } from '../../../shared/ui/card';
 import { StatePanel } from '../../../shared/ui/state-panel';
 import { Button } from '../../../shared/ui/button';
 import { Skeleton } from '../../../shared/ui/skeleton';
+import { Badge } from '../../../shared/ui/badge';
 
 export default function ArticleTable({
   articles = [],
@@ -54,7 +55,7 @@ export default function ArticleTable({
   // If loading and there are no items
   if (isLoading && articles.length === 0) {
     return (
-      <section className="rounded-card border border-border bg-surface shadow-xs overflow-hidden">
+      <section className="rounded-card border border-border bg-surface shadow-card overflow-hidden">
         <div className="table-responsive">
           <Table hover className="align-middle mb-0 text-start w-full">
             <thead>
@@ -99,7 +100,7 @@ export default function ArticleTable({
   return (
     <>
       {/* 1. TABLE LAYOUT (Desktop & Tablet) */}
-      <section className="hidden md:block rounded-card border border-border bg-surface shadow-xs overflow-hidden">
+      <section className="hidden md:block rounded-card border border-border bg-surface shadow-card overflow-hidden">
         <div className="table-responsive">
           <Table hover className="align-middle mb-0 text-start w-full">
             <thead>
@@ -135,24 +136,24 @@ export default function ArticleTable({
             <Card
               key={article.article_id}
               onClick={() => onDetailClick(article.article_id)}
-              className="p-4 border-border bg-surface shadow-xs cursor-pointer hover:border-primary/50 transition-colors"
+              className="p-4 cursor-pointer hover:border-primary/50 transition-colors"
             >
               <div className="flex items-center justify-between gap-2 mb-2">
                 <span className="text-muted-foreground text-xs font-mono">#{index + 1}</span>
                 <div className="flex items-center gap-1.5">
                   {article.primary_topic && (
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-surface-muted border border-border text-foreground truncate max-w-[150px]">
+                    <Badge variant="secondary" className="text-[11px] font-semibold max-w-[150px] truncate">
                       {article.primary_topic}
-                    </span>
+                    </Badge>
                   )}
                   {article.is_open_access ? (
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <Badge variant="success" className="text-[10px] font-bold px-1.5 py-0.5">
                       OA
-                    </span>
+                    </Badge>
                   ) : (
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-50 text-slate-600 border border-slate-200">
+                    <Badge variant="outline" className="text-[10px] font-medium px-1.5 py-0.5">
                       Closed
-                    </span>
+                    </Badge>
                   )}
                 </div>
               </div>

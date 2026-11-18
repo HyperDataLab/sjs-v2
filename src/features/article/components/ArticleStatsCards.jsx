@@ -26,21 +26,21 @@ export default function ArticleStatsCards({
       value: stats?.openAccessCount || 0,
       hint: t("article.fullTextFree", "Freely accessible papers"),
       icon: 'lucide:unlock',
-      iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+      iconBg: 'bg-success-subtle text-success',
     },
     {
       label: t("article.tongTacGia", "ACTIVE AUTHORS"),
       value: stats?.authorsCount || 0,
       hint: t("article.recordedAuthors", "Contributing researchers"),
       icon: 'lucide:users',
-      iconBg: 'bg-sky-500/10 text-sky-600 dark:text-sky-400',
+      iconBg: 'bg-primary-subtle text-primary-hover',
     },
     {
       label: t("typeArea", "RESEARCH TOPICS"),
       value: stats?.topicsCount || 0,
       hint: t("article.fieldsAndDisciplines", "Scientific fields & topics"),
       icon: 'lucide:layers',
-      iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+      iconBg: 'bg-warning-subtle text-warning',
     }
   ];
 
@@ -48,7 +48,7 @@ export default function ArticleStatsCards({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="p-4 sm:p-5 border-border bg-surface shadow-xs">
+          <Card key={i} className="p-4 sm:p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-2 w-full">
                 <Skeleton className="h-3.5 w-24 rounded" />
@@ -66,7 +66,7 @@ export default function ArticleStatsCards({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {statItems.map((item, index) => (
-        <Card key={index} className="p-4 sm:p-5 border-border bg-surface shadow-xs transition-colors hover:border-primary/40">
+        <Card key={index} className="p-4 sm:p-5 transition-colors hover:border-primary/40">
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1 min-w-0">
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block truncate">

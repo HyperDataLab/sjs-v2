@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Table } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+import { Badge } from '../../../shared/ui/badge';
 
 export default function JournalTable({
   journals = [],
@@ -14,16 +15,16 @@ export default function JournalTable({
   const renderAccessBadge = (journal) => {
     if (journal.is_open_access) {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span className="size-1.5 rounded-full bg-emerald-600" />
+        <Badge variant="success" className="gap-1.5 px-2.5 py-0.5 text-[11px] font-semibold">
+          <span className="size-1.5 rounded-full bg-success" />
           Open Access
-        </span>
+        </Badge>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-50 text-slate-600 border border-slate-200">
+      <Badge variant="outline" className="px-2.5 py-0.5 text-[11px] font-medium">
         Subscription
-      </span>
+      </Badge>
     );
   };
 
@@ -32,28 +33,28 @@ export default function JournalTable({
     const q = String(quartile).trim().toUpperCase();
     if (q === 'Q1') {
       return (
-        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-success-subtle text-success border border-success/20 shadow-2xs">
           Q1
         </span>
       );
     }
     if (q === 'Q2') {
       return (
-        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-primary-subtle text-primary border border-primary/20 shadow-2xs">
           Q2
         </span>
       );
     }
     if (q === 'Q3') {
       return (
-        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-amber-50 text-amber-700 border border-amber-200 shadow-2xs">
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-warning-subtle text-warning border border-warning/20 shadow-2xs">
           Q3
         </span>
       );
     }
     if (q === 'Q4') {
       return (
-        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-surface-muted text-muted-foreground border border-border shadow-2xs">
           Q4
         </span>
       );
@@ -66,7 +67,7 @@ export default function JournalTable({
   };
 
   return (
-    <section className="catalog-table-card rounded-card border border-border bg-surface shadow-xs overflow-hidden">
+    <section className="catalog-table-card rounded-card border border-border bg-surface shadow-card overflow-hidden">
       <div className="table-responsive">
         <Table hover className="catalog-table align-middle mb-0 text-start w-full">
           <thead>

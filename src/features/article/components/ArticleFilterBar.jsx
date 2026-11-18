@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Dropdown } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import { Card } from '../../../shared/ui/card';
+import { Button } from '../../../shared/ui/button';
+import { Badge } from '../../../shared/ui/badge';
 import { getArticleFilterOptionsApi } from '../api/articleApi';
 import { searchJournalsApi, getJournalByIdApi } from '../../journal/api/journalApi';
 import { getTopicsApi, getTopicByIdApi } from '../../topic/api/topic.api';
@@ -491,13 +493,13 @@ export default function ArticleFilterBar({
             </button>
           )}
         </div>
-        <button
+        <Button
           type="submit"
-          className="h-11 px-5 rounded-control bg-primary text-white text-sm font-semibold hover:bg-primary-hover shadow-xs flex items-center gap-2 shrink-0 border-0 cursor-pointer transition-colors"
+          className="h-11 px-5 rounded-control shadow-xs flex items-center gap-2 shrink-0"
         >
           <Icon icon="lucide:search" width="15" />
           <span>Search</span>
-        </button>
+        </Button>
       </form>
 
       {/* 2. Dropdown Filters Toolbar */}
@@ -641,22 +643,23 @@ export default function ArticleFilterBar({
         <div className="flex flex-wrap items-center gap-1.5 pt-2">
           <span className="text-[11px] font-medium text-muted-foreground">Active filters:</span>
           {activeChips.map((chip) => (
-            <span
+            <Badge
               key={chip.id}
-              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-subtle text-primary border border-primary/20"
+              variant="info"
+              className="gap-1 px-2.5 py-0.5 text-xs font-medium"
             >
               <span>{chip.label}:</span>
               <strong className="font-semibold">{chip.value}</strong>
               <button
                 type="button"
                 onClick={chip.onClear}
-                className="hover:bg-primary/20 rounded-full p-0.5 border-0 bg-transparent text-primary cursor-pointer ml-0.5"
+                className="hover:bg-primary/20 rounded-full p-0.5 border-0 bg-transparent text-primary cursor-pointer ml-0.5 inline-flex items-center"
                 title={`Remove ${chip.label}`}
                 aria-label={`Remove ${chip.label}`}
               >
                 <Icon icon="lucide:x" width="12" />
               </button>
-            </span>
+            </Badge>
           ))}
         </div>
       )}

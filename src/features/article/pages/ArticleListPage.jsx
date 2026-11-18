@@ -7,6 +7,7 @@ import ArticleFilterBar from '../components/ArticleFilterBar';
 import ArticleTable from '../components/ArticleTable';
 import AdminPagination from '../../../shared/components/Pagination';
 import { Button } from '../../../shared/ui/button';
+import { Badge } from '../../../shared/ui/badge';
 import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
 import '../Article.css';
 
@@ -38,10 +39,10 @@ export default function ArticleListPage() {
           { label: t("articles", "Scientific Articles") }
         ]}
         badge={
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-subtle text-primary text-xs font-semibold">
+          <Badge variant="info" className="gap-1.5 py-1 px-2.5 text-xs font-semibold">
             <Icon icon="lucide:library-big" width="14" height="14" />
             <span>Trending System Repository</span>
-          </div>
+          </Badge>
         }
         title={t("article.khoLuuTruBaiBaoKhoaHoc", "Scientific Articles Repository")}
         description={t("article.duyetQuaTimKiemVaLocHangNghinB", "Search, filter, and discover millions of high-impact scientific publications.")}
@@ -57,18 +58,18 @@ export default function ArticleListPage() {
         }
       >
         {(filters.selectedVolume || filters.selectedIssue) && (
-          <div className="flex flex-wrap items-center gap-3 mt-2">
+          <div className="flex flex-wrap items-center gap-2 mt-2">
             {filters.selectedVolume && (
-              <div className="inline-flex items-center gap-1.5 text-xs text-primary font-medium bg-primary-subtle px-2.5 py-1 rounded-md">
+              <Badge variant="secondary" className="gap-1.5 py-1 px-2.5 text-xs font-medium">
                 <Icon icon="solar:folder-with-files-bold" width="14" />
                 <span>{t("article.dangXemBaiBaoThuocVolume", "Viewing volume: ")}{filters.selectedVolume}</span>
-              </div>
+              </Badge>
             )}
             {filters.selectedIssue && (
-              <div className="inline-flex items-center gap-1.5 text-xs text-primary font-medium bg-primary-subtle px-2.5 py-1 rounded-md">
+              <Badge variant="secondary" className="gap-1.5 py-1 px-2.5 text-xs font-medium">
                 <Icon icon="lucide:layers-3" width="14" />
                 <span>{t("article.dangXemBaiBaoThuocIssue", "Viewing issue: ")}{filters.selectedIssue}</span>
-              </div>
+              </Badge>
             )}
           </div>
         )}
@@ -79,17 +80,6 @@ export default function ArticleListPage() {
 
       {/* Thanh lọc & Sắp xếp tích hợp */}
       <ArticleFilterBar filters={filters} updateFilters={updateFilters} clearFilters={clearFilters} />
-
-      {/* Kết quả đếm */}
-      <div className="flex items-center justify-between flex-wrap gap-2 text-xs text-muted-foreground px-0.5">
-        <div>
-          {t("pagination.showing", "Showing")}{" "}
-          <span className="font-bold text-foreground">{articles.length}</span>{" "}
-          {t("pagination.of", "of")}{" "}
-          <span className="font-bold text-foreground">{total ? total.toLocaleString() : 0}</span>{" "}
-          {t("article.baiBaoKhoaHoc", "scientific papers")}
-        </div>
-      </div>
 
       {/* Bảng dữ liệu */}
       <ArticleTable
