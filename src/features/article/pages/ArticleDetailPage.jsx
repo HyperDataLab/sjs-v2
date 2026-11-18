@@ -7,9 +7,11 @@ import { t } from "i18next";
  */
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import { Button } from '../../../shared/ui/button';
+import { PageContainer } from '../../../shared/ui/page-layout';
+import { Breadcrumbs } from '../../../shared/ui/breadcrumb';
 
 // Layout
 import Header from '../../landing/components/Header';

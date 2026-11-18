@@ -1,17 +1,18 @@
 import { useTranslation } from "react-i18next";
-import { Container, Dropdown } from 'react-bootstrap';
+import { Dropdown } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCatalogSearch } from '../hooks/useCatalogSearch';
 import FilterPanel from '../components/FilterPanel';
 import JournalTable from '../components/JournalTable';
-import LoadingSkeleton from '../../../shared/components/LoadingSkeleton';
 import AuthRequiredModal from '../../../shared/components/AuthRequiredModal';
 import Header from '../../landing/components/Header';
 import useAuth from '../../auth/hooks/useAuth';
 import AdminPagination from '../../../shared/components/Pagination';
 import { Button } from '../../../shared/ui/button';
 import { StatePanel } from '../../../shared/ui/state-panel';
+import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
+import { Skeleton } from '../../../shared/ui/skeleton';
 import '../components/CatalogSearch.css';
 
 export default function CatalogSearchPage() {
@@ -61,34 +62,19 @@ export default function CatalogSearchPage() {
 
   return (
     <div className="min-vh-100 text-main catalog-search-page">
-      {/* Navbar Header */}
+      {/* Navbar Header (renders null inside DashboardShell) */}
       <Header />
 
-      <Container className="catalog-shell">
-        {/* Breadcrumbs */}
-        <nav aria-label="breadcrumb" className="mb-4">
-          <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
-            <li>
-              <Link to="/" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-                {t("home")}
-              </Link>
-            </li>
-            <li aria-hidden="true" className="select-none">/</li>
-            <li className="font-medium text-foreground" aria-current="page">
-              {t("search")}
-            </li>
-          </ol>
-        </nav>
-
-        {/* Page Title & Subtitle */}
-        <section className="catalog-hero text-start mb-6">
-          <h1 className="m-0 text-base sm:text-lg font-bold text-foreground leading-snug">
-            {t("catalog.danhMucTimKiem")}
-          </h1>
-          <p className="mt-1 mb-0 text-xs text-muted-foreground max-w-2xl">
-            {t("catalog.timKiemJournalLocTheoLinhVucXe")}
-          </p>
-        </section>
+      <PageContainer className="catalog-shell">
+        {/* Unified Design System PageHeader with Breadcrumbs */}
+        <PageHeader
+          breadcrumbs={[
+            { label: t("home"), to: "/" },
+            { label: t("search") }
+          ]}
+          title={t("catalog.danhMucTimKiem")}
+          description={t("catalog.timKiemJournalLocTheoLinhVucXe")}
+        />
 
         {/* Catalog Main Layout */}
         <div className="w-100 space-y-4">
@@ -162,12 +148,12 @@ export default function CatalogSearchPage() {
             <div className="space-y-3">
               {[1, 2, 3].map((s) => (
                 <div key={s} className="p-4 rounded-card border border-border bg-surface space-y-2.5">
-                  <LoadingSkeleton width="60%" height="20px" className="rounded-control" />
-                  <LoadingSkeleton width="45%" height="14px" className="rounded-control" />
+                  <Skeleton className="h-5 w-3/5 rounded-control" />
+                  <Skeleton className="h-3.5 w-2/5 rounded-control" />
                   <div className="flex items-center gap-2 pt-1">
-                    <LoadingSkeleton width="50px" height="20px" className="rounded-control" />
-                    <LoadingSkeleton width="100px" height="20px" className="rounded-control" />
-                    <LoadingSkeleton width="120px" height="20px" className="rounded-control" />
+                    <Skeleton className="h-5 w-12 rounded-control" />
+                    <Skeleton className="h-5 w-24 rounded-control" />
+                    <Skeleton className="h-5 w-28 rounded-control" />
                   </div>
                 </div>
               ))}
@@ -190,7 +176,7 @@ export default function CatalogSearchPage() {
               description={error}
               actions={
                 error?.includes(t("catalog.dangNhap")) ? (
-                  <Button onClick={() => (window.location.href = '/login')}>
+                  <Button onClick={() => (navigate('/login'))}>
                     {t("signIn")}
                   </Button>
                 ) : (
@@ -233,7 +219,7 @@ export default function CatalogSearchPage() {
             </div>
           )}
         </div>
-      </Container>
+      </PageContainer>
 
       {/* Guest Authentication Interception Modal */}
       <AuthRequiredModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />

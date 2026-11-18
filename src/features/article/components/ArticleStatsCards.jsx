@@ -1,88 +1,74 @@
 import { useTranslation } from "react-i18next";
-/**
- * File source thuộc hệ thống FE ResearchPulse.
- *
- * File: features\article\components\ArticleStatsCards.jsx
- */
-import { Row, Col, Card } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
+import { Card } from '../../../shared/ui/card';
+import { Skeleton } from '../../../shared/ui/skeleton';
+
 export default function ArticleStatsCards({
   stats,
   isLoading
 }) {
-  const {
-    t
-  } = useTranslation();
-  const formatNumber = num => {
-    return new Intl.NumberFormat().format(num);
+  const { t } = useTranslation();
+
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat().format(num || 0);
   };
-  const statItems = [{
-    label: t("article.tongBaiBao"),
-    value: stats?.totalArticles || 0,
-    icon: 'lucide:file-text'
-  }, {
-    label: 'Open Access',
-    value: stats?.openAccessCount || 0,
-    icon: 'lucide:unlock'
-  }, {
-    label: t("article.tongTacGia"),
-    value: stats?.authorsCount || 0,
-    icon: 'lucide:users'
-  }, {
-    label: t("typeArea"),
-    value: stats?.topicsCount || 0,
-    icon: 'lucide:layers'
-  }];
+
+  const statItems = [
+    {
+      label: t("article.tongBaiBao"),
+      value: stats?.totalArticles || 0,
+      icon: 'lucide:file-text',
+      color: 'text-primary'
+    },
+    {
+      label: 'Open Access',
+      value: stats?.openAccessCount || 0,
+      icon: 'lucide:unlock',
+      color: 'text-success'
+    },
+    {
+      label: t("article.tongTacGia"),
+      value: stats?.authorsCount || 0,
+      icon: 'lucide:users',
+      color: 'text-info'
+    },
+    {
+      label: t("typeArea"),
+      value: stats?.topicsCount || 0,
+      icon: 'lucide:layers',
+      color: 'text-warning'
+    }
+  ];
+
   if (isLoading) {
-    return <Row className="g-3 mb-4">
-        {[1, 2, 3, 4].map(i => <Col key={i} xs={12} sm={6} md={3}>
-            <Card className="article-stats-card" style={{
-          height: '100px'
-        }}>
-              <div className="skeleton-shimmer position-absolute w-100 h-100" />
-              <Card.Body className="d-flex align-items-center justify-content-between">
-                <div>
-                  <div className="skeleton-shimmer rounded mb-2" style={{
-                width: '80px',
-                height: '14px'
-              }} />
-                  <div className="skeleton-shimmer rounded" style={{
-                width: '120px',
-                height: '24px'
-              }} />
-                </div>
-                <div className="skeleton-shimmer rounded-circle" style={{
-              width: '40px',
-              height: '40px'
-            }} />
-              </Card.Body>
-            </Card>
-          </Col>)}
-      </Row>;
-  }
-  return <Row className="g-3 mb-4">
-      {statItems.map((item, index) => <Col key={index} xs={12} sm={6} md={3}>
-          <Card className="article-stats-card">
-            <Card.Body className="d-flex align-items-center justify-content-between p-3">
-              <div>
-                <div className="text-muted-custom font-weight-bold mb-1" style={{
-              fontSize: '13px',
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase'
-            }}>
-                  {item.label}
-                </div>
-                <h3 className="text-main mb-0 font-display font-weight-bold" style={{
-              fontSize: '16px'
-            }}>
-                  {formatNumber(item.value)}
-                </h3>
-              </div>
-              <div className="article-stats-icon">
-                <Icon icon={item.icon} width="22" height="22" />
-              </div>
-            </Card.Body>
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i} className="p-4 flex flex-col justify-between space-y-2">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-3.5 w-24 rounded" />
+              <Skeleton className="h-5 w-5 rounded-full" />
+            </div>
+            <Skeleton className="h-6 w-16 rounded mt-1" />
           </Card>
-        </Col>)}
-    </Row>;
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {statItems.map((item, index) => (
+        <Card key={index} className="p-4 flex flex-col justify-between transition-shadow hover:shadow-md">
+          <div className="flex items-center justify-between gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <span className="truncate">{item.label}</span>
+            <Icon icon={item.icon} width="16" className={item.color || 'text-primary'} />
+          </div>
+          <div className="mt-2 text-base font-bold text-foreground tabular-nums">
+            {formatNumber(item.value)}
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
 }

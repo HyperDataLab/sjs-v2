@@ -1,86 +1,58 @@
 import { useTranslation } from "react-i18next";
-/**
- * File source thuộc hệ thống FE ResearchPulse.
- *
- * File: features\article\components\ArticleTable.jsx
- */
-import { Table, Card, Button } from 'react-bootstrap';
+import { Table, Card } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import ArticleTableRow from './ArticleTableRow';
 import LatexText from '../../../shared/components/LatexText/LatexText';
+import { StatePanel } from '../../../shared/ui/state-panel';
+import { Button } from '../../../shared/ui/button';
+import { Skeleton } from '../../../shared/ui/skeleton';
+import { Badge } from '../../../shared/ui/badge';
+
 export default function ArticleTable({
-  articles,
-  isLoading,
+  articles = [],
+  isLoading = false,
   onDetailClick,
   onClearFilters
 }) {
-  const {
-    t
-  } = useTranslation();
-  // Renders a loader with multiple shimmer rows
-  const renderSkeletons = () => <tbody>
-      {[1, 2, 3, 4, 5].map(i => <tr key={i} style={{
-      borderBottom: '1px solid var(--border)'
-    }}>
-          <td className="ps-3 py-3" style={{
-        width: '40px'
-      }}>
-            <div className="skeleton-shimmer rounded" style={{
-          width: '15px',
-          height: '14px'
-        }} />
+  const { t } = useTranslation();
+
+  // Renders a loader with multiple shimmer rows using Design System Skeleton
+  const renderSkeletons = () => (
+    <tbody>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <tr key={i} className="border-b border-border">
+          <td className="ps-3 py-3 w-10">
+            <Skeleton className="h-3.5 w-4 rounded" />
           </td>
           <td className="py-3">
-            <div className="skeleton-shimmer rounded mb-2" style={{
-          width: '80%',
-          height: '18px'
-        }} />
-            <div className="skeleton-shimmer rounded" style={{
-          width: '45%',
-          height: '12px'
-        }} />
+            <Skeleton className="h-4.5 w-4/5 rounded mb-2" />
+            <Skeleton className="h-3 w-1/2 rounded" />
           </td>
           <td className="py-3">
-            <div className="skeleton-shimmer rounded" style={{
-          width: '100px',
-          height: '14px'
-        }} />
+            <Skeleton className="h-3.5 w-24 rounded" />
           </td>
           <td className="py-3 text-center">
-            <div className="skeleton-shimmer rounded mx-auto" style={{
-          width: '40px',
-          height: '14px'
-        }} />
+            <Skeleton className="h-3.5 w-10 rounded mx-auto" />
           </td>
           <td className="py-3">
-            <div className="skeleton-shimmer rounded" style={{
-          width: '120px',
-          height: '12px'
-        }} />
+            <Skeleton className="h-3 w-28 rounded" />
           </td>
           <td className="py-3">
-            <div className="skeleton-shimmer rounded" style={{
-          width: '80px',
-          height: '20px'
-        }} />
+            <Skeleton className="h-5 w-20 rounded" />
           </td>
           <td className="py-3 text-center">
-            <div className="skeleton-shimmer rounded mx-auto" style={{
-          width: '30px',
-          height: '20px'
-        }} />
+            <Skeleton className="h-5 w-8 rounded mx-auto" />
           </td>
           <td className="pe-3 text-end py-3">
-            <div className="skeleton-shimmer rounded ms-auto" style={{
-          width: '50px',
-          height: '16px'
-        }} />
+            <Skeleton className="h-4 w-12 rounded ms-auto" />
           </td>
-        </tr>)}
-    </tbody>;
+        </tr>
+      ))}
+    </tbody>
+  );
 
   // Helper for topic colors
-  const getTopicClassName = topic => {
+  const getTopicClassName = (topic) => {
     if (!topic) return '';
     const name = String(topic).toLowerCase();
     if (name.includes('machine learning') || name.includes('ml')) {
@@ -100,13 +72,12 @@ export default function ArticleTable({
 
   // If loading and there are no items
   if (isLoading && articles.length === 0) {
-    return <div className="article-table-card w-100">
+    return (
+      <div className="article-table-card w-100 rounded-card border border-border bg-surface shadow-sm overflow-hidden">
         <Table responsive hover className="article-table m-0 border-0">
           <thead>
-            <tr>
-              <th className="px-3 py-3" style={{
-              width: '40px'
-            }}>#</th>
+            <tr className="border-b border-border text-xs text-muted-foreground uppercase font-semibold">
+              <th className="px-3 py-3 w-10">#</th>
               <th className="px-3 py-3">{t("article.tenBaiBao")}</th>
               <th className="px-3 py-3">JOURNAL</th>
               <th className="px-3 py-3 text-center">{t("article.nam1")}</th>
@@ -118,36 +89,38 @@ export default function ArticleTable({
           </thead>
           {renderSkeletons()}
         </Table>
-      </div>;
+      </div>
+    );
   }
 
   // If search matches nothing
   if (articles.length === 0) {
-    return <div className="text-center p-5 rounded-3 d-flex flex-column align-items-center justify-content-center" style={{
-      backgroundColor: 'var(--bg-card)',
-      border: '1px solid var(--border)',
-      minHeight: '320px'
-    }}>
-        <div className="article-empty-icon mb-3">
-          <Icon icon="lucide:search-code" width="30" height="30" />
-        </div>
-        <h5 className="text-main font-weight-bold mb-2 font-display">{t("article.khongTimThayBaiBaoPhuHop")}</h5>
-        <p className="text-muted-custom mb-4 text-sm max-w-md">{t("article.hayThuThayDoiTuKhoaHoacXoaCacB")}</p>
-        {onClearFilters && <Button variant="outline-primary" onClick={onClearFilters} className="d-flex align-items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-pill">
-            <Icon icon="lucide:rotate-ccw" width="14" />
-            <span>{t("article.xoaBoLoc")}</span>
-          </Button>}
-      </div>;
+    return (
+      <StatePanel
+        variant="neutral"
+        icon={<Icon icon="lucide:search-code" width="32" className="text-muted-foreground" />}
+        title={t("article.khongTimThayBaiBaoPhuHop")}
+        description={t("article.hayThuThayDoiTuKhoaHoacXoaCacB")}
+        actions={
+          onClearFilters && (
+            <Button variant="outline" onClick={onClearFilters}>
+              <Icon icon="lucide:rotate-ccw" width="14" className="mr-1.5" />
+              <span>{t("article.xoaBoLoc")}</span>
+            </Button>
+          )
+        }
+      />
+    );
   }
-  return <>
+
+  return (
+    <>
       {/* 1. TABLE LAYOUT (Desktop & Tablet) */}
-      <div className="article-table-card w-100 d-none d-md-block">
+      <div className="article-table-card w-100 d-none d-md-block rounded-card border border-border bg-surface shadow-sm overflow-hidden">
         <Table responsive hover className="article-table m-0 border-0">
           <thead>
-            <tr>
-              <th className="px-3 py-3" style={{
-              width: '40px'
-            }}>#</th>
+            <tr className="border-b border-border text-xs text-muted-foreground uppercase font-semibold">
+              <th className="px-3 py-3 w-10">#</th>
               <th className="px-3 py-3">{t("article.tenBaiBao")}</th>
               <th className="px-3 py-3">JOURNAL</th>
               <th className="px-3 py-3 text-center">{t("article.nam1")}</th>
@@ -158,7 +131,14 @@ export default function ArticleTable({
             </tr>
           </thead>
           <tbody>
-            {articles.map((article, index) => <ArticleTableRow key={article.article_id} article={article} index={index} onDetailClick={onDetailClick} />)}
+            {articles.map((article, index) => (
+              <ArticleTableRow
+                key={article.article_id}
+                article={article}
+                index={index}
+                onDetailClick={onDetailClick}
+              />
+            ))}
           </tbody>
         </Table>
       </div>
@@ -167,54 +147,72 @@ export default function ArticleTable({
       <div className="d-block d-md-none">
         <div className="d-flex flex-column gap-3">
           {articles.map((article, index) => {
-          const topicClassName = getTopicClassName(article.primary_topic);
-          return <Card key={article.article_id} onClick={() => onDetailClick(article.article_id)} className="article-mobile-card">
+            const topicClassName = getTopicClassName(article.primary_topic);
+            return (
+              <Card
+                key={article.article_id}
+                onClick={() => onDetailClick(article.article_id)}
+                className="article-mobile-card border border-border rounded-card bg-surface transition-shadow hover:shadow-sm"
+              >
                 <Card.Body className="p-3">
                   <div className="d-flex align-items-center justify-content-between mb-2">
-                    <span className="text-muted-custom text-xs font-display">#{index + 1}</span>
+                    <span className="text-muted-foreground text-xs font-mono">#{index + 1}</span>
                     <div className="d-flex gap-1.5 align-items-center">
                       <span className={`article-topic-badge ${topicClassName}`}>
                         {article.primary_topic || t("article.chuaPhanLoai")}
                       </span>
-                      {article.is_open_access && <span className="article-oa-badge">
+                      {article.is_open_access && (
+                        <Badge variant="success" className="text-[11px] font-bold px-1.5 py-0.5">
                           OA
-                        </span>}
+                        </Badge>
+                      )}
                     </div>
                   </div>
 
-                  <h6 className="text-main font-weight-semibold mb-2" style={{
-                lineHeight: '1.4',
-                fontSize: '14px'
-              }}>
+                  <h6
+                    className="text-foreground font-semibold mb-2"
+                    style={{ lineHeight: '1.4', fontSize: '14px' }}
+                  >
                     <LatexText text={article.title} />
                   </h6>
 
-                  {article.abstract && <p className="text-muted-custom text-xs mb-3 text-truncate-2" style={{
-                fontSize: '13px',
-                lineHeight: '1.4'
-              }}>
+                  {article.abstract && (
+                    <p
+                      className="text-muted-foreground text-xs mb-3 text-truncate-2"
+                      style={{ fontSize: '13px', lineHeight: '1.4' }}
+                    >
                       <LatexText text={article.abstract} />
-                    </p>}
+                    </p>
+                  )}
 
-                  <div className="pt-2 border-top border-light d-flex align-items-center justify-content-between flex-wrap gap-2">
+                  <div className="pt-2 border-t border-border flex items-center justify-between flex-wrap gap-2">
                     <div>
-                      {article.journal && <div className="text-primary text-xs font-weight-semibold" style={{
-                    fontSize: '13px'
-                  }}>
+                      {article.journal && (
+                        <div
+                          className="text-primary text-xs font-semibold"
+                          style={{ fontSize: '13px' }}
+                        >
                           {article.journal.display_name}
-                        </div>}
-                      <div className="text-muted-custom text-xs font-display mt-0.5" style={{
-                    fontSize: '13px'
-                  }}>{t("article.nam2")}{article.publication_year} {article.doi ? `· DOI: ${article.doi}` : ''}
+                        </div>
+                      )}
+                      <div
+                        className="text-muted-foreground text-xs font-mono mt-0.5"
+                        style={{ fontSize: '13px' }}
+                      >
+                        {t("article.nam2")}{article.publication_year} {article.doi ? `· DOI: ${article.doi}` : ''}
                       </div>
                     </div>
-                    <span className="article-action-link d-flex align-items-center gap-0.5">{t("article.chiTiet1")}<Icon icon="lucide:arrow-right" width="12" />
+                    <span className="article-action-link flex items-center gap-0.5 text-xs font-medium text-primary">
+                      {t("article.chiTiet1")}
+                      <Icon icon="lucide:arrow-right" width="12" />
                     </span>
                   </div>
                 </Card.Body>
-              </Card>;
-        })}
+              </Card>
+            );
+          })}
         </div>
       </div>
-    </>;
+    </>
+  );
 }

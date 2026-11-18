@@ -9,6 +9,7 @@ import { Button } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import LatexText from '../../../shared/components/LatexText/LatexText';
+import { Badge } from '../../../shared/ui/badge';
 export default function ArticleTableRow({
   article,
   index,
@@ -139,9 +140,13 @@ export default function ArticleTableRow({
       <td className="text-center" style={{
       width: '80px'
     }}>
-        {article.is_open_access ? <span className="article-oa-badge">
+        {article.is_open_access ? (
+          <Badge variant="success" className="text-[11px] font-bold px-1.5 py-0.5">
             OA
-          </span> : <span className="text-muted-custom text-xs">—</span>}
+          </Badge>
+        ) : (
+          <span className="text-muted-custom text-xs">—</span>
+        )}
       </td>
 
       {/* Actions */}
