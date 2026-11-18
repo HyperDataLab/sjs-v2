@@ -25,8 +25,8 @@
 - [x] Align researcher and admin surfaces, controls, typography, page width, table states, and primary button hover through shared semantic tokens.
 - [x] Respect reduced-motion preference on the authenticated researcher page transition.
 - [x] Remove the retired researcher dashboard and chart-range stylesheets after confirming they have no remaining consumers.
+- [x] Migrate project detail content, project cards, and shared dialogs to shared primitives.
 - [ ] Inventory and migrate remaining route-specific styles and bootstrap-based components by route.
-- [ ] Migrate project detail content, project cards, and shared dialogs to shared primitives.
 - [ ] Migrate search, articles, authors, journals, keywords, geography, profile, and account pages.
 - [ ] Migrate admin pages and shared dialogs/forms/tables.
 - [ ] Replace remaining handwritten component styles with shared primitives and Tailwind utilities; retain vendor styles needed for charts, KaTeX, and other embedded libraries.
