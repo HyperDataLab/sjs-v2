@@ -146,8 +146,6 @@ export default function AppRoutes() {
           />
 
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="verify-email" element={<VerifyEmailPage />} />
-
           <Route path="authors" element={<AuthorListPage />} />
           <Route path="authors/:id" element={<AuthorDetailPage />} />
 
@@ -159,13 +157,15 @@ export default function AppRoutes() {
             element={<KeywordArticlesPage />}
           />
 
-          <Route path="forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="reset-password" element={<ResetPasswordPage />} />
-
           <Route path="geography" element={<GeographyPage />} />
 
           <Route path="topics/:topicId" element={<TopicDetailPage />} />
         </Route>
+
+        {/* Account recovery and verification pages own their split-screen auth layout. */}
+        <Route path="verify-email" element={<VerifyEmailPage />} />
+        <Route path="forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
 
         <Route path="topics/:topicId" element={<TopicDetailPage />} />
 

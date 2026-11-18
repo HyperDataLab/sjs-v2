@@ -9,12 +9,14 @@ export default function PrimaryButton({
   icon = '',
   className = '',
   variant = 'default',
+  type = 'button',
   ...props
 }) {
   const mappedVariant = variant === 'primary' ? 'default' : variant;
   return (
     <Button
       variant={mappedVariant}
+      type={type}
       className={className}
       {...props}
     >

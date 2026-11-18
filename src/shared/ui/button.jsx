@@ -10,6 +10,7 @@ const buttonVariants = cva('inline-flex items-center justify-center gap-2 rounde
       secondary: 'border-primary-subtle bg-primary-subtle text-primary-hover hover:bg-primary-subtle-hover',
       ghost: 'border-transparent bg-transparent text-inherit hover:bg-surface-muted',
       outline: 'border-border bg-surface text-foreground hover:bg-surface-muted',
+      link: 'border-transparent bg-transparent text-primary shadow-none underline-offset-4 hover:bg-transparent hover:text-primary-hover hover:underline',
     },
     size: {
       default: 'min-h-10 px-4 py-2',
