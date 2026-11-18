@@ -187,7 +187,7 @@ export default function FilterPanel({
         <Dropdown.Toggle
           variant="light"
           id={`catalog-filter-${config.id}`}
-          className={`h-9 px-3 text-xs rounded-control border transition-colors flex items-center gap-1.5 shadow-2xs ${
+          className={`h-9 px-3 text-xs rounded-control border transition-colors inline-flex items-center gap-1.5 shadow-2xs whitespace-nowrap ${
             config.selectedLabel
               ? 'border-primary text-primary bg-primary-subtle font-semibold hover:bg-primary-subtle'
               : 'border-border bg-surface text-foreground font-medium hover:bg-surface-muted'
@@ -322,7 +322,7 @@ export default function FilterPanel({
           <Dropdown.Toggle
             variant="light"
             id="catalog-more-filters"
-            className={`h-9 px-3 text-xs rounded-control border transition-colors flex items-center gap-1.5 shadow-2xs ${
+            className={`h-9 px-3 text-xs rounded-control border transition-colors inline-flex items-center gap-1.5 shadow-2xs whitespace-nowrap ${
               accessValue === 'open_access' || isOaDiamond
                 ? 'border-primary text-primary bg-primary-subtle font-semibold hover:bg-primary-subtle'
                 : 'border-border bg-surface text-foreground font-medium hover:bg-surface-muted'

@@ -373,7 +373,7 @@ export default function ArticleFilterBar({
         <Dropdown.Toggle
           variant="light"
           id={`article-filter-${config.id}`}
-          className={`h-9 px-3 text-xs rounded-control border bg-surface text-foreground font-medium transition-colors flex items-center gap-1.5 shadow-2xs hover:bg-surface-muted ${
+          className={`h-9 px-3 text-xs rounded-control border bg-surface text-foreground font-medium transition-colors inline-flex items-center gap-1.5 shadow-2xs hover:bg-surface-muted whitespace-nowrap ${
             config.selectedLabel ? 'border-primary text-primary bg-primary-subtle font-semibold' : 'border-border'
           }`}
           disabled={loadingFilters}
@@ -516,7 +516,7 @@ export default function ArticleFilterBar({
           <Dropdown.Toggle
             variant="light"
             id="article-access-filters"
-            className={`h-9 px-3 text-xs rounded-control border bg-surface text-foreground font-medium transition-colors flex items-center gap-1.5 shadow-2xs hover:bg-surface-muted ${
+            className={`h-9 px-3 text-xs rounded-control border bg-surface text-foreground font-medium transition-colors inline-flex items-center gap-1.5 shadow-2xs hover:bg-surface-muted whitespace-nowrap ${
               isMoreFiltersActive ? 'border-primary text-primary bg-primary-subtle font-semibold' : 'border-border'
             }`}
           >
@@ -573,7 +573,7 @@ export default function ArticleFilterBar({
           <Dropdown.Toggle
             variant="light"
             id="article-sort-filters"
-            className={`h-9 px-3 text-xs rounded-control border bg-surface text-foreground font-medium transition-colors flex items-center gap-1.5 shadow-2xs hover:bg-surface-muted ${
+            className={`h-9 px-3 text-xs rounded-control border bg-surface text-foreground font-medium transition-colors inline-flex items-center gap-1.5 shadow-2xs hover:bg-surface-muted whitespace-nowrap ${
               currentSortValue !== 'created_at-desc' ? 'border-primary text-primary bg-primary-subtle font-semibold' : 'border-border'
             }`}
           >

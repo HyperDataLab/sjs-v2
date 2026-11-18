@@ -288,6 +288,16 @@ header.sticky-scrolled {
   border-bottom: 1px solid var(--border);
 }
 
+/* ─── Dropdown Toggle Alignment & Reset ────────────────────────────── */
+.dropdown-toggle {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  vertical-align: middle;
+}
+
 /* Hide default Bootstrap dropdown caret — all toggles in this project use custom icons (lucide) */
 .dropdown-toggle::after {
   display: none !important;
