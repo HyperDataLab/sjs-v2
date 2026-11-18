@@ -155,6 +155,19 @@ body {
   font-size: var(--ds-font-size-caption) !important;
 }
 
+/* Bootstrap's unlayered heading rules can outrank Tailwind utilities. Keep
+   headings inside the authenticated app on the product's compact 13–16px scale. */
+.app-main h1,
+.app-main h2,
+.app-main h3,
+.app-main h4,
+.app-main h5,
+.app-main h6 {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-font-size-heading) !important;
+  line-height: 1.35;
+}
+
 /* Bootstrap surfaces used by legacy feature pages share the same design tokens. */
 :root {
   --bs-primary: var(--ds-primary);
@@ -327,6 +340,13 @@ textarea[aria-invalid="true"]:focus {
   padding-inline: var(--ds-page-gutter);
 }
 
+/* Legacy feature pages may still carry this class; the authenticated shell
+   owns the canvas background so routes do not switch to a separate grid skin. */
+.app-main .grid-bg {
+  background-color: transparent;
+  background-image: none;
+}
+
 .app-topbar {
   box-shadow: 0 1px 2px rgb(16 24 40 / 3%);
 }
@@ -410,6 +430,14 @@ textarea[aria-invalid="true"]:focus {
 
 .app-main :where(.breadcrumb-item a:hover, .breadcrumb-item span:hover, a.link-primary:hover) {
   color: var(--ds-primary-hover);
+}
+
+.app-main a:not(.btn):not([class*="nav-link"]) {
+  text-decoration: none;
+}
+
+.app-main a:not(.btn):not([class*="nav-link"]):hover {
+  text-decoration: underline;
 }
 
 :where(button, a, input, select, textarea, [tabindex]):focus-visible {
