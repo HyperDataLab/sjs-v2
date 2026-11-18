@@ -96,16 +96,16 @@
   --color-warning: var(--ds-warning);
   --color-warning-subtle: var(--ds-warning-subtle);
   --font-sans: var(--ds-font-sans);
-  --text-xs: var(--ds-font-size-caption);
-  --text-sm: var(--ds-font-size-body);
-  --text-base: var(--ds-font-size-body);
-  --text-lg: var(--ds-font-size-emphasis);
-  --text-xl: var(--ds-font-size-heading);
-  --text-2xl: var(--ds-font-size-heading);
-  --text-3xl: var(--ds-font-size-heading);
-  --text-4xl: var(--ds-font-size-heading);
-  --text-5xl: var(--ds-font-size-heading);
-  --text-6xl: var(--ds-font-size-heading);
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  --text-6xl: 3.75rem;
   --radius-control: var(--ds-radius-control);
   --radius-card: var(--ds-radius-card);
   --radius-panel: var(--ds-radius-panel);
@@ -349,6 +349,12 @@ textarea[aria-invalid="true"]:focus {
 
 .app-topbar {
   box-shadow: 0 1px 2px rgb(16 24 40 / 3%);
+}
+
+@media (min-width: 768px) {
+  .app-topbar {
+    display: flex !important;
+  }
 }
 
 .app-sidebar nav a,

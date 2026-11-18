@@ -2,7 +2,7 @@ import { cn } from '../../lib/utils';
 import { Breadcrumbs } from './breadcrumb';
 
 function PageContainer({ className = '', ...props }) {
-  return <div className={cn('mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 space-y-6', className)} {...props} />;
+  return <div className={cn('w-full max-w-7xl mx-auto py-5 space-y-6', className)} {...props} />;
 }
 
 function PageHeader({
@@ -18,7 +18,7 @@ function PageHeader({
   const activeBreadcrumb = breadcrumb || breadcrumbs;
 
   return (
-    <header className={cn('flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between', className)}>
+    <header className={cn('flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between', className)}>
       <div className="min-w-0 flex-1">
         {activeBreadcrumb && (
           Array.isArray(activeBreadcrumb) ? (
@@ -29,12 +29,12 @@ function PageHeader({
         )}
         {badge && <div className="mb-2">{badge}</div>}
         {title && (
-          <h1 className="m-0 text-base sm:text-lg font-bold leading-snug tracking-tight text-foreground">
+          <h1 className="m-0 text-xl sm:text-2xl font-bold leading-snug tracking-tight text-foreground">
             {title}
           </h1>
         )}
         {description && (
-          <p className="mb-0 mt-1.5 max-w-3xl text-xs sm:text-sm leading-relaxed text-muted-foreground">
+          <p className="mb-0 mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
             {description}
           </p>
         )}

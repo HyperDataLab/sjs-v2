@@ -162,90 +162,90 @@ const ProjectListPage = () => {
       {/* 1. Header with Breadcrumb & Primary Action */}
       <PageHeader
         breadcrumbs={[
-          { label: t("author.tongQuan", "Workspace"), to: ROUTES.DASHBOARD },
-          { label: t("project.duAnTheoDoi", "Research Projects") }
+          { label: t("navigation.workspace", "Workspace"), to: ROUTES.DASHBOARD },
+          { label: t("navigation.projects", "Research Projects") }
         ]}
         title={t("project.duAnNghienCuuCuaToi", "My Research Projects")}
         description={t("project.quanLyCacKeywordWatchlistsPhan", "Manage keyword watchlists, monitor scientific publication trends and collaborate with research peers.")}
         actions={
           <Button onClick={() => navigate(ROUTES.PROJECT_CREATE)} className="flex items-center gap-2 shadow-xs">
             <Icon icon="lucide:plus" width="16" aria-hidden="true" />
-            <span>{t("journal.taoDuAnMoi", "Create Project")}</span>
+            <span>{t("common.newProject", "+ New Project")}</span>
           </Button>
         }
       />
 
       {/* 2. KPI Metric Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Projects */}
         <Card className="p-4 flex items-center justify-between border-border bg-surface transition-all hover:border-primary/40 hover:shadow-card">
           <div className="space-y-1">
-            <p className="text-xs font-medium text-muted-foreground m-0">
-              {t("project.tongSoDuAn", "Total Projects")}
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground m-0">
+              {t("project.tongSoDuAnNgan", "Total Projects")}
             </p>
-            <p className="text-2xl font-bold tracking-tight text-foreground m-0">
+            <p className="text-3xl font-extrabold tracking-tight text-foreground m-0 leading-tight">
               {nonDeletedProjects.length}
             </p>
-            <p className="text-[11px] text-muted-foreground m-0">
+            <p className="text-xs text-muted-foreground m-0">
               {t("project.trongKhongGian", "In your workspace")}
             </p>
           </div>
-          <div className="flex size-11 items-center justify-center rounded-control bg-primary-subtle text-primary shrink-0">
-            <Icon icon="lucide:folder-kanban" width="22" aria-hidden="true" />
+          <div className="flex size-12 items-center justify-center rounded-control bg-primary-subtle text-primary shrink-0">
+            <Icon icon="lucide:folder-kanban" width="24" aria-hidden="true" />
           </div>
         </Card>
 
         {/* Active Monitoring */}
         <Card className="p-4 flex items-center justify-between border-border bg-surface transition-all hover:border-success/40 hover:shadow-card">
           <div className="space-y-1">
-            <p className="text-xs font-medium text-muted-foreground m-0">
-              {t("project.dangHoatDong", "Active Monitoring")}
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground m-0">
+              {t("project.dangHoatDongNgan", "Active Projects")}
             </p>
-            <p className="text-2xl font-bold tracking-tight text-success m-0">
+            <p className="text-3xl font-extrabold tracking-tight text-success m-0 leading-tight">
               {activeProjectsCount}
             </p>
-            <p className="text-[11px] text-muted-foreground m-0">
+            <p className="text-xs text-muted-foreground m-0">
               {t("project.dangDongBoDuLieu", "Live feeds enabled")}
             </p>
           </div>
-          <div className="flex size-11 items-center justify-center rounded-control bg-success-subtle text-success shrink-0">
-            <Icon icon="lucide:activity" width="22" aria-hidden="true" />
+          <div className="flex size-12 items-center justify-center rounded-control bg-success-subtle text-success shrink-0">
+            <Icon icon="lucide:activity" width="24" aria-hidden="true" />
           </div>
         </Card>
 
         {/* Monitored Keywords */}
         <Card className="p-4 flex items-center justify-between border-border bg-surface transition-all hover:border-primary/40 hover:shadow-card">
           <div className="space-y-1">
-            <p className="text-xs font-medium text-muted-foreground m-0">
-              {t("project.tuKhoaTheoDoi", "Monitored Keywords")}
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground m-0">
+              {t("project.tuKhoaTheoDoiNgan", "Monitored Keywords")}
             </p>
-            <p className="text-2xl font-bold tracking-tight text-foreground m-0">
+            <p className="text-3xl font-extrabold tracking-tight text-foreground m-0 leading-tight">
               {totalKeywordsMonitored}
             </p>
-            <p className="text-[11px] text-muted-foreground m-0">
+            <p className="text-xs text-muted-foreground m-0">
               {t("project.trenMoiWatchlist", "Across all watchlists")}
             </p>
           </div>
-          <div className="flex size-11 items-center justify-center rounded-control bg-primary-subtle text-primary shrink-0">
-            <Icon icon="lucide:hash" width="22" aria-hidden="true" />
+          <div className="flex size-12 items-center justify-center rounded-control bg-primary-subtle text-primary shrink-0">
+            <Icon icon="lucide:hash" width="24" aria-hidden="true" />
           </div>
         </Card>
 
-        {/* Recent Activity */}
+        {/* Collaborations */}
         <Card className="p-4 flex items-center justify-between border-border bg-surface transition-all hover:border-primary/40 hover:shadow-card">
           <div className="space-y-1">
-            <p className="text-xs font-medium text-muted-foreground m-0">
-              {t("project.duAnXemGanDay", "Recent Projects")}
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground m-0">
+              {t("project.thanhVienCongTac", "Collaborations")}
             </p>
-            <p className="text-2xl font-bold tracking-tight text-foreground m-0">
-              {recentProjects.length}
+            <p className="text-3xl font-extrabold tracking-tight text-foreground m-0 leading-tight">
+              {nonDeletedProjects.filter((p) => (p.members?.length || 0) > 0).length}
             </p>
-            <p className="text-[11px] text-muted-foreground m-0">
-              {t("project.truyCapGanDay", "Recently accessed")}
+            <p className="text-xs text-muted-foreground m-0">
+              {t("project.duAnChiaSe", "Shared with peers")}
             </p>
           </div>
-          <div className="flex size-11 items-center justify-center rounded-control bg-surface-muted text-muted-foreground shrink-0">
-            <Icon icon="lucide:history" width="22" aria-hidden="true" />
+          <div className="flex size-12 items-center justify-center rounded-control bg-surface-muted text-muted-foreground shrink-0">
+            <Icon icon="lucide:users" width="24" aria-hidden="true" />
           </div>
         </Card>
       </div>
@@ -414,8 +414,8 @@ const ProjectListPage = () => {
         />
       ) : (
         <div className="space-y-8">
-          {/* Section: Recently Accessed Projects */}
-          {recentProjects.length > 0 && !searchTerm && statusFilter === 'ALL' && (
+          {/* Section: Recently Accessed Projects (only display when there are multiple projects to avoid duplication) */}
+          {recentProjects.length > 0 && !searchTerm && statusFilter === 'ALL' && nonDeletedProjects.length > 3 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="m-0 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
