@@ -64,11 +64,10 @@ export default function ArticleTableRow({
   return (
     <motion.tr
       onClick={() => onDetailClick(article.article_id)}
-      initial={{ opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.15, ease: 'easeOut' }}
-      whileHover={{ backgroundColor: 'var(--ds-primary-subtle, rgba(224, 242, 254, 0.3))' }}
-      className="cursor-pointer transition-colors group text-start"
+      className="cursor-pointer transition-colors hover:bg-primary-subtle/20 group text-start"
     >
       {/* Index */}
       <td className="px-3 py-3.5 text-center text-xs font-mono text-muted-foreground w-10">
