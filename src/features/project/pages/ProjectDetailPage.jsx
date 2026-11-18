@@ -16,6 +16,7 @@ import { Icon } from '@iconify/react';
 import { Modal } from 'react-bootstrap';
 import Header from '../../landing/components/Header';
 import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
+import { PageContainer } from '../../../shared/ui/page-layout';
 import projectService from '../../project/services/projectService';
 import LatexText from '../../../shared/components/LatexText/LatexText';
 import useAuth from '../../auth/hooks/useAuth';
@@ -378,16 +379,12 @@ const ProjectDetailPage = () => {
       </div>;
   };
   if (loading) {
-    return <div className="container-fluid py-4 grid-bg min-vh-100 d-flex justify-content-center align-items-center">
+    return <PageContainer className="grid-bg flex min-h-[50vh] max-w-screen-xl items-center justify-center py-6">
         <div className="spinner-border text-primary" role="status"></div>
-      </div>;
+      </PageContainer>;
   }
   if (error || !project) {
-    return <div className="container-fluid py-4 grid-bg min-vh-100">
-        <div className="container mx-auto" style={{
-        maxWidth: '1000px',
-        marginTop: '20px'
-      }}>
+    return <PageContainer className="grid-bg max-w-screen-xl py-6">
           <div className="alert alert-danger border-0 rounded-4 shadow-sm p-4 d-flex align-items-center gap-3">
             <Icon icon="lucide:alert-triangle" width="24" className="text-danger flex-shrink-0" />
             <div>
@@ -396,8 +393,7 @@ const ProjectDetailPage = () => {
             </div>
             <button className="btn btn-outline-danger btn-sm ms-auto" onClick={() => navigate(ROUTES.PROJECTS)}>{t("auth.quayLai")}</button>
           </div>
-        </div>
-      </div>;
+      </PageContainer>;
   }
   const title = project.title || 'Untitled Project';
   const areaName = project.subject_area?.display_name || project.subject_area?.name || (typeof project.subject_area === 'string' ? project.subject_area : t("project.chuaXacDinhLinhVuc"));
@@ -406,14 +402,7 @@ const ProjectDetailPage = () => {
   const articleCount = watchArticlesPagination?.total || 0;
   const growthRate = Number(overviewData?.summary?.growthRate ?? project?.alerts_24h?.growthRate ?? 0);
   const growthYear = overviewData?.summary?.growthYear;
-  return <div className="container-fluid pb-4 grid-bg min-vh-100 position-relative overflow-hidden" style={{
-    paddingTop: '80px'
-  }}>
-      <div className="position-absolute w-100 h-100 radial-fade pe-none" style={{
-      top: 0,
-      left: 0,
-      zIndex: 0
-    }} />
+  return <PageContainer className="grid-bg max-w-screen-xl py-6">
       <Header />
       <div className="container mx-auto position-relative z-1" style={{
       maxWidth: '1200px',
@@ -657,6 +646,6 @@ const ProjectDetailPage = () => {
         </Modal.Footer>
       </Modal>
 
-    </div>;
+    </PageContainer>;
 };
 export default ProjectDetailPage;

@@ -1,153 +1,59 @@
-import { useTranslation } from "react-i18next";
-/**
- * File source thuộc hệ thống FE ResearchPulse.
- *
- * File: features\dashboard\components\TrendingKeywordsCard.jsx
- */
+﻿import { useTranslation } from 'react-i18next';
 import { Icon } from '@iconify/react';
-import { EntityCard } from '../../../shared/components/Card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { Card, CardHeader, CardTitle, CardContent } from '../../../shared/ui/card';
+import { Button } from '../../../shared/ui/button';
 
 function KeywordAxisTick({ x, y, payload }) {
   const keyword = String(payload?.value ?? '');
   const label = keyword.length > 22 ? `${keyword.slice(0, 21)}…` : keyword;
-
-  return <g>
-    <title>{keyword}</title>
-    <text
-      x={x - 8}
-      y={y}
-      textAnchor="end"
-      dominantBaseline="central"
-      fill="#6b6b6b"
-      fontSize={11}
-      fontFamily="var(--font-display)"
-    >{label}</text>
-  </g>;
+  return <g><title>{keyword}</title><text x={x - 8} y={y} textAnchor="end" dominantBaseline="central" fill="#64748b" fontSize={11}>{label}</text></g>;
 }
 
-function KeywordsRechart({
-  chartData,
-  onKeywordClick
-}) {
-  const {
-    t
-  } = useTranslation();
+function KeywordTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null;
+  return <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 shadow-md">
+    <div className="font-semibold">{label}</div>
+    <div className="mt-1">{payload[0].name}: {payload[0].value}</div>
+  </div>;
+}
+
+function KeywordsRechart({ chartData, onKeywordClick }) {
+  const { t } = useTranslation();
   const labels = chartData?.labels || [];
-  const dataset = chartData?.datasets?.[0] || {
-    data: []
-  };
-  const mappedData = labels.map((label, index) => ({
-    keyword: label,
-    value: dataset.data[index] ?? 0
-  }));
+  const dataset = chartData?.datasets?.[0] || { data: [] };
+  const mappedData = labels.map((keyword, index) => ({ keyword, value: dataset.data[index] ?? 0 }));
   return <ResponsiveContainer width="100%" height={260}>
-      <BarChart data={mappedData} layout="vertical" margin={{
-      left: 5,
-      right: 10,
-      top: 5,
-      bottom: 5
-    }}>
-        <XAxis type="number" hide />
-        <YAxis dataKey="keyword" type="category" width={150} tick={<KeywordAxisTick />} interval={0} axisLine={false} tickLine={false} />
-        <Tooltip cursor={{
-        fill: 'var(--bg-section)',
-        opacity: 0.5
-      }} contentStyle={{
-        backgroundColor: 'var(--bg-card)',
-        border: '1px solid var(--border)',
-        borderRadius: '8px',
-        color: 'var(--text-main)',
-        fontSize: '11px',
-        fontFamily: 'var(--font-display)'
-      }} />
-        <Bar dataKey="value" fill="var(--primary)" name={dataset.label || t("publications")} radius={[0, 4, 4, 0]} barSize={14} isAnimationActive={true} animationDuration={400} onClick={data => {
-        if (data && data.keyword) {
-          onKeywordClick?.(data.keyword);
-        }
-      }} style={{
-        cursor: 'pointer'
-      }} />
-      </BarChart>
-    </ResponsiveContainer>;
+    <BarChart data={mappedData} layout="vertical" margin={{ left: 5, right: 10, top: 5, bottom: 5 }}>
+      <XAxis type="number" hide />
+      <YAxis dataKey="keyword" type="category" width={150} tick={<KeywordAxisTick />} interval={0} axisLine={false} tickLine={false} />
+      <Tooltip cursor={{ fill: '#f1f5f9', opacity: 0.5 }} content={<KeywordTooltip />} />
+      <Bar dataKey="value" fill="#0071BC" name={dataset.label || t('publications')} radius={[0, 4, 4, 0]} barSize={14}
+        isAnimationActive animationDuration={400} className="cursor-pointer" onClick={(data) => { if (data?.keyword) onKeywordClick?.(data.keyword); }} />
+    </BarChart>
+  </ResponsiveContainer>;
 }
 
-/**
- * TrendingKeywordsCard — card trending keywords với biểu đồ BarChart của Recharts
- */
-export default function TrendingKeywordsCard({
-  keywords,
-  loading,
-  isFetching,
-  error,
-  onKeywordClick,
-  onViewMore
-}) {
-  const {
-    t
-  } = useTranslation();
+export default function TrendingKeywordsCard({ keywords, loading, isFetching, error, onKeywordClick, onViewMore }) {
+  const { t } = useTranslation();
   const labels = keywords?.labels || [];
-  const dataset = keywords?.datasets?.[0] || {
-    data: []
-  };
+  const dataset = keywords?.datasets?.[0] || { data: [] };
   const hasData = labels.length > 0 && dataset.data?.length > 0;
 
-  const actions = <div className="d-flex align-items-center gap-2">
-    {isFetching && (
-      <Icon icon="lucide:loader" className="spin-animation text-muted-custom" width={14} />
-    )}
-    {onViewMore && (
-      <button className="btn btn-link p-0 text-decoration-none" onClick={onViewMore} style={{
-        fontSize: '0.75rem',
-        color: 'var(--primary)'
-      }} onMouseEnter={e => {
-        e.currentTarget.style.textDecoration = 'underline';
-        e.currentTarget.style.textUnderlineOffset = '4px';
-      }} onMouseLeave={e => {
-        e.currentTarget.style.textDecoration = 'none';
-      }}>{t("dashboard.xemThem")}</button>
-    )}
-  </div>;
-
-  const description = loading && !hasData ? <div className="d-flex flex-column gap-3 py-2">
-      {[1, 2, 3, 4, 5].map((_, i) => <div key={i} className="d-flex align-items-center gap-3">
-          <div className="skeleton-shimmer rounded" style={{
-        width: 80,
-        height: 16
-      }} />
-          <div className="skeleton-shimmer rounded flex-grow-1" style={{
-        height: 16
-      }} />
-        </div>)}
-    </div> : error && !hasData ? <div className="text-center py-4">
-      <Icon icon="lucide:alert-circle" width={28} style={{
-      color: '#ef4444'
-    }} />
-      <p className="text-muted-custom mt-2 mb-0" style={{
-      fontSize: '0.8rem'
-    }}>{error}</p>
-    </div> : !hasData ? <div className="text-center py-4">
-      <Icon icon="lucide:tag" width={32} style={{
-      color: 'var(--text-muted)'
-    }} />
-      <p className="text-main fw-semibold mt-2 mb-1" style={{
-      fontSize: '0.85rem'
-    }}>{t("dashboard.chuaCoKeywordNao")}</p>
-      <p className="text-muted-custom mb-0" style={{
-      fontSize: '0.75rem'
-    }}>{t("dashboard.themKeywordVaoProjectDeBatDauT")}</p>
-    </div> : <div style={{
-      opacity: isFetching ? 0.6 : 1,
-      transition: 'opacity 0.25s ease',
-      width: '100%'
-    }}>
-      <KeywordsRechart chartData={keywords} onKeywordClick={onKeywordClick} />
-    </div>;
-
-  return <EntityCard className="h-100" title={<span className="d-flex align-items-center gap-2">
-          <Icon icon="lucide:flame" width={16} style={{
-      color: 'var(--primary)'
-    }} />
-          <span>Trending Keywords</span>
-        </span>} actions={actions} description={description} bodyClassName="flex-column align-items-stretch" />;
+  return <Card className="h-full min-w-0">
+    <CardHeader className="flex flex-row items-center justify-between gap-3">
+      <CardTitle className="flex items-center gap-2"><Icon icon="lucide:flame" width={16} className="text-[#0071BC]" />Trending Keywords</CardTitle>
+      <div className="flex items-center gap-2">
+        {isFetching && <Icon icon="lucide:loader" className="animate-spin text-slate-400" width={14} aria-label={t('common.dangCapNhat', 'Loading')} />}
+        {onViewMore && <Button variant="ghost" size="sm" className="text-[#0071BC]" onClick={onViewMore}>{t('dashboard.xemThem')}</Button>}
+      </div>
+    </CardHeader>
+    <CardContent>
+      {loading && !hasData ? <div role="status" aria-label={t('common.dangCapNhat', 'Loading')} className="space-y-3 py-2">
+        {[1, 2, 3, 4, 5].map((i) => <div key={i} className="flex items-center gap-3"><span className="h-4 w-20 animate-pulse rounded bg-slate-100" /><span className="h-4 flex-1 animate-pulse rounded bg-slate-100" /></div>)}
+      </div> : error && !hasData ? <div className="py-8 text-center text-sm text-red-600"><Icon icon="lucide:alert-circle" width={28} className="mx-auto mb-2" />{error}</div>
+      : !hasData ? <div className="py-8 text-center"><Icon icon="lucide:tag" width={32} className="mx-auto text-slate-400" /><p className="mb-1 mt-3 text-sm font-semibold text-slate-900">{t('dashboard.chuaCoKeywordNao')}</p><p className="m-0 text-xs text-slate-500">{t('dashboard.themKeywordVaoProjectDeBatDauT')}</p></div>
+      : <div className={`w-full transition-opacity ${isFetching ? 'opacity-60' : 'opacity-100'}`}><KeywordsRechart chartData={keywords} onKeywordClick={onKeywordClick} /></div>}
+    </CardContent>
+  </Card>;
 }

@@ -8,9 +8,9 @@ import EmptyState from '../../../shared/components/EmptyState';
 import LoadingSkeleton from '../../../shared/components/LoadingSkeleton';
 import { Icon } from '@iconify/react';
 import { Modal, Button } from 'react-bootstrap';
-import Header from '../../landing/components/Header';
 import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
 import useAuth from '../../auth/hooks/useAuth';
+import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
 const ProjectListPage = () => {
   const navigate = useNavigate();
   const {
@@ -80,19 +80,7 @@ const ProjectListPage = () => {
   
   // Lọc các dự án xem gần đây từ danh sách active projects
   const recentProjects = recentIds.map(id => activeProjects.find(p => (p.project_id || p.id) === id)).filter(Boolean);
-  return <div className="container-fluid pb-4 grid-bg min-vh-100 position-relative overflow-hidden" style={{
-    paddingTop: '80px'
-  }}>
-      <div className="position-absolute w-100 h-100 radial-fade pe-none" style={{
-      top: 0,
-      left: 0,
-      zIndex: 0
-    }} />
-      <Header />
-      <div className="container mx-auto position-relative z-1" style={{
-      maxWidth: '1200px',
-      marginTop: '40px'
-    }}>
+  return <PageContainer className="grid-bg max-w-[1200px] py-8">
         {/* Breadcrumb */}
         <nav aria-label="breadcrumb" className="mb-4">
           <ol className="breadcrumb mb-2 text-muted-custom small">
@@ -102,13 +90,12 @@ const ProjectListPage = () => {
         </nav>
 
         {/* Page Header */}
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5">
-          <div>
-            <h1 className="font-display fw-bold text-main mb-2">{t("project.duAnNghienCuuCuaToi")}</h1>
-            <p className="text-muted-custom mb-0">{t("project.quanLyCacKeywordWatchlistsPhan")}</p>
-          </div>
-          <PrimaryButton icon="lucide:plus" onClick={() => navigate(ROUTES.PROJECT_CREATE)}>{t("journal.taoDuAnMoi")}</PrimaryButton>
-        </div>
+        <PageHeader
+          className="mb-5 border-0 pb-0"
+          title={t("project.duAnNghienCuuCuaToi")}
+          description={t("project.quanLyCacKeywordWatchlistsPhan")}
+          actions={<PrimaryButton icon="lucide:plus" onClick={() => navigate(ROUTES.PROJECT_CREATE)}>{t("journal.taoDuAnMoi")}</PrimaryButton>}
+        />
 
         {/* Filter / Search Bar Placeholder */}
         <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
@@ -190,8 +177,6 @@ const ProjectListPage = () => {
               </div>
             </div>
           </div>}
-      </div>
-
       <Modal show={confirmModal.show} onHide={() => setConfirmModal({ show: false, projectId: null, action: null })} centered>
         <Modal.Header border="0" closeButton>
           <Modal.Title className="fw-bold">
@@ -219,6 +204,6 @@ const ProjectListPage = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>;
+    </PageContainer>;
 };
 export default ProjectListPage;

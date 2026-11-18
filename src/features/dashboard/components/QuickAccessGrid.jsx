@@ -1,72 +1,25 @@
-import { useTranslation } from "react-i18next";
-/**
- * File source thuộc hệ thống FE ResearchPulse.
- *
- * File: features\dashboard\components\QuickAccessGrid.jsx
- */
+﻿import { useTranslation } from 'react-i18next';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
-import '../Dashboard.css';
+import { Card, CardHeader, CardTitle, CardContent } from '../../../shared/ui/card';
 
-/**
- * QUICK_ACCESS_ITEMS — constant config, dễ mở rộng sau này
- */
 export default function QuickAccessGrid() {
-  const {
-    t
-  } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const QUICK_ACCESS_ITEMS = [{
-    icon: 'lucide:search',
-    label: t("search"),
-    desc: t("dashboard.khamPhaBaiBaoDeTai"),
-    path: '/catalog',
-    color: 'var(--primary)',
-    bg: 'var(--primary-light)'
-  }, {
-    icon: 'lucide:book-open',
-    label: t("typeJournal"),
-    desc: t("dashboard.xepHangQ1q4KhoaHoc"),
-    path: '/catalog',
-    color: 'var(--primary)',
-    bg: 'var(--primary-light)'
-  }, {
-    icon: 'lucide:globe',
-    label: t("geography"),
-    desc: t("dashboard.banDoPhanBoTacGia"),
-    path: '/geography',
-    color: 'var(--primary)',
-    bg: 'var(--primary-light)'
-  }, {
-    icon: 'lucide:trophy',
-    label: 'Leaderboard',
-    desc: t("dashboard.xepHangTacGiaNoiBat"),
-    path: '/authors',
-    color: 'var(--primary)',
-    bg: 'var(--primary-light)'
-  }];
-  return <section className="quick-access-card">
-      <header className="quick-access-header">
-        <Icon className="quick-access-header-icon" icon="lucide:zap" width={16} />
-        <span>{t("dashboard.truyCapNhanh")}</span>
-      </header>
-
-      <div className="quick-access-body">
-        <div className="premium-qa-grid">
-          {QUICK_ACCESS_ITEMS.map(item => <button key={item.label} type="button" className="premium-qa-tile" onClick={() => navigate(item.path)}>
-              <div className="premium-qa-icon-wrapper" style={{
-            backgroundColor: item.bg,
-            color: item.color
-          }}>
-                <Icon icon={item.icon} width={20} />
-              </div>
-              <div className="premium-qa-content">
-                <span className="premium-qa-title">{item.label}</span>
-                <span className="premium-qa-desc">{item.desc}</span>
-              </div>
-            </button>)}
-        </div>
-      </div>
-    </section>;
+  const items = [
+    { icon: 'lucide:search', label: t('search'), desc: t('dashboard.khamPhaBaiBaoDeTai'), path: '/catalog' },
+    { icon: 'lucide:book-open', label: t('typeJournal'), desc: t('dashboard.xepHangQ1q4KhoaHoc'), path: '/catalog' },
+    { icon: 'lucide:globe', label: t('geography'), desc: t('dashboard.banDoPhanBoTacGia'), path: '/geography' },
+    { icon: 'lucide:trophy', label: 'Leaderboard', desc: t('dashboard.xepHangTacGiaNoiBat'), path: '/authors' },
+  ];
+  return <Card className="h-full">
+    <CardHeader><CardTitle className="flex items-center gap-2"><Icon icon="lucide:zap" width={16} className="text-[#0071BC]" />{t('dashboard.truyCapNhanh')}</CardTitle></CardHeader>
+    <CardContent><div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {items.map((item) => <button key={item.icon} type="button" onClick={() => navigate(item.path)}
+        className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left transition-colors hover:border-sky-200 hover:bg-sky-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0071BC]">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-[#0071BC]"><Icon icon={item.icon} width={20} /></span>
+        <span className="min-w-0"><span className="block text-sm font-semibold text-slate-900">{item.label}</span><span className="block text-xs leading-5 text-slate-500">{item.desc}</span></span>
+      </button>)}
+    </div></CardContent>
+  </Card>;
 }

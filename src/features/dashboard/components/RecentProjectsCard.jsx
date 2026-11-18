@@ -1,211 +1,42 @@
-import { useTranslation } from "react-i18next";
-/**
- * File source thuộc hệ thống FE ResearchPulse.
- *
- * File: features\dashboard\components\RecentProjectsCard.jsx
- */
-import { useState } from 'react';
+﻿import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Icon } from '@iconify/react';
-import { EntityCard } from '../../../shared/components/Card';
+import { Card, CardHeader, CardTitle, CardContent } from '../../../shared/ui/card';
+import { Button } from '../../../shared/ui/button';
 
-function ProjectStatusBadge({
-  status
-}) {
+export default function RecentProjectsCard({ projects = [], loading, error, onViewAll, onProjectClick }) {
   const { t } = useTranslation();
-  
-  const STATUS_CONFIG = {
-    active: {
-      label: t("admin.hoatDong"),
-      bg: 'var(--bg-chip)',
-      color: 'var(--text-main)',
-      border: 'var(--border)'
-    },
-    new: {
-      label: 'New',
-      bg: 'var(--primary-light)',
-      color: 'var(--primary)',
-      border: 'transparent'
-    },
-    paused: {
-      label: t("dashboard.tamDung"),
-      bg: 'var(--bg-section)',
-      color: 'var(--text-muted)',
-      border: 'var(--border)'
-    },
-    archived: {
-      label: t("dashboard.luuTru"),
-      bg: 'var(--bg-section)',
-      color: 'var(--text-muted)',
-      border: 'var(--border)'
-    },
-    deleted: {
-      label: 'Deleted',
-      bg: '#fee2e2',
-      color: '#dc2626',
-      border: 'transparent'
-    }
-  };
-
-  const cfg = STATUS_CONFIG[status?.toLowerCase()] ?? STATUS_CONFIG.active;
-  return <span className="d-inline-flex align-items-center px-2 py-1 rounded-pill font-display flex-shrink-0 text-nowrap" style={{
-    fontSize: '0.7rem',
-    fontWeight: 600,
-    backgroundColor: cfg.bg,
-    color: cfg.color,
-    border: `1px solid ${cfg.border}`
-  }}>
-      {cfg.label}
-    </span>;
-}
-
-/**
- * RecentProjectItem — một row project trong danh sách
- */
-function RecentProjectItem({
-  project,
-  onClick
-}) {
-  const {
-    t
-  } = useTranslation();
-  const name = project.project_name ?? project.name ?? project.title ?? 'Untitled';
-  const journalCount = project.journal_count ?? project.journals?.length ?? 0;
-  const articleCount = project.article_count ?? 0;
-  const status = project.status ?? 'active';
-
-  // Avatar initials from name (Up to 3 letters)
-  const initials = name.split(' ').filter(w => w.length > 0).slice(0, 3).map(w => w[0]?.toUpperCase() ?? '').join('');
-  return <div className="d-flex align-items-center gap-3 py-3 px-3 rounded-3" style={{
-    cursor: 'pointer',
-    transition: 'background 0.15s ease',
-    borderBottom: '1px solid var(--border)'
-  }} onClick={onClick} onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--bg-section)'} onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}>
-      {/* Avatar */}
-      <div className="d-flex align-items-center justify-content-center flex-shrink-0 text-white font-display" style={{
-      width: 40,
-      height: 40,
-      borderRadius: 10,
-      background: 'var(--btn-dark)',
-      fontSize: initials.length >= 3 ? '0.65rem' : '0.75rem',
-      fontWeight: 700
-    }}>
-        {initials}
-      </div>
-
-      {/* Info */}
-      <div className="flex-grow-1" style={{
-      minWidth: 0
-    }}>
-        <div className="text-main fw-semibold text-truncate" style={{
-        fontSize: '0.85rem'
-      }} title={name}>
-          {name}
-        </div>
-        <div className="text-muted-custom text-truncate" style={{
-        fontSize: '0.72rem'
-      }}>
-          {journalCount} {t("project.tapChi")} · {articleCount} {t("author.baiBao")}</div>
-      </div>
-
-      {/* Status */}
-      <ProjectStatusBadge status={status} />
-    </div>;
-}
-
-/**
- * RecentProjectsCard — card chứa danh sách 3 project gần đây
- */
-export default function RecentProjectsCard({
-  projects,
-  loading,
-  error,
-  onViewAll,
-  onProjectClick
-}) {
-  const {
-    t
-  } = useTranslation();
-  const ITEMS_PER_PAGE = 4;
   const [page, setPage] = useState(1);
-  const totalPages = Math.max(1, Math.ceil((projects?.length ?? 0) / ITEMS_PER_PAGE));
-  const paginatedProjects = projects.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
-  const actions = onViewAll ? <button className="btn btn-link p-0 text-decoration-none" onClick={onViewAll} style={{
-    fontSize: '0.75rem',
-    color: 'var(--primary)'
-  }} onMouseEnter={e => {
-    e.currentTarget.style.textDecoration = 'underline';
-    e.currentTarget.style.textUnderlineOffset = '4px';
-  }} onMouseLeave={e => {
-    e.currentTarget.style.textDecoration = 'none';
-  }}>{t("dashboard.xemTatCa")}</button> : null;
-  const description = <div className="px-1">
-      {loading ? [1, 2, 3].map(i => <div key={i} className="d-flex align-items-center gap-3 px-3 py-3">
-            <div className="skeleton-shimmer rounded-3" style={{
-        width: 40,
-        height: 40,
-        flexShrink: 0
-      }} />
-            <div className="flex-grow-1">
-              <div className="skeleton-shimmer rounded mb-1" style={{
-          width: '70%',
-          height: 14
-        }} />
-              <div className="skeleton-shimmer rounded" style={{
-          width: '50%',
-          height: 11
-        }} />
-            </div>
-          </div>) : error ? <div className="text-center py-5 px-3">
-          <Icon icon="lucide:alert-circle" width={32} style={{
-        color: '#ef4444'
-      }} />
-          <p className="text-muted-custom mt-2 mb-0" style={{
-        fontSize: '0.8rem'
-      }}>{error}</p>
-        </div> : projects.length === 0 ? <div className="text-center py-5 px-3">
-          <Icon icon="lucide:folder-plus" width={36} style={{
-        color: 'var(--text-muted)'
-      }} />
-          <p className="text-main fw-semibold mt-2 mb-1" style={{
-        fontSize: '0.85rem'
-      }}>{t("dashboard.chuaCoProjectNao")}</p>
-          <p className="text-muted-custom mb-0" style={{
-        fontSize: '0.75rem'
-      }}>{t("dashboard.taoProjectDauTienDeBatDauTheoD")}</p>
-        </div> : <>
-          {paginatedProjects.map((p, i) => <RecentProjectItem key={p.project_id ?? p.id ?? i} project={p} onClick={() => onProjectClick?.(p)} />)}
+  const pageSize = 4;
+  const totalPages = Math.max(1, Math.ceil(projects.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const visibleProjects = projects.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const labels = { active: t('admin.hoatDong'), new: 'New', paused: t('dashboard.tamDung'), archived: t('dashboard.luuTru'), deleted: 'Deleted' };
 
-          {totalPages > 1 && <div className="d-flex align-items-center justify-content-between gap-2 px-3 pt-3 pb-2">
-              <button type="button" className="btn btn-sm" onClick={() => setPage(prev => Math.max(1, prev - 1))} disabled={page === 1} style={{
-          border: '1px solid var(--border)',
-          background: 'var(--bg-card)',
-          color: page === 1 ? 'var(--text-muted)' : 'var(--text-main)',
-          fontSize: '0.72rem',
-          fontWeight: 600
-        }}>{t("dashboard.truoc")}</button>
-
-              <span className="text-muted-custom" style={{
-          fontSize: '0.72rem'
-        }}>
-                {t("dashboard.trang")} {page}/{totalPages}
-              </span>
-
-              <button type="button" className="btn btn-sm" onClick={() => setPage(prev => Math.min(totalPages, prev + 1))} disabled={page === totalPages} style={{
-          border: '1px solid var(--border)',
-          background: 'var(--bg-card)',
-          color: page === totalPages ? 'var(--text-muted)' : 'var(--text-main)',
-          fontSize: '0.72rem',
-          fontWeight: 600
-        }}>
-                {t("dashboard.sau")} →
-              </button>
-            </div>}
+  return <Card className="h-full min-w-0">
+    <CardHeader className="flex flex-row items-center justify-between gap-3">
+      <CardTitle className="flex items-center gap-2"><Icon icon="lucide:folder-open" width={16} className="text-[#0071BC]" />{t('dashboard.projectsGanDay')}</CardTitle>
+      {onViewAll && <Button variant="ghost" size="sm" onClick={onViewAll} className="text-[#0071BC]">{t('dashboard.xemTatCa')}</Button>}
+    </CardHeader>
+    <CardContent>
+      {loading ? <div role="status" aria-label={t('common.dangCapNhat', 'Loading')} className="space-y-4">{[1, 2, 3].map((i) => <div key={i} className="h-14 animate-pulse rounded-lg bg-slate-100" />)}</div>
+        : error ? <div className="py-10 text-center text-sm text-red-600"><Icon icon="lucide:alert-circle" width={28} className="mx-auto mb-2" />{error}</div>
+        : projects.length === 0 ? <div className="py-10 text-center"><Icon icon="lucide:folder-plus" width={32} className="mx-auto text-slate-400" /><p className="mb-1 mt-3 text-sm font-semibold text-slate-900">{t('dashboard.chuaCoProjectNao')}</p><p className="m-0 text-xs text-slate-500">{t('dashboard.taoProjectDauTienDeBatDauTheoD')}</p></div>
+        : <>
+          <div className="divide-y divide-slate-100">{visibleProjects.map((project, i) => {
+            const name = project.project_name ?? project.name ?? project.title ?? 'Untitled';
+            const initials = name.split(' ').filter(Boolean).slice(0, 3).map((word) => word[0].toUpperCase()).join('');
+            const status = String(project.status ?? 'active').toLowerCase();
+            return <button key={project.project_id ?? project.id ?? i} type="button" onClick={() => onProjectClick?.(project)}
+              className="flex w-full min-w-0 items-center gap-3 rounded-lg border-0 bg-transparent px-2 py-3 text-left transition-colors hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-[#0071BC]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-xs font-bold text-white">{initials}</span>
+              <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-slate-900" title={name}>{name}</span>
+                <span className="block truncate text-xs text-slate-500">{project.journal_count ?? project.journals?.length ?? 0} {t('project.tapChi')} · {project.article_count ?? 0} {t('author.baiBao')}</span></span>
+              <span className="shrink-0 rounded-full bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">{labels[status] ?? labels.active}</span>
+            </button>;
+          })}</div>
+          {totalPages > 1 && <div className="flex items-center justify-between gap-2 pt-4"><Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>{t('dashboard.truoc')}</Button><span className="text-xs text-slate-500">{t('dashboard.trang')} {currentPage}/{totalPages}</span><Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>{t('dashboard.sau')} →</Button></div>}
         </>}
-    </div>;
-  return <EntityCard className="h-100" title={<span className="d-flex align-items-center gap-2">
-          <Icon icon="lucide:folder-open" width={16} style={{
-      color: 'var(--primary)'
-    }} />
-          <span>{t("dashboard.projectsGanDay")}</span>
-        </span>} actions={actions} description={description} bodyClassName="flex-column align-items-stretch" />;
+    </CardContent>
+  </Card>;
 }

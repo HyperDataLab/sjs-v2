@@ -85,8 +85,8 @@ html, body {
 }
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  width: 8px;
+  height: 8px;
 }
 
 /* View Trends Button */

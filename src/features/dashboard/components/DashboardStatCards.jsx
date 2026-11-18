@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
  *
  * File: features\dashboard\components\DashboardStatCards.jsx
  */
-import { Row, Col } from 'react-bootstrap';
 import StatCard from './StatCard';
 
 /**
@@ -47,9 +46,7 @@ export default function DashboardStatCards({
     growth: null,
     growthLabel: ''
   }];
-  return <Row className="g-3 mb-4">
-      {cards.map((card, idx) => <Col xs={6} lg={3} key={idx}>
-          <StatCard {...card} loading={loading} />
-        </Col>)}
-    </Row>;
+  return <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card) => <StatCard key={card.icon} {...card} loading={loading} />)}
+    </div>;
 }

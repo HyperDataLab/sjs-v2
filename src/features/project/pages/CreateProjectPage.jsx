@@ -9,8 +9,9 @@ import { getSubjectAreasApi } from '../../catalog/api/catalogApi';
 import keywordApi from '../../keywords/api/keywordApi';
 import SearchableSelect from '../../../shared/components/Select/SearchableSelect';
 import SearchableKeywordInput from '../../../shared/components/Input/SearchableKeywordInput';
-import Header from '../../landing/components/Header';
-import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
+import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
+import { Card, CardContent } from '../../../shared/ui/card';
+import { Button } from '../../../shared/ui/button';
 const CreateProjectPage = () => {
   const { t: _t } = useTranslation();
   const navigate = useNavigate();
@@ -121,19 +122,7 @@ const CreateProjectPage = () => {
       setLoading(false);
     }
   };
-  return <div className="container-fluid pb-4 grid-bg min-vh-100 position-relative overflow-hidden" style={{
-    paddingTop: '80px'
-  }}>
-      <div className="position-absolute w-100 h-100 radial-fade pe-none" style={{
-      top: 0,
-      left: 0,
-      zIndex: 0
-    }} />
-      <Header />
-      <div className="container mx-auto position-relative z-1" style={{
-      maxWidth: '650px',
-      marginTop: '40px'
-    }}>
+  return <PageContainer className="grid-bg max-w-[760px] py-6 sm:py-10">
         <nav aria-label="breadcrumb" className="mb-4">
           <ol className="breadcrumb mb-2 text-muted-custom small">
             <li className="breadcrumb-item"><Link to={ROUTES.DASHBOARD} className="text-decoration-none text-muted-custom hover-primary">{t("author.tongQuan")}</Link></li>
@@ -142,11 +131,9 @@ const CreateProjectPage = () => {
           </ol>
         </nav>
 
-        <div className="glass-card p-4 p-md-5 rounded-4 shadow-sm border">
-          <div className="mb-4 text-center">
-            <h2 className="font-display fw-bold text-main mb-2">{t("project.khoiTaoDuAnNghienCuuMoi")}</h2>
-            <p className="text-muted-custom small mb-0">{t("project.thietLapKhongGianLamViecDeTuDo")}</p>
-          </div>
+        <Card>
+          <CardContent className="p-5 sm:p-7">
+          <PageHeader className="mb-6 border-0 pb-0 text-center sm:items-center" title={t("project.khoiTaoDuAnNghienCuuMoi")} description={t("project.thietLapKhongGianLamViecDeTuDo")} />
 
           {error && <div className="alert alert-danger border-0 rounded-3 small py-2 d-flex align-items-center gap-2">
               <Icon icon="lucide:alert-circle" width="18" />
@@ -204,16 +191,16 @@ const CreateProjectPage = () => {
             </div>
 
             <div className="d-flex gap-3 justify-content-end pt-3 border-top">
-              <PrimaryButton type="button" variant="outline" className="px-4 py-2" onClick={() => navigate(-1)} disabled={loading}>{t("admin.huy")}</PrimaryButton>
-              <PrimaryButton type="submit" className="px-4 py-2" disabled={loading || !title.trim() || !subjectAreaId}>
+              <Button type="button" variant="outline" onClick={() => navigate(-1)} disabled={loading}>{t("admin.huy")}</Button>
+              <Button type="submit" disabled={loading || !title.trim() || !subjectAreaId}>
                 {loading ? <>
                     <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>{t("project.dangTao")}</> : <>
                     <Icon icon="lucide:check" width="18" />{t("project.taoDuAn")}</>}
-              </PrimaryButton>
+              </Button>
             </div>
           </form>
-        </div>
-      </div>
-    </div>;
+          </CardContent>
+        </Card>
+    </PageContainer>;
 };
 export default CreateProjectPage;

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
  */
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
-import '../Dashboard.css';
+import { Card } from '../../../shared/ui/card';
 import ChartRangeDropdown from './ChartRangeDropdown';
 
 /**
@@ -108,7 +108,7 @@ function SimpleSvgChart({
       })}
       </svg>
       {/* Tooltip Overlay */}
-      {hoveredPoint && <div className="chart-svg-tooltip" style={{
+      {hoveredPoint && <div className="pointer-events-none absolute z-10 rounded-lg border border-slate-200 bg-white px-2 py-1 shadow-md" style={{
       left: `${hoveredPoint.x / W * 100}%`,
       top: `${hoveredPoint.y / H * 100}%`,
       transform: 'translate(-50%, -100%) translateY(-8px)'
@@ -200,21 +200,21 @@ export default function PublicationTrendChart({
           </div>}
       </div>
     </>;
-  return <div className="publication-trend-card h-100">
-      <div className="ptc-header">
-        <div className="ptc-title">
+  return <Card className="h-full overflow-hidden">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4">
+        <div className="flex items-center gap-2 text-base font-semibold text-slate-900">
           <Icon icon="lucide:trending-up" width={16} style={{
           color: 'var(--primary)'
         }} />
           <span>{t("dashboard.xuHuongPublication")}</span>
         </div>
-        <div className="ptc-actions d-flex align-items-center">
+        <div className="flex items-center gap-2">
           {legend}
           {onRangeChange && <ChartRangeDropdown value={selectedRange} onChange={onRangeChange} />}
         </div>
       </div>
-      <div className="ptc-body">
+      <div className="p-5">
         {description}
       </div>
-    </div>;
+    </Card>;
 }

@@ -79,11 +79,6 @@ export default function AppRoutes() {
       <Route path="/:lang" element={<LangLayout />}>
         <Route index element={<LandingPage />} />
 
-        <Route element={<ProtectedRoute />}>
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="authors/leaderboard" element={<AuthorLeaderboardPage />} />
-        </Route>
-
         <Route element={<PublicRoute />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
