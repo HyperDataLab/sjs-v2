@@ -327,17 +327,9 @@ textarea[aria-invalid="true"]:focus {
   padding-inline: 0;
 }
 
-/* Every authenticated researcher route shares one dashboard content canvas.
-   Feature roots can keep their own grid/card composition inside this frame. */
-.app-main > * {
-  width: 100%;
-  max-width: 1600px;
-  margin-inline: auto;
-}
-
 .app-main {
   min-width: 0;
-  padding-inline: var(--ds-page-gutter);
+  width: 100%;
 }
 
 /* Legacy feature pages may still carry this class; the authenticated shell

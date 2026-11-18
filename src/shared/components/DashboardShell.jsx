@@ -96,7 +96,7 @@ export default function DashboardShell({ children }) {
         <Button variant="ghost" size="icon" aria-label={t('navigation.open', 'Open navigation')} aria-expanded={mobileOpen} onClick={() => setMobileOpen(true)}><FiMenu /></Button>
       </header>
       <div className="fixed inset-y-0 left-0 z-30 hidden w-[248px] md:block">{sidebar}</div>
-      <header className="app-topbar sticky top-0 z-[var(--ds-z-sticky)] flex max-md:hidden min-h-16 items-center justify-between border-b border-border bg-surface/95 px-7 backdrop-blur ml-[248px]">
+      <header className="app-topbar sticky top-0 z-[var(--ds-z-sticky)] flex max-md:hidden min-h-16 items-center justify-between border-b border-border bg-surface/95 px-6 md:px-8 backdrop-blur ml-[248px]">
         <div className="flex min-w-0 items-center gap-2 text-sm">
           <span className="text-muted-foreground">{t('navigation.workspace', 'Workspace')}</span>
           <span aria-hidden="true" className="text-subtle-foreground">/</span>
@@ -124,7 +124,7 @@ export default function DashboardShell({ children }) {
         )}
       </AnimatePresence>
       <DashboardShellContext.Provider value>
-        <motion.main className="app-main min-h-screen py-5 md:ml-[248px] md:py-6" initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.2 }}>
+        <motion.main className="app-main min-h-screen md:ml-[248px]" initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.2 }}>
           {children}
         </motion.main>
       </DashboardShellContext.Provider>

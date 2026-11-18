@@ -78,7 +78,7 @@ export default function DashboardPage() {
     navigate(`/catalog?search=${encodeURIComponent(keyword)}`);
   };
   return (
-    <PageContainer className="max-w-[1440px] space-y-6">
+    <PageContainer>
       <Card className="dashboard-welcome relative overflow-hidden border-l-4 border-l-primary p-6 sm:p-8">
         <div className="flex flex-col items-start justify-between gap-5 md:flex-row md:items-center">
           <div className="min-w-0">
