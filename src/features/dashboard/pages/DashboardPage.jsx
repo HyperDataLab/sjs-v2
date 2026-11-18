@@ -85,7 +85,7 @@ export default function DashboardPage() {
             <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary-subtle px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
               <Icon icon="lucide:sparkles" width={14} /><span>Trending System Analytics</span>
             </div>
-            <h1 className="mb-2 text-base font-semibold leading-snug tracking-tight text-foreground">{t("dashboard.chaoMungBanDenVoiResearchpulse")}</h1>
+            <h1 className="mb-2 text-xl sm:text-2xl font-bold leading-snug tracking-tight text-foreground">{t("dashboard.chaoMungBanDenVoiResearchpulse")}</h1>
             <p className="m-0 max-w-2xl text-sm leading-6 text-muted-foreground">{t("dashboard.khamPhaXuHuongXepHangTapChiVaC")}</p>
           </div>
           <Button onClick={handleCreateProject} size="default" className="gap-2 shrink-0">

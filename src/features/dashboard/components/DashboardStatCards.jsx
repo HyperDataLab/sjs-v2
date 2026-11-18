@@ -19,28 +19,28 @@ export default function DashboardStatCards({
   } = useTranslation();
   const cards = [{
     icon: 'lucide:folder-open',
-    accentColor: 'var(--text-main)',
+    iconBg: 'bg-primary-subtle text-primary',
     value: stats?.projectCount,
     label: t("dashboard.projectsDangTheoDoi"),
     growth: null,
     growthLabel: ''
   }, {
     icon: 'lucide:hash',
-    accentColor: 'var(--text-main)',
+    iconBg: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400',
     value: stats?.keywordCount,
     label: t("dashboard.keywordsDangWatch"),
     growth: null,
     growthLabel: ''
   }, {
     icon: 'lucide:file-text',
-    accentColor: 'var(--text-main)',
+    iconBg: 'bg-success-subtle text-success',
     value: stats?.articleCount,
     label: t("dashboard.baiBaoTrongProjects"),
     growth: null,
     growthLabel: ''
   }, {
     icon: 'lucide:book-open',
-    accentColor: 'var(--text-main)',
+    iconBg: 'bg-warning-subtle text-warning',
     value: stats?.journalCount,
     label: t("dashboard.journalsTheoDoi"),
     growth: null,
