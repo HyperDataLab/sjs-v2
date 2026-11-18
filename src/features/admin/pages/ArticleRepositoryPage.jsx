@@ -9,7 +9,8 @@ import {
 import Pagination from '../../../shared/components/Pagination';
 import useAdminArticleRepository from '../hooks/useAdminArticleRepository';
 import ROUTES from '../../../app/routes/routePaths';
-import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
+import { Button } from '../../../shared/ui/button';
+import { Alert } from '../../../shared/ui/alert';
 
 export default function ArticleRepositoryPage() {
   const navigate = useNavigate();
@@ -50,17 +51,17 @@ export default function ArticleRepositoryPage() {
             Review submitted articles, filter editorial status, and open manuscript records for operational updates.
           </p>
         </div>
-        <PrimaryButton
+        <Button
           type="button"
           className="admin-btn-consistent"
           onClick={() => navigate(ROUTES.ADMIN_ARTICLE_CREATE)}
         >
-          <Icon icon="lucide:plus" width="16" />
+          <Icon icon="lucide:plus" width="16" aria-hidden="true" />
           <span>Submit New Article</span>
-        </PrimaryButton>
+        </Button>
       </div>
 
-      {/* Filter bar - filter theo dữ liệu API đang tải */}
+      {/* Filter bar */}
       <ArticleFilterBar
         journal={journalFilter}
         status={statusFilter}
@@ -75,7 +76,10 @@ export default function ArticleRepositoryPage() {
       {loading ? (
         <div className="admin-card text-center py-5 text-muted-custom">Loading articles from API...</div>
       ) : error ? (
-        <div className="alert alert-danger border-0 rounded-3 small mb-4">{error}</div>
+        <Alert variant="destructive" className="mb-4 items-center">
+          <Icon icon="lucide:alert-circle" width="18" className="shrink-0" />
+          <div className="flex-1 text-xs">{error}</div>
+        </Alert>
       ) : (
         <>
           <ArticleTable
@@ -95,7 +99,7 @@ export default function ArticleRepositoryPage() {
         </>
       )}
 
-      {/* Bottom row: Editor's Insights (trái) + Peer-Matching promo (phải) */}
+      {/* Bottom row: Editor's Insights + Peer-Matching promo */}
       <div className="admin-repository-bottom-row">
         <EditorInsightsCard insights={insights} />
         <PeerMatchingPromoCard />

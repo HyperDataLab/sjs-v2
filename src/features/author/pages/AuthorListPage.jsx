@@ -1,12 +1,7 @@
 import { useTranslation } from "react-i18next";
-/**
- * @file AuthorListPage.jsx
- * @description Trang hiển thị Danh mục Đăng ký Tác giả (`/authors`).
- */
-
 import { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Card } from 'react-bootstrap';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { Container, Row, Col, Form } from 'react-bootstrap';
 import Icon from '../../../shared/components/Icon';
 import Header from '../../landing/components/Header';
 import useAuthors from '../hooks/useAuthors';
@@ -15,14 +10,14 @@ import AuthorCard from '../components/AuthorCard';
 import LoadingSkeleton from '../../../shared/components/LoadingSkeleton';
 import AuthorNavigationTabs from '../components/AuthorNavigationTabs';
 import AdminPagination from '../../../shared/components/Pagination';
-import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
+import { Button } from '../../../shared/ui/button';
+import { Card } from '../../../shared/ui/card';
 import { FilterCard } from '../../../shared/components/Card';
 import { FilterSearch, FilterSelect } from '../../../shared/components/Input';
 import './AuthorListPage.css';
+
 export default function AuthorListPage() {
-  const {
-    t
-  } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const {
@@ -33,7 +28,7 @@ export default function AuthorListPage() {
     loadingAuthors,
     errorAuthors,
     fetchAuthors,
-    fetchSubjectAreas
+    fetchSubjectAreas,
   } = useAuthors();
   const [viewMode] = useState('grid');
   const searchVal = searchParams.get('search') || '';
@@ -43,6 +38,7 @@ export default function AuthorListPage() {
   const subjectAreaVal = searchParams.get('subject_area') || '';
   const countryVal = searchParams.get('country') || '';
   const [searchInput, setSearchInput] = useState(searchVal);
+
   useEffect(() => {
     const params = {
       search: searchVal,
@@ -50,155 +46,240 @@ export default function AuthorListPage() {
       limit: limitVal,
       sort: sortVal,
       subject_area: subjectAreaVal,
-      country: countryVal
+      country: countryVal,
     };
-    const filteredParams = Object.fromEntries(Object.entries(params).filter(([, value]) => value !== ''));
+    const filteredParams = Object.fromEntries(
+      Object.entries(params).filter(([, value]) => value !== '')
+    );
     fetchAuthors(filteredParams);
   }, [searchVal, pageVal, limitVal, sortVal, subjectAreaVal, countryVal, fetchAuthors]);
+
   useEffect(() => {
     if (!subjectAreas || subjectAreas.length === 0) {
       fetchSubjectAreas();
     }
   }, [subjectAreas, fetchSubjectAreas]);
-  const handleSearchSubmit = e => {
+
+  const handleSearchSubmit = (e) => {
     if (e) e.preventDefault();
     const nextParams = new URLSearchParams(searchParams);
-    if (searchInput.trim()) nextParams.set('search', searchInput.trim());else nextParams.delete('search');
+    if (searchInput.trim()) nextParams.set('search', searchInput.trim());
+    else nextParams.delete('search');
     nextParams.set('page', '1');
     setSearchParams(nextParams);
   };
+
   const handleFilterChange = (key, value) => {
     const nextParams = new URLSearchParams(searchParams);
-    if (value) nextParams.set(key, value);else nextParams.delete(key);
+    if (value) nextParams.set(key, value);
+    else nextParams.delete(key);
     nextParams.set('page', '1');
     setSearchParams(nextParams);
   };
-  const handlePageChange = newPage => {
+
+  const handlePageChange = (newPage) => {
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set('page', String(newPage));
     setSearchParams(nextParams);
   };
+
   const totalPagesCount = Math.max(1, totalPages);
   const startIndex = (pageVal - 1) * limitVal + 1;
-  const formatLocalNumber = value => {
+
+  const formatLocalNumber = (value) => {
     if (value === null || value === undefined || Number.isNaN(Number(value))) return '0';
     return Number(value).toLocaleString('vi-VN');
   };
+
   const visibleAuthorsCount = authors.length;
-  const featuredAuthorsCount = authors.filter(author => Number(author.h_index ?? author.hindex ?? 0) >= 30).length;
-  const totalWorksCount = authors.reduce((sum, author) => sum + (Number(author.works_count ?? author.article_count ?? 0) || 0), 0);
-  const totalCitationCount = authors.reduce((sum, author) => sum + (Number(author.cited_by_count ?? author.citation_count ?? 0) || 0), 0);
-  const statCards = [{
-    label: t("article.tongTacGia"),
-    value: formatLocalNumber(totalAuthors),
-    icon: 'lucide:users',
-    desc: subjectAreaVal
-      ? `${t("author.tacGiaTrongLinhVuc", "Tác giả trong lĩnh vực")} ${subjectAreaVal}`
-      : t("author.tongTacGiaTrongHeThong")
-  }, {
-    label: t("author.tacGiaNoiBat"),
-    value: formatLocalNumber(featuredAuthorsCount || visibleAuthorsCount),
-    icon: 'lucide:award',
-    desc: visibleAuthorsCount > 0 ? `Trong ${formatLocalNumber(visibleAuthorsCount)} tác giả đang hiển thị` : t("author.hindexVuotTroi30")
-  }, {
-    label: t("article.tongBaiBao"),
-    value: formatLocalNumber(totalWorksCount),
-    icon: 'lucide:file-text',
-    desc: t("author.tongBaiBaoTrenTrangHienTai")
-  }, {
-    label: t("author.tongCitations"),
-    value: formatLocalNumber(totalCitationCount),
-    icon: 'lucide:quote',
-    desc: t("author.tongCitationsTrenTrangHienTai")
-  }];
-  return <div className="author-list-page">
+  const featuredAuthorsCount = authors.filter(
+    (author) => Number(author.h_index ?? author.hindex ?? 0) >= 30
+  ).length;
+  const totalWorksCount = authors.reduce(
+    (sum, author) => sum + (Number(author.works_count ?? author.article_count ?? 0) || 0),
+    0
+  );
+  const totalCitationCount = authors.reduce(
+    (sum, author) => sum + (Number(author.cited_by_count ?? author.citation_count ?? 0) || 0),
+    0
+  );
+
+  const statCards = [
+    {
+      label: t("article.tongTacGia"),
+      value: formatLocalNumber(totalAuthors),
+      icon: 'lucide:users',
+      desc: subjectAreaVal
+        ? `${t("author.tacGiaTrongLinhVuc", "Tác giả trong lĩnh vực")} ${subjectAreaVal}`
+        : t("author.tongTacGiaTrongHeThong"),
+    },
+    {
+      label: t("author.tacGiaNoiBat"),
+      value: formatLocalNumber(featuredAuthorsCount || visibleAuthorsCount),
+      icon: 'lucide:award',
+      desc:
+        visibleAuthorsCount > 0
+          ? `Trong ${formatLocalNumber(visibleAuthorsCount)} tác giả đang hiển thị`
+          : t("author.hindexVuotTroi30"),
+    },
+    {
+      label: t("article.tongBaiBao"),
+      value: formatLocalNumber(totalWorksCount),
+      icon: 'lucide:file-text',
+      desc: t("author.tongBaiBaoTrenTrangHienTai"),
+    },
+    {
+      label: t("author.tongCitations"),
+      value: formatLocalNumber(totalCitationCount),
+      icon: 'lucide:quote',
+      desc: t("author.tongCitationsTrenTrangHienTai"),
+    },
+  ];
+
+  return (
+    <div className="author-list-page min-vh-100">
       <Header />
 
-      <Container>
-        <nav className="author-list-breadcrumb mb-4" aria-label="breadcrumb">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <span className="author-list-breadcrumb__link" onClick={() => navigate('/')}>{t("author.tongQuan")}</span>
+      <Container className="pt-4 pb-8">
+        <nav aria-label="breadcrumb" className="mb-4">
+          <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
+            <li>
+              <Link to="/" className="no-underline text-muted-foreground hover:text-primary transition-colors">
+                {t("author.tongQuan")}
+              </Link>
             </li>
-            <li className="breadcrumb-item active text-primary" aria-current="page">{t("author.tacGiaNoiBat")}</li>
+            <li aria-hidden="true" className="select-none">/</li>
+            <li className="font-medium text-foreground" aria-current="page">
+              {t("author.tacGiaNoiBat")}
+            </li>
           </ol>
         </nav>
 
-        <section className="author-list-hero">
-          <div className="author-list-hero__content">
-            <div className="author-list-eyebrow">
-              <Icon icon="lucide:users-round" width="17" />
-              <span>Author registry</span>
-            </div>
-            <h1 className="author-list-title">{t("author.danhSachNhaKhoaHocTacGia")}</h1>
-            <p className="author-list-description">{t("author.traCuuThongTinChiSoHocThuatHin")}</p>
+        <section className="mb-6">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-subtle text-primary text-xs font-semibold mb-2">
+            <Icon icon="lucide:users-round" width="14" />
+            <span>Author registry</span>
           </div>
+          <h1 className="m-0 text-base sm:text-lg font-bold text-foreground leading-snug">
+            {t("author.danhSachNhaKhoaHocTacGia")}
+          </h1>
+          <p className="mt-1 mb-0 text-xs text-muted-foreground max-w-2xl">
+            {t("author.traCuuThongTinChiSoHocThuatHin")}
+          </p>
         </section>
 
         <AuthorNavigationTabs activeTab="list" />
 
-        <Row className="g-3 mb-4">
-          {statCards.map((stat, idx) => <Col xs={12} sm={6} lg={3} key={idx}>
-              <Card className="author-stat-card">
-                <div className="author-stat-header">
-                  <span className="author-stat-label">{stat.label}</span>
-                  <Icon className="author-stat-icon" icon={stat.icon} width="16" />
-                </div>
-                <div className="author-stat-value">{stat.value}</div>
-                <div className="author-stat-desc">{stat.desc}</div>
-              </Card>
-            </Col>)}
-        </Row>
+        {/* 4 Stat Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {statCards.map((stat, idx) => (
+            <Card key={idx} className="p-4 flex flex-col justify-between">
+              <div className="flex items-center justify-between gap-2 text-xs font-medium text-muted-foreground">
+                <span className="truncate">{stat.label}</span>
+                <Icon icon={stat.icon} width="16" className="text-primary shrink-0" />
+              </div>
+              <div className="mt-2 text-base font-bold text-foreground tabular-nums">
+                {stat.value}
+              </div>
+              <div className="mt-1 text-xs text-muted-foreground truncate" title={stat.desc}>
+                {stat.desc}
+              </div>
+            </Card>
+          ))}
+        </div>
 
-        <FilterCard className="author-filter-card mb-4">
+        {/* Filter bar */}
+        <FilterCard className="mb-6">
           <Form onSubmit={handleSearchSubmit}>
-            <Row className="g-3 align-items-center author-filter-row">
-              <Col xs={12} lg={4}>
-                <FilterSearch value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder={t("author.timTheoTenVienNghienCuuTuKhoa")} />
-              </Col>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+              <div className="md:col-span-6 lg:col-span-5">
+                <FilterSearch
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder={t("author.timTheoTenVienNghienCuuTuKhoa")}
+                />
+              </div>
 
-              <Col xs={12} sm={6} lg={3} className="author-subject-filter-col">
-                <FilterSelect value={subjectAreaVal} onChange={e => handleFilterChange('subject_area', e.target.value)} options={[{
-                value: '',
-                label: t("admin.chonLinhVuc")
-              }, ...(subjectAreas || []).map(area => ({
-                value: area.display_name || area.name || '',
-                label: area.display_name || area.name || ''
-              }))]} />
-              </Col>
+              <div className="md:col-span-4 lg:col-span-5">
+                <FilterSelect
+                  value={subjectAreaVal}
+                  onChange={(e) => handleFilterChange('subject_area', e.target.value)}
+                  options={[
+                    { value: '', label: t("admin.chonLinhVuc") },
+                    ...(subjectAreas || []).map((area) => ({
+                      value: area.display_name || area.name || '',
+                      label: area.display_name || area.name || '',
+                    })),
+                  ]}
+                />
+              </div>
 
-              <Col xs={12} sm={6} lg={1} className="d-flex gap-2">
-                <PrimaryButton type="submit" className="w-100 py-2">{t("searchBtn")}</PrimaryButton>
-              </Col>
-            </Row>
+              <div className="md:col-span-2 lg:col-span-2">
+                <Button type="submit" size="sm" className="w-full">
+                  <Icon icon="lucide:search" width="14" aria-hidden="true" />
+                  <span>{t("searchBtn")}</span>
+                </Button>
+              </div>
+            </div>
           </Form>
         </FilterCard>
 
-        <div className="mb-4">
-          {viewMode === 'grid' ? loadingAuthors ? <Row className="g-3">
-                {Array.from({
-            length: limitVal
-          }).map((_, idx) => <Col xs={12} md={6} key={idx}>
-                    <Card className="author-grid-skeleton">
-                      <div className="d-flex gap-3 mb-3">
-                        <LoadingSkeleton width="48px" height="48px" borderRadius="50%" />
-                        <div className="flex-grow-1">
-                          <LoadingSkeleton width="60%" height="16px" className="mb-2" />
-                          <LoadingSkeleton width="40%" height="12px" />
-                        </div>
+        {/* Authors List */}
+        <div className="mb-6">
+          {viewMode === 'grid' ? (
+            loadingAuthors ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Array.from({ length: limitVal }).map((_, idx) => (
+                  <Card key={idx} className="p-4 space-y-3">
+                    <div className="flex gap-3 items-center">
+                      <LoadingSkeleton width="40px" height="40px" borderRadius="50%" />
+                      <div className="flex-1 space-y-1.5">
+                        <LoadingSkeleton width="60%" height="16px" />
+                        <LoadingSkeleton width="40%" height="12px" />
                       </div>
-                      <LoadingSkeleton width="100%" height="32px" className="mb-3" />
-                      <LoadingSkeleton width="30%" height="18px" />
-                    </Card>
-                  </Col>)}
-              </Row> : authors.length === 0 ? <AuthorTable authors={[]} loading={false} error={errorAuthors} onRetry={() => fetchAuthors()} /> : <Row className="g-3">
-                {authors.map(author => <Col xs={12} md={6} key={author.author_id ?? author.id}>
-                    <AuthorCard author={author} />
-                  </Col>)}
-              </Row> : <AuthorTable authors={authors} loading={loadingAuthors} error={errorAuthors} onRetry={() => fetchAuthors()} startIndex={startIndex} />}
+                    </div>
+                    <LoadingSkeleton width="100%" height="28px" />
+                    <LoadingSkeleton width="30%" height="16px" />
+                  </Card>
+                ))}
+              </div>
+            ) : authors.length === 0 ? (
+              <AuthorTable
+                authors={[]}
+                loading={false}
+                error={errorAuthors}
+                onRetry={() => fetchAuthors()}
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {authors.map((author) => (
+                  <AuthorCard key={author.author_id ?? author.id} author={author} />
+                ))}
+              </div>
+            )
+          ) : (
+            <AuthorTable
+              authors={authors}
+              loading={loadingAuthors}
+              error={errorAuthors}
+              onRetry={() => fetchAuthors()}
+              startIndex={startIndex}
+            />
+          )}
         </div>
 
-        {authors.length > 0 && totalPagesCount > 1 && <AdminPagination totalItems={totalAuthors} currentPage={pageVal} limit={limitVal} onPageChange={handlePageChange} entityName={t("author.tacGia")} />}
+        {authors.length > 0 && totalPagesCount > 1 && (
+          <div className="mt-6">
+            <AdminPagination
+              totalItems={totalAuthors}
+              currentPage={pageVal}
+              limit={limitVal}
+              onPageChange={handlePageChange}
+              entityName={t("author.tacGia")}
+            />
+          </div>
+        )}
       </Container>
-    </div>;
+    </div>
+  );
 }
