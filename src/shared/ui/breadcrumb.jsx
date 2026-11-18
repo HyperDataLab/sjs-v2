@@ -14,7 +14,7 @@ export function Breadcrumbs({ items = [], className = '' }) {
               {item.to && !isLast ? (
                 <Link
                   to={item.to}
-                  className="no-underline text-muted-foreground hover:text-primary transition-colors font-normal"
+                  className="no-underline !text-muted-foreground hover:!text-primary transition-colors font-normal"
                 >
                   {item.label}
                 </Link>
