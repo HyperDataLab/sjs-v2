@@ -159,7 +159,7 @@ const CreateProjectPage = () => {
                 disabled={loading}
                 autoFocus
                 required
-                className="w-full h-11 px-3.5 rounded-control border border-border bg-surface text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
+                className="w-full h-11 px-3.5 rounded-control border border-border bg-surface text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-0 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0 transition-all"
               />
             </div>
 

@@ -123,7 +123,6 @@ export default function ProfilePage() {
   if (isLoading && !user) {
     return (
       <div className="min-vh-100 flex flex-col text-foreground">
-        <Header />
         <PageContainer className="flex-1 max-w-5xl py-6 space-y-6">
           <Skeleton className="h-8 w-48" />
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -150,7 +149,6 @@ export default function ProfilePage() {
   if (error && !user) {
     return (
       <div className="min-vh-100 flex flex-col grid-bg text-foreground">
-        <Header />
         <div className="flex-1 flex items-center justify-center p-6 max-w-lg mx-auto w-full">
           <StatePanel
             variant="error"
@@ -288,7 +286,7 @@ export default function ProfilePage() {
                     value={formData.last_name}
                     maxLength={40}
                     onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                    className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
+                    className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus:outline-none focus:border-primary focus:ring-0 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0"
                   />
                 </div>
 
@@ -301,7 +299,7 @@ export default function ProfilePage() {
                     value={formData.first_name}
                     maxLength={25}
                     onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                    className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
+                    className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus:outline-none focus:border-primary focus:ring-0 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0"
                   />
                 </div>
 
@@ -336,7 +334,7 @@ export default function ProfilePage() {
                   <select
                     value={formData.gender ? "male" : "female"}
                     onChange={(e) => setFormData({ ...formData, gender: e.target.value === "male" })}
-                    className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
+                    className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus:outline-none focus:border-primary focus:ring-0 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0"
                   >
                     <option value="male">{t("auth.nam", "Male")}</option>
                     <option value="female">{t("auth.nu", "Female")}</option>
@@ -351,7 +349,7 @@ export default function ProfilePage() {
                     type="date"
                     value={formData.date_of_birth}
                     onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
-                    className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
+                    className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus:outline-none focus:border-primary focus:ring-0 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0"
                   />
                 </div>
               </div>
@@ -365,7 +363,7 @@ export default function ProfilePage() {
                   value={formData.url_image}
                   onChange={(e) => setFormData({ ...formData, url_image: e.target.value })}
                   placeholder="https://example.com/avatar.png"
-                  className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
+                  className="flex h-10 w-full rounded-control border border-border bg-surface px-3 py-2 text-sm text-foreground shadow-xs focus:outline-none focus:border-primary focus:ring-0 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0"
                 />
               </div>
 

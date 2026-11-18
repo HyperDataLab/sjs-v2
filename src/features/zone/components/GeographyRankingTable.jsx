@@ -57,7 +57,7 @@ export default function GeographyRankingTable({
           placeholder={t("zone.timQuocGia", "Search country...")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full h-9 pl-9 pr-8 rounded-lg border border-border bg-surface-muted/30 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-colors shadow-2xs"
+          className="w-full h-9 pl-9 pr-8 rounded-lg border border-border bg-surface-muted/30 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-0 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0 transition-colors shadow-2xs"
         />
         {searchTerm && (
           <button

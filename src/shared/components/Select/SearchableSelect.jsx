@@ -76,9 +76,9 @@ export default function SearchableSelect({
             setIsOpen(!isOpen);
           }
         }}
-        className={`w-full h-11 px-3.5 rounded-control border border-border bg-surface text-sm flex items-center justify-between gap-2 transition-all select-none ${
+        className={`w-full h-11 px-3.5 rounded-control border border-border bg-surface text-sm flex items-center justify-between gap-2 transition-all select-none focus:outline-none focus-visible:outline-none focus:border-primary focus-visible:border-primary ${
           disabled ? 'opacity-50 cursor-not-allowed bg-surface-muted' : 'cursor-pointer hover:border-primary/50'
-        } ${isOpen ? 'ring-2 ring-primary/20 border-primary' : ''}`}
+        } ${isOpen ? 'border-primary' : ''}`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
       >
         <span className={`truncate flex-1 ${selectedOption ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
