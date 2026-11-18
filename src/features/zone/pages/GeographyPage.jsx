@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '@iconify/react';
 import useZoneStats from '../hooks/useZoneStats';
 import { getCountryArticlesApi } from '../api/zone.api';
@@ -13,6 +14,7 @@ import { isAuthenticated as checkAuthSession } from '../../../shared/utils/auth'
 import { Alert } from '../../../shared/ui/alert';
 import { Button } from '../../../shared/ui/button';
 import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
+import { MotionPage, fadeUp } from '../../../shared/ui/motion';
 import './GeographyPage.css';
 
 export default function GeographyPage() {
@@ -115,10 +117,11 @@ export default function GeographyPage() {
 
   return (
     <PageContainer>
-      <PageHeader
-        title={t("zone.phanBoTapChiTheoQuocGia", "Geographic Distribution of Publications")}
-        description={t("zone.xemThongKeSoLuongAnPhamKhoaHoc", "Explore worldwide scientific publication volume, top-producing nations, and country rankings.")}
-      />
+      <MotionPage className="space-y-5">
+        <PageHeader
+          title={t("zone.phanBoTapChiTheoQuocGia", "Geographic Distribution of Publications")}
+          description={t("zone.xemThongKeSoLuongAnPhamKhoaHoc", "Explore worldwide scientific publication volume, top-producing nations, and country rankings.")}
+        />
 
         {/* Error handling for countries */}
         {errorCountries && (
@@ -143,7 +146,7 @@ export default function GeographyPage() {
         )}
 
         {/* Main Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           <div className="lg:col-span-7 xl:col-span-8 min-w-0">
             <GeographyWorldMap
               data={countryStats}
@@ -166,27 +169,37 @@ export default function GeographyPage() {
               onSelectCountry={handleSelectCountry}
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Selected Country Articles List */}
-        {selectedCountry && (
-          <div className="mt-6" ref={articlesRef}>
-            <GeographyArticleList
-              articles={articles}
-              loading={loadingArticles}
-              total={totalArticles}
-              page={articlesPage}
-              totalPages={totalPages}
-              onPageChange={setArticlesPage}
-              onDetailClick={handleDetailClick}
-              countryName={selectedCountry.name}
-              onClose={() => setSelectedCountry(null)}
-            />
-          </div>
-        )}
+        <AnimatePresence>
+          {selectedCountry && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="mt-6"
+              ref={articlesRef}
+            >
+              <GeographyArticleList
+                articles={articles}
+                loading={loadingArticles}
+                total={totalArticles}
+                page={articlesPage}
+                totalPages={totalPages}
+                onPageChange={setArticlesPage}
+                onDetailClick={handleDetailClick}
+                countryName={selectedCountry.name}
+                onClose={() => setSelectedCountry(null)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Login guard modal */}
         <AuthRequiredModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
-      </PageContainer>
-    );
+      </MotionPage>
+    </PageContainer>
+  );
   }

@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import Icon from '../../../shared/components/Icon';
 import { Skeleton } from '../../../shared/ui/skeleton';
 
@@ -126,9 +127,12 @@ export default function GeographyRankingTable({
             const flagCode = getCountryFlagCode(item);
 
             return (
-              <div
+              <motion.div
                 key={item.zone_id || item.rank}
                 onClick={() => onSelectCountry?.(item)}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                transition={{ duration: 0.12 }}
                 className={`grid grid-cols-12 gap-2 px-2 py-2.5 items-center rounded-lg text-xs transition-colors cursor-pointer ${
                   isSelected
                     ? 'bg-primary-subtle text-primary font-bold shadow-2xs border border-primary/30'
@@ -154,7 +158,7 @@ export default function GeographyRankingTable({
                 <span className="col-span-4 text-right font-mono font-semibold text-foreground">
                   {Number(item.article_count || 0).toLocaleString()}
                 </span>
-              </div>
+              </motion.div>
             );
           })
         )}

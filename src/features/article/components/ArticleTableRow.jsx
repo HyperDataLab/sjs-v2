@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import LatexText from '../../../shared/components/LatexText/LatexText';
 import { Badge } from '../../../shared/ui/badge';
 import { Button } from '../../../shared/ui/button';
@@ -61,9 +62,13 @@ export default function ArticleTableRow({
   const journalName = article.journal_name || article.journal?.display_name;
 
   return (
-    <tr
+    <motion.tr
       onClick={() => onDetailClick(article.article_id)}
-      className="cursor-pointer transition-colors hover:bg-primary-subtle/30 group text-start"
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.15, ease: 'easeOut' }}
+      whileHover={{ backgroundColor: 'var(--ds-primary-subtle, rgba(224, 242, 254, 0.3))' }}
+      className="cursor-pointer transition-colors group text-start"
     >
       {/* Index */}
       <td className="px-3 py-3.5 text-center text-xs font-mono text-muted-foreground w-10">
@@ -144,6 +149,6 @@ export default function ArticleTableRow({
           </Badge>
         )}
       </td>
-    </tr>
+    </motion.tr>
   );
 }
