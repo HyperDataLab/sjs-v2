@@ -25,7 +25,7 @@ export default function AdminLayout({ children }) {
         <AdminHeader />
 
         {/* Nội dung trang hiển thị ở giữa với framer-motion transition */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence initial={false} mode="wait">
           <motion.main
             key={location.pathname}
             className="admin-content"

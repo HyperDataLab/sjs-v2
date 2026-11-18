@@ -148,7 +148,7 @@ export default function DashboardShell({ children }) {
         </header>
 
         <DashboardShellContext.Provider value>
-          <AnimatePresence mode="wait">
+          <AnimatePresence initial={false} mode="wait">
             <motion.main
               key={location.pathname}
               className="app-main flex-1 min-w-0"
