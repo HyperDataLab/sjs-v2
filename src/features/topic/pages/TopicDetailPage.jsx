@@ -6,7 +6,7 @@ import { t } from "i18next";
  * File: features\topic\pages\TopicDetailPage.jsx
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Container, Row, Col, Spinner } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { StateCard } from '../../../shared/components/Card';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '@iconify/react';
@@ -17,6 +17,9 @@ import { Button } from '../../../shared/ui/button';
 import { Badge } from '../../../shared/ui/badge';
 import { Card, CardContent } from '../../../shared/ui/card';
 import { Alert } from '../../../shared/ui/alert';
+import { PageContainer } from '../../../shared/ui/page-layout';
+import { Breadcrumbs } from '../../../shared/ui/breadcrumb';
+import { Skeleton } from '../../../shared/ui/skeleton';
 import LatexText from '../../../shared/components/LatexText/LatexText';
 import './TopicDetailPage.css';
 const PAGE_SIZE = 10;
@@ -108,15 +111,15 @@ export default function TopicDetailPage() {
   return <div className="topic-detail-page grid-bg">
       <Header />
 
-      <Container className="flex-grow-1">
-        <nav aria-label="breadcrumb" className="topic-detail-breadcrumb mb-4">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <span role="button" tabIndex={0} onClick={() => navigate('/articles')} onKeyDown={e => e.key === 'Enter' && navigate('/articles')} className="topic-detail-breadcrumb__link">{t("topic.baiBao")}</span>
-            </li>
-            <li className="breadcrumb-item active text-main fw-semibold" aria-current="page">{t("topic.chuDeNghienCuu")}</li>
-          </ol>
-        </nav>
+      <PageContainer className="topic-detail-shell">
+        <Breadcrumbs
+          items={[
+            { label: t("home"), to: "/" },
+            { label: t("topic.baiBao"), to: "/articles" },
+            { label: topic?.display_name || t("topic.chuDeNghienCuu") }
+          ]}
+          className="mb-4"
+        />
 
         <Card className="topic-detail-hero">
           <CardContent className="topic-detail-hero__body">
@@ -176,11 +179,16 @@ export default function TopicDetailPage() {
             {error}
           </Alert>}
 
-        {loading ? <div className="d-flex justify-content-center align-items-center py-5">
-            <Spinner animation="border" role="status" className="topic-detail-spinner">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-          </div> : <div className="d-grid gap-3">
+        {loading ? (
+          <div className="space-y-3 py-4">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="p-4 space-y-2">
+                <Skeleton className="h-5 w-3/4 rounded" />
+                <Skeleton className="h-4 w-1/4 rounded" />
+              </Card>
+            ))}
+          </div>
+        ) : <div className="d-grid gap-3">
             {articles.length === 0 ? <StateCard variant="neutral" icon="lucide:file-question" title={t("topic.khongCoDuLieu")} description={t("topic.chuaCoBaiBaoNaoChoTopicNay")} className="my-4" /> : articles.map(article => <Card key={article.id} className="topic-detail-article-card">
                   <CardContent className="p-4">
                     <div className="d-flex justify-content-between align-items-start gap-3 flex-wrap">
@@ -206,6 +214,6 @@ export default function TopicDetailPage() {
           </div>}
 
         {articles.length > 0 && totalPages > 1 && <AdminPagination totalItems={pagination.total} currentPage={pagination.page} limit={pagination.limit} onPageChange={handlePageChange} entityName="bài báo" />}
-      </Container>
+      </PageContainer>
     </div>;
 }

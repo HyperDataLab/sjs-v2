@@ -223,7 +223,7 @@ export default function ArticleDetailPage() {
   return <div className="article-detail-page grid-bg">
       <Header />
 
-      <Container fluid className="position-relative z-1 px-3 px-xl-5">
+      <PageContainer className="position-relative z-1">
         {isLoading ? <ArticleDetailSkeleton /> : error ? <ArticleDetailError errorMsg={error} onRetry={fetchArticleDetail} /> : !article ? <ArticleDetailEmpty articleId={id} /> : <main className="article-detail-container">
             <div className="article-detail-shell">
               <aside className="article-detail-sidebar d-none d-xl-block">
@@ -259,13 +259,14 @@ export default function ArticleDetailPage() {
               </aside>
 
               <section className="article-detail-main">
-                <div className="article-detail-breadcrumb">
-                  <span role="button" onClick={() => navigate('/articles')} className="article-detail-breadcrumb-link">{t("articles")}</span>
-                  <Icon icon="lucide:chevron-right" width="12" />
-                  <span style={{
-                color: 'var(--text-main)'
-              }}>{t("article.chiTietBaiBao")}</span>
-                </div>
+                <Breadcrumbs
+                  items={[
+                    { label: t("home"), to: "/" },
+                    { label: t("articles"), to: "/articles" },
+                    { label: t("article.chiTietBaiBao") }
+                  ]}
+                  className="mb-3"
+                />
 
 
                 <h1 className="article-detail-title text-base font-semibold leading-snug">
@@ -435,7 +436,7 @@ export default function ArticleDetailPage() {
             </div>
 
           </main>}
-      </Container>
+      </PageContainer>
 
       <Modal show={showCitationsModal} onHide={() => setShowCitationsModal(false)} centered>
         <Modal.Header closeButton>

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Row, Col } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import useZoneStats from '../hooks/useZoneStats';
 import { getCountryArticlesApi } from '../api/zone.api';
 import GeographyTerritoryChart from '../components/GeographyTerritoryChart';
@@ -13,6 +13,7 @@ import { useAuthStore } from '../../../app/store/authStore';
 import { isAuthenticated as checkAuthSession } from '../../../shared/utils/auth';
 import { Alert } from '../../../shared/ui/alert';
 import { Button } from '../../../shared/ui/button';
+import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
 import './GeographyPage.css';
 
 export default function GeographyPage() {
@@ -116,55 +117,37 @@ export default function GeographyPage() {
   return (
     <div className="geography-page-wrapper grid-bg min-vh-100">
       <Header />
-      <Container fluid className="px-4 py-4 max-w-7xl mx-auto">
-        {/* Breadcrumb */}
-        <nav aria-label="breadcrumb" className="mb-4">
-          <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
-            <li>
-              <Link to="/" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-                {t("author.tongQuan")}
-              </Link>
-            </li>
-            <li aria-hidden="true" className="select-none">/</li>
-            <li className="font-medium text-foreground" aria-current="page">
-              {t("zone.phanBoDiaLy")}
-            </li>
-          </ol>
-        </nav>
-
-        {/* Header */}
-        <div className="mb-6 pb-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="m-0 text-base sm:text-lg font-bold text-foreground leading-snug">
-              {t("zone.phanBoTapChiTheoQuocGia")}
-            </h1>
-            <p className="mt-1 mb-0 text-xs text-muted-foreground max-w-2xl">
-              {t("zone.xemThongKeSoLuongAnPhamKhoaHoc")}
-            </p>
-          </div>
-
-          {/* Year Filter Dropdown */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
-              {t("article.namXuatBan")}
-            </span>
-            <select
-              value={selectedYear}
-              onChange={(e) => {
-                setSelectedYear(e.target.value);
-                setArticlesPage(1);
-              }}
-              className="flex h-9 rounded-control border border-border bg-surface px-3 py-1.5 text-xs text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
-            >
-              <option value="All">{t("zone.tatCaCacNam")}</option>
-              {['2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015'].map((yr) => (
-                <option key={yr} value={yr}>
-                  {yr}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+      <PageContainer className="geography-shell">
+        <PageHeader
+          breadcrumbs={[
+            { label: t("author.tongQuan"), to: "/" },
+            { label: t("zone.phanBoDiaLy") }
+          ]}
+          title={t("zone.phanBoTapChiTheoQuocGia")}
+          description={t("zone.xemThongKeSoLuongAnPhamKhoaHoc")}
+          actions={
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+                {t("article.namXuatBan")}
+              </span>
+              <select
+                value={selectedYear}
+                onChange={(e) => {
+                  setSelectedYear(e.target.value);
+                  setArticlesPage(1);
+                }}
+                className="flex h-9 rounded-control border border-border bg-surface px-3 py-1.5 text-xs text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
+              >
+                <option value="All">{t("zone.tatCaCacNam")}</option>
+                {['2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015'].map((yr) => (
+                  <option key={yr} value={yr}>
+                    {yr}
+                  </option>
+                ))}
+              </select>
+            </div>
+          }
+        />
 
         {/* Error handling for countries */}
         {errorCountries && (
@@ -227,7 +210,7 @@ export default function GeographyPage() {
             </Col>
           </Row>
         )}
-      </Container>
+      </PageContainer>
 
       {/* Login guard modal */}
       <AuthRequiredModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />

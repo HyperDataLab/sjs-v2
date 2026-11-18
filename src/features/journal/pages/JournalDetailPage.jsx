@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import Header from '../../landing/components/Header';
 import useAuth from '../../auth/hooks/useAuth';
@@ -15,6 +14,8 @@ import AuthRequiredModal from '../../../shared/components/AuthRequiredModal';
 import AddToProjectModal from '../components/AddToProjectModal';
 import { Button } from '../../../shared/ui/button';
 import { StatePanel } from '../../../shared/ui/state-panel';
+import { PageContainer } from '../../../shared/ui/page-layout';
+import { Breadcrumbs } from '../../../shared/ui/breadcrumb';
 import '../components/JournalDetail.css';
 
 export default function JournalDetailPage() {
@@ -58,7 +59,7 @@ export default function JournalDetailPage() {
     return (
       <div className="grid-bg min-vh-100 flex flex-col text-main">
         <Header />
-        <Container className="flex-1 flex flex-col justify-center items-center py-12 max-w-lg">
+        <PageContainer className="flex-1 flex flex-col justify-center items-center py-12 max-w-lg">
           <StatePanel
             variant="error"
             icon={<Icon icon="lucide:alert-circle" width="32" className="text-danger" />}
@@ -71,7 +72,7 @@ export default function JournalDetailPage() {
               </Button>
             }
           />
-        </Container>
+        </PageContainer>
       </div>
     );
   }
@@ -82,27 +83,16 @@ export default function JournalDetailPage() {
       <Header />
 
       {/* Main Container */}
-      <Container className="pt-6 journal-detail-shell">
+      <PageContainer className="journal-detail-shell">
         {/* Custom Breadcrumb Nav */}
-        <nav aria-label="breadcrumb" className="mb-4">
-          <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
-            <li>
-              <Link to="/" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-                {t("home")}
-              </Link>
-            </li>
-            <li aria-hidden="true" className="select-none">/</li>
-            <li>
-              <Link to="/search" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-                {t("search")}
-              </Link>
-            </li>
-            <li aria-hidden="true" className="select-none">/</li>
-            <li className="font-medium text-foreground truncate max-w-xs" aria-current="page">
-              {loadingJournal ? t("common.dangTai") : journal?.display_name}
-            </li>
-          </ol>
-        </nav>
+        <Breadcrumbs
+          items={[
+            { label: t("home"), to: "/" },
+            { label: t("search"), to: "/search" },
+            { label: loadingJournal ? t("common.dangTai") : (journal?.display_name || t("journal.tapChi")) }
+          ]}
+          className="mb-4"
+        />
 
         {/* Hero Section */}
         <JournalHero
@@ -154,7 +144,7 @@ export default function JournalDetailPage() {
             />
           )}
         </div>
-      </Container>
+      </PageContainer>
 
       {/* Guest warning auth modal */}
       <AuthRequiredModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />

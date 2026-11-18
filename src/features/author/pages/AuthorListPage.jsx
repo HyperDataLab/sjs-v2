@@ -1,17 +1,18 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react';
-import { useSearchParams, Link, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form } from 'react-bootstrap';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Form } from 'react-bootstrap';
 import Icon from '../../../shared/components/Icon';
 import Header from '../../landing/components/Header';
 import useAuthors from '../hooks/useAuthors';
 import AuthorTable from '../components/AuthorTable';
 import AuthorCard from '../components/AuthorCard';
-import LoadingSkeleton from '../../../shared/components/LoadingSkeleton';
 import AuthorNavigationTabs from '../components/AuthorNavigationTabs';
 import AdminPagination from '../../../shared/components/Pagination';
 import { Button } from '../../../shared/ui/button';
 import { Card } from '../../../shared/ui/card';
+import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
+import { Skeleton } from '../../../shared/ui/skeleton';
 import { FilterCard } from '../../../shared/components/Card';
 import { FilterSearch, FilterSelect } from '../../../shared/components/Input';
 import './AuthorListPage.css';
@@ -140,33 +141,21 @@ export default function AuthorListPage() {
     <div className="author-list-page min-vh-100">
       <Header />
 
-      <Container className="pt-4 pb-8">
-        <nav aria-label="breadcrumb" className="mb-4">
-          <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
-            <li>
-              <Link to="/" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-                {t("author.tongQuan")}
-              </Link>
-            </li>
-            <li aria-hidden="true" className="select-none">/</li>
-            <li className="font-medium text-foreground" aria-current="page">
-              {t("author.tacGiaNoiBat")}
-            </li>
-          </ol>
-        </nav>
-
-        <section className="mb-6">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-subtle text-primary text-xs font-semibold mb-2">
-            <Icon icon="lucide:users-round" width="14" />
-            <span>Author registry</span>
-          </div>
-          <h1 className="m-0 text-base sm:text-lg font-bold text-foreground leading-snug">
-            {t("author.danhSachNhaKhoaHocTacGia")}
-          </h1>
-          <p className="mt-1 mb-0 text-xs text-muted-foreground max-w-2xl">
-            {t("author.traCuuThongTinChiSoHocThuatHin")}
-          </p>
-        </section>
+      <PageContainer className="author-list-shell">
+        <PageHeader
+          breadcrumbs={[
+            { label: t("author.tongQuan"), to: "/" },
+            { label: t("author.tacGiaNoiBat") }
+          ]}
+          badge={
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-subtle text-primary text-xs font-semibold">
+              <Icon icon="lucide:users-round" width="14" />
+              <span>Author registry</span>
+            </div>
+          }
+          title={t("author.danhSachNhaKhoaHocTacGia")}
+          description={t("author.traCuuThongTinChiSoHocThuatHin")}
+        />
 
         <AuthorNavigationTabs activeTab="list" />
 
@@ -232,14 +221,14 @@ export default function AuthorListPage() {
                 {Array.from({ length: limitVal }).map((_, idx) => (
                   <Card key={idx} className="p-4 space-y-3">
                     <div className="flex gap-3 items-center">
-                      <LoadingSkeleton width="40px" height="40px" borderRadius="50%" />
+                      <Skeleton className="h-10 w-10 rounded-full" />
                       <div className="flex-1 space-y-1.5">
-                        <LoadingSkeleton width="60%" height="16px" />
-                        <LoadingSkeleton width="40%" height="12px" />
+                        <Skeleton className="h-4 w-3/5 rounded" />
+                        <Skeleton className="h-3 w-2/5 rounded" />
                       </div>
                     </div>
-                    <LoadingSkeleton width="100%" height="28px" />
-                    <LoadingSkeleton width="30%" height="16px" />
+                    <Skeleton className="h-7 w-full rounded" />
+                    <Skeleton className="h-4 w-1/3 rounded" />
                   </Card>
                 ))}
               </div>
@@ -279,7 +268,7 @@ export default function AuthorListPage() {
             />
           </div>
         )}
-      </Container>
+      </PageContainer>
     </div>
   );
 }
