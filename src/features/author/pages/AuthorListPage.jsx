@@ -382,5 +382,4 @@ export default function AuthorListPage() {
       </MotionPage>
     </PageContainer>
   );
-  );
 }

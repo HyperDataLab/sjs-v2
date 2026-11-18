@@ -341,360 +341,371 @@ export default function AuthorLeaderboardCharts({
       ) : (
         <>
           {/* ── 2. Top Grid: Top authors list (Left) + Research impact (Right) ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+          <motion.div
+            variants={staggerContainer(0.06)}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5"
+          >
             {/* Left: Top authors by [metric] - Pure Recharts BarChart */}
-            <Card className="lg:col-span-6 p-4 sm:p-5 border border-border bg-surface shadow-card flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="text-sm sm:text-base font-bold text-foreground capitalize">
-                      {t('author.topTacGiaTheo', 'Top authors by')} {metricLabel}
-                    </h3>
-                    <span title={t('author.tooltipLeaderboard', 'Real author rankings fetched directly from OpenAlex API')}>
-                      <Icon icon="lucide:info" className="text-muted-foreground/70 hover:text-foreground cursor-pointer" width={14} />
+            <motion.div variants={staggerItem} className="lg:col-span-6 flex flex-col justify-between">
+              <Card className="p-4 sm:p-5 border border-border bg-surface shadow-card flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="text-sm sm:text-base font-bold text-foreground capitalize">
+                        {t('author.topTacGiaTheo', 'Top authors by')} {metricLabel}
+                      </h3>
+                      <span title={t('author.tooltipLeaderboard', 'Real author rankings fetched directly from OpenAlex API')}>
+                        <Icon icon="lucide:info" className="text-muted-foreground/70 hover:text-foreground cursor-pointer" width={14} />
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] font-medium text-muted-foreground bg-surface-muted px-2 py-0.5 rounded">
+                      Rankings
                     </span>
                   </div>
 
-                  <span className="text-[11px] font-medium text-muted-foreground bg-surface-muted px-2 py-0.5 rounded">
-                    Rankings
-                  </span>
-                </div>
-
-                {/* Recharts Horizontal BarChart */}
-                <div className="h-[320px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      layout="vertical"
-                      data={leaderboardBarData}
-                      margin={{ top: 10, right: 30, bottom: 10, left: 15 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
-                      <XAxis
-                        type="number"
-                        stroke="#94a3b8"
-                        tick={{ fontSize: 10, fill: '#64748b' }}
-                        tickFormatter={formatShortNum}
-                      />
-                      <YAxis
-                        type="category"
-                        dataKey="name"
-                        stroke="#94a3b8"
-                        width={110}
-                        tick={{ fontSize: 11, fill: '#475569', fontWeight: 500 }}
-                      />
-                      <RechartsTooltip
-                        content={({ active, payload }) => {
-                          if (active && payload && payload.length) {
-                            const item = payload[0]?.payload;
-                            return (
-                              <div className="rounded-lg border border-border bg-white p-3 shadow-lg text-xs space-y-1.5 min-w-[200px]">
-                                <p className="font-bold text-foreground border-b border-border pb-1">
-                                  #{item?.rank} {item?.fullName}
-                                </p>
-                                <div className="space-y-1">
-                                  <div className="flex items-center justify-between font-semibold text-primary">
-                                    <span>{metricLabel}:</span>
-                                    <strong>{formatNum(item?.[activeMetric])}</strong>
-                                  </div>
-                                  <div className="flex items-center justify-between text-muted-foreground text-[11px] pt-1 border-t border-border/50">
-                                    <span>Publications:</span>
-                                    <strong>{formatNum(item?.publications)}</strong>
-                                  </div>
-                                  <div className="flex items-center justify-between text-muted-foreground text-[11px]">
-                                    <span>Citations:</span>
-                                    <strong>{formatNum(item?.citations)}</strong>
-                                  </div>
-                                  <div className="flex items-center justify-between text-muted-foreground text-[11px]">
-                                    <span>H-index:</span>
-                                    <strong>{item?.h_index}</strong>
+                  {/* Recharts Horizontal BarChart */}
+                  <div className="h-[320px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        layout="vertical"
+                        data={leaderboardBarData}
+                        margin={{ top: 10, right: 30, bottom: 10, left: 15 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
+                        <XAxis
+                          type="number"
+                          stroke="#94a3b8"
+                          tick={{ fontSize: 10, fill: '#64748b' }}
+                          tickFormatter={formatShortNum}
+                        />
+                        <YAxis
+                          type="category"
+                          dataKey="name"
+                          stroke="#94a3b8"
+                          width={110}
+                          tick={{ fontSize: 11, fill: '#475569', fontWeight: 500 }}
+                        />
+                        <RechartsTooltip
+                          content={({ active, payload }) => {
+                            if (active && payload && payload.length) {
+                              const item = payload[0]?.payload;
+                              return (
+                                <div className="rounded-lg border border-border bg-white p-3 shadow-lg text-xs space-y-1.5 min-w-[200px]">
+                                  <p className="font-bold text-foreground border-b border-border pb-1">
+                                    #{item?.rank} {item?.fullName}
+                                  </p>
+                                  <div className="space-y-1">
+                                    <div className="flex items-center justify-between font-semibold text-primary">
+                                      <span>{metricLabel}:</span>
+                                      <strong>{formatNum(item?.[activeMetric])}</strong>
+                                    </div>
+                                    <div className="flex items-center justify-between text-muted-foreground text-[11px] pt-1 border-t border-border/50">
+                                      <span>Publications:</span>
+                                      <strong>{formatNum(item?.publications)}</strong>
+                                    </div>
+                                    <div className="flex items-center justify-between text-muted-foreground text-[11px]">
+                                      <span>Citations:</span>
+                                      <strong>{formatNum(item?.citations)}</strong>
+                                    </div>
+                                    <div className="flex items-center justify-between text-muted-foreground text-[11px]">
+                                      <span>H-index:</span>
+                                      <strong>{item?.h_index}</strong>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            );
-                          }
-                          return null;
-                        }}
-                      />
-                      <Bar
-                        dataKey={activeMetric}
-                        fill="#0071BC"
-                        radius={[0, 4, 4, 0]}
-                        barSize={16}
-                        onClick={(data) => navigate(`/authors/${data.id}`)}
-                        className="cursor-pointer"
-                      >
-                        {leaderboardBarData.map((entry, idx) => (
-                          <Cell
-                            key={`bar-${entry.id}`}
-                            fill={idx === 0 ? '#0071BC' : idx < 3 ? '#2563EB' : '#60A5FA'}
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
+                              );
+                            }
+                            return null;
+                          }}
+                        />
+                        <Bar
+                          dataKey={activeMetric}
+                          fill="#0071BC"
+                          radius={[0, 4, 4, 0]}
+                          barSize={16}
+                          onClick={(data) => navigate(`/authors/${data.id}`)}
+                          className="cursor-pointer"
+                        >
+                          {leaderboardBarData.map((entry, idx) => (
+                            <Cell
+                              key={`bar-${entry.id}`}
+                              fill={idx === 0 ? '#0071BC' : idx < 3 ? '#2563EB' : '#60A5FA'}
+                            />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            </motion.div>
 
             {/* Right: Research impact with Recharts ComposedChart (Area + Bar + Line exactly matching user sample code) */}
-            <Card className="lg:col-span-6 p-4 sm:p-5 border border-border bg-surface shadow-card flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="text-sm sm:text-base font-bold text-foreground">
-                      {t('author.tacDongNghienCuu', 'Research impact')}
-                    </h3>
-                    <span title={t('author.tooltipImpactComposed', 'Recharts ComposedChart: Area (amt) + Bar (pv) + Line (uv)')}>
-                      <Icon icon="lucide:info" className="text-muted-foreground/70 hover:text-foreground cursor-pointer" width={14} />
+            <motion.div variants={staggerItem} className="lg:col-span-6 flex flex-col justify-between">
+              <Card className="p-4 sm:p-5 border border-border bg-surface shadow-card flex flex-col justify-between h-full">
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="text-sm sm:text-base font-bold text-foreground">
+                        {t('author.tacDongNghienCuu', 'Research impact')}
+                      </h3>
+                      <span title={t('author.tooltipImpactComposed', 'Recharts ComposedChart: Area (amt) + Bar (pv) + Line (uv)')}>
+                        <Icon icon="lucide:info" className="text-muted-foreground/70 hover:text-foreground cursor-pointer" width={14} />
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] font-medium text-muted-foreground bg-surface-muted px-2 py-0.5 rounded">
+                      Index Scale
                     </span>
                   </div>
 
-                  <span className="text-[11px] font-medium text-muted-foreground bg-surface-muted px-2 py-0.5 rounded">
-                    Index Scale
-                  </span>
-                </div>
-
-                {/* ComposedChart container with aspect ratio / responsive dimensions */}
-                <div className="w-full h-[320px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart
-                      data={composedData}
-                      margin={{
-                        top: 20,
-                        right: 15,
-                        bottom: 10,
-                        left: -5,
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                      <XAxis
-                        dataKey="name"
-                        label={{ value: 'Authors', position: 'insideBottomRight', offset: 0, fontSize: 11, fill: '#64748b' }}
-                        stroke="#94a3b8"
-                        tick={{ fontSize: 11, fill: '#64748b' }}
-                      />
-                      <YAxis
-                        label={{ value: 'Index', angle: -90, position: 'insideLeft', fontSize: 11, fill: '#64748b' }}
-                        width="auto"
-                        stroke="#94a3b8"
-                        tick={{ fontSize: 11, fill: '#64748b' }}
-                      />
-                      <RechartsTooltip
-                        content={({ active, payload, label }) => {
-                          if (active && payload && payload.length) {
-                            const item = payload[0]?.payload;
-                            return (
-                              <div className="rounded-lg border border-border bg-white p-3 shadow-lg text-xs space-y-1.5 min-w-[210px]">
-                                <p className="font-bold text-foreground border-b border-border pb-1">
-                                  {item?.fullName || label}
-                                </p>
-                                <div className="space-y-1">
-                                  <div className="flex items-center justify-between text-blue-600 font-medium">
-                                    <span className="flex items-center gap-1.5">
-                                      <span className="size-2 rounded bg-blue-500 inline-block" />
-                                      Impact Index (amt):
-                                    </span>
-                                    <strong>{item?.amt}</strong>
-                                  </div>
-                                  <div className="flex items-center justify-between text-orange-600 font-medium">
-                                    <span className="flex items-center gap-1.5">
-                                      <span className="size-2 rounded bg-orange-500 inline-block" />
-                                      Publications (pv):
-                                    </span>
-                                    <span>
-                                      <strong>{item?.pv}</strong>
-                                      <span className="text-[10px] text-muted-foreground ml-1">
-                                        ({formatNum(item?.rawPublications)})
+                  {/* ComposedChart container with aspect ratio / responsive dimensions */}
+                  <div className="w-full h-[320px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <ComposedChart
+                        data={composedData}
+                        margin={{
+                          top: 20,
+                          right: 15,
+                          bottom: 10,
+                          left: -5,
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                        <XAxis
+                          dataKey="name"
+                          label={{ value: 'Authors', position: 'insideBottomRight', offset: 0, fontSize: 11, fill: '#64748b' }}
+                          stroke="#94a3b8"
+                          tick={{ fontSize: 11, fill: '#64748b' }}
+                        />
+                        <YAxis
+                          label={{ value: 'Index', angle: -90, position: 'insideLeft', fontSize: 11, fill: '#64748b' }}
+                          width="auto"
+                          stroke="#94a3b8"
+                          tick={{ fontSize: 11, fill: '#64748b' }}
+                        />
+                        <RechartsTooltip
+                          content={({ active, payload, label }) => {
+                            if (active && payload && payload.length) {
+                              const item = payload[0]?.payload;
+                              return (
+                                <div className="rounded-lg border border-border bg-white p-3 shadow-lg text-xs space-y-1.5 min-w-[210px]">
+                                  <p className="font-bold text-foreground border-b border-border pb-1">
+                                    {item?.fullName || label}
+                                  </p>
+                                  <div className="space-y-1">
+                                    <div className="flex items-center justify-between text-blue-600 font-medium">
+                                      <span className="flex items-center gap-1.5">
+                                        <span className="size-2 rounded bg-blue-500 inline-block" />
+                                        Impact Index (amt):
                                       </span>
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center justify-between text-emerald-600 font-medium">
-                                    <span className="flex items-center gap-1.5">
-                                      <span className="size-2 rounded-full bg-emerald-500 inline-block" />
-                                      Citations (uv):
-                                    </span>
-                                    <span>
-                                      <strong>{item?.uv}</strong>
-                                      <span className="text-[10px] text-muted-foreground ml-1">
-                                        ({formatNum(item?.rawCitations)})
+                                      <strong>{item?.amt}</strong>
+                                    </div>
+                                    <div className="flex items-center justify-between text-orange-600 font-medium">
+                                      <span className="flex items-center gap-1.5">
+                                        <span className="size-2 rounded bg-orange-500 inline-block" />
+                                        Publications (pv):
                                       </span>
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center justify-between text-purple-600 font-medium pt-1 border-t border-border/50 text-[11px]">
-                                    <span>H-index:</span>
-                                    <strong className="text-foreground">{item?.rawHIndex}</strong>
+                                      <span>
+                                        <strong>{item?.pv}</strong>
+                                        <span className="text-[10px] text-muted-foreground ml-1">
+                                          ({formatNum(item?.rawPublications)})
+                                        </span>
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-emerald-600 font-medium">
+                                      <span className="flex items-center gap-1.5">
+                                        <span className="size-2 rounded-full bg-emerald-500 inline-block" />
+                                        Citations (uv):
+                                      </span>
+                                      <span>
+                                        <strong>{item?.uv}</strong>
+                                        <span className="text-[10px] text-muted-foreground ml-1">
+                                          ({formatNum(item?.rawCitations)})
+                                        </span>
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-purple-600 font-medium pt-1 border-t border-border/50 text-[11px]">
+                                      <span>H-index:</span>
+                                      <strong className="text-foreground">{item?.rawHIndex}</strong>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            );
-                          }
-                          return null;
-                        }}
-                      />
-                      <Legend
-                        verticalAlign="bottom"
-                        height={32}
-                        wrapperStyle={{ fontSize: '12px', paddingTop: '6px' }}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="amt"
-                        name="Total Impact (amt)"
-                        fill="#3b82f6"
-                        stroke="#2563eb"
-                        fillOpacity={0.45}
-                      />
-                      <Bar
-                        dataKey="pv"
-                        name="Publications (pv)"
-                        barSize={20}
-                        fill="#f97316"
-                        radius={[4, 4, 0, 0]}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="uv"
-                        name="Citations (uv)"
-                        stroke="#10b981"
-                        strokeWidth={2.5}
-                        dot={{ r: 4.5, fill: '#10b981', stroke: '#ffffff', strokeWidth: 1.5 }}
-                        activeDot={{ r: 6.5 }}
-                      />
-                    </ComposedChart>
-                  </ResponsiveContainer>
+                              );
+                            }
+                            return null;
+                          }}
+                        />
+                        <Legend
+                          verticalAlign="bottom"
+                          height={32}
+                          wrapperStyle={{ fontSize: '12px', paddingTop: '6px' }}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="amt"
+                          name="Total Impact (amt)"
+                          fill="#3b82f6"
+                          stroke="#2563eb"
+                          fillOpacity={0.45}
+                        />
+                        <Bar
+                          dataKey="pv"
+                          name="Publications (pv)"
+                          barSize={20}
+                          fill="#f97316"
+                          radius={[4, 4, 0, 0]}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="uv"
+                          name="Citations (uv)"
+                          stroke="#10b981"
+                          strokeWidth={2.5}
+                          dot={{ r: 4.5, fill: '#10b981', stroke: '#ffffff', strokeWidth: 1.5 }}
+                          activeDot={{ r: 6.5 }}
+                        />
+                      </ComposedChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          </div>
+              </Card>
+            </motion.div>
+          </motion.div>
 
           {/* ── 3. Bottom Card: Rank movement over time (Full Width) ── */}
           {top4Authors.length > 0 && (
-            <Card className="p-4 sm:p-5 border border-border bg-surface shadow-card">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-1.5">
-                  <h3 className="text-sm sm:text-base font-bold text-foreground">
-                    {t('author.bienDongThuHangTheoThoiGian', 'Rank movement over time')}
-                  </h3>
-                  <span title={t('author.tooltipRankMovement', 'Tracks the ranking trajectories of top authors across 2022 to 2026')}>
-                    <Icon icon="lucide:info" className="text-muted-foreground/70 hover:text-foreground cursor-pointer" width={14} />
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                {/* Bump Line Chart */}
-                <div className="md:col-span-8 lg:col-span-9 h-[220px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={lineChartData} margin={{ top: 15, right: 20, bottom: 5, left: -10 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={true} vertical={false} />
-                      <XAxis
-                        dataKey="year"
-                        stroke="#94a3b8"
-                        tick={{ fontSize: 11, fill: '#64748b' }}
-                      />
-                      <YAxis
-                        reversed={true}
-                        domain={[1, 4]}
-                        ticks={[1, 2, 3, 4]}
-                        stroke="#94a3b8"
-                        tick={{ fontSize: 11, fill: '#64748b' }}
-                        tickFormatter={(v) => `#${v}`}
-                      />
-                      <RechartsTooltip
-                        content={({ active, payload, label }) => {
-                          if (active && payload && payload.length) {
-                            return (
-                              <div className="rounded-lg border border-border bg-white p-2.5 shadow-md text-xs space-y-1">
-                                <p className="font-bold text-foreground">{t('common.nam', 'Year')} {label}</p>
-                                {payload.map((entry) => {
-                                  const authorId = entry.dataKey.replace('author_', '');
-                                  const author = top4Authors.find(a => a.id === authorId);
-                                  return (
-                                    <div key={entry.dataKey} className="flex items-center justify-between gap-3">
-                                      <span className="flex items-center gap-1.5 font-medium text-foreground">
-                                        <span className="size-2 rounded-full inline-block" style={{ backgroundColor: entry.color }} />
-                                        {author?.name || 'Author'}
-                                      </span>
-                                      <span className="font-bold" style={{ color: entry.color }}>
-                                        #{entry.value}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            );
-                          }
-                          return null;
-                        }}
-                      />
-                      {top4Authors.map((author, idx) => {
-                        const color = authorColors[idx] || '#64748b';
-                        const isHovered = hoveredAuthorId === author.id;
-                        return (
-                          <Line
-                            key={author.id}
-                            type="monotone"
-                            dataKey={`author_${author.id}`}
-                            name={author.name}
-                            stroke={color}
-                            strokeWidth={isHovered ? 4 : 2.5}
-                            dot={{ r: 4.5, fill: '#ffffff', stroke: color, strokeWidth: 2 }}
-                            activeDot={{ r: 6.5, fill: color, stroke: '#ffffff', strokeWidth: 2 }}
-                          />
-                        );
-                      })}
-                    </LineChart>
-                  </ResponsiveContainer>
+            <motion.div variants={fadeUp} initial="hidden" animate="show">
+              <Card className="p-4 sm:p-5 border border-border bg-surface shadow-card">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-1.5">
+                    <h3 className="text-sm sm:text-base font-bold text-foreground">
+                      {t('author.bienDongThuHangTheoThoiGian', 'Rank movement over time')}
+                    </h3>
+                    <span title={t('author.tooltipRankMovement', 'Tracks the ranking trajectories of top authors across 2022 to 2026')}>
+                      <Icon icon="lucide:info" className="text-muted-foreground/70 hover:text-foreground cursor-pointer" width={14} />
+                    </span>
+                  </div>
                 </div>
 
-                {/* Right Legend List for Real Top 4 Authors */}
-                <div className="md:col-span-4 lg:col-span-3 flex flex-col justify-center space-y-2.5 pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-border pt-3 md:pt-0">
-                  {top4Authors.map((author, idx) => {
-                    const color = authorColors[idx] || '#64748b';
-                    const rank = idx + 1;
-                    const isHovered = hoveredAuthorId === author.id;
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                  {/* Bump Line Chart */}
+                  <div className="md:col-span-8 lg:col-span-9 h-[220px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={lineChartData} margin={{ top: 15, right: 20, bottom: 5, left: -10 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={true} vertical={false} />
+                        <XAxis
+                          dataKey="year"
+                          stroke="#94a3b8"
+                          tick={{ fontSize: 11, fill: '#64748b' }}
+                        />
+                        <YAxis
+                          reversed={true}
+                          domain={[1, 4]}
+                          ticks={[1, 2, 3, 4]}
+                          stroke="#94a3b8"
+                          tick={{ fontSize: 11, fill: '#64748b' }}
+                          tickFormatter={(v) => `#${v}`}
+                        />
+                        <RechartsTooltip
+                          content={({ active, payload, label }) => {
+                            if (active && payload && payload.length) {
+                              return (
+                                <div className="rounded-lg border border-border bg-white p-2.5 shadow-md text-xs space-y-1">
+                                  <p className="font-bold text-foreground">{t('common.nam', 'Year')} {label}</p>
+                                  {payload.map((entry) => {
+                                    const authorId = entry.dataKey.replace('author_', '');
+                                    const author = top4Authors.find(a => a.id === authorId);
+                                    return (
+                                      <div key={entry.dataKey} className="flex items-center justify-between gap-3">
+                                        <span className="flex items-center gap-1.5 font-medium text-foreground">
+                                          <span className="size-2 rounded-full inline-block" style={{ backgroundColor: entry.color }} />
+                                          {author?.name || 'Author'}
+                                        </span>
+                                        <span className="font-bold" style={{ color: entry.color }}>
+                                          #{entry.value}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              );
+                            }
+                            return null;
+                          }}
+                        />
+                        {top4Authors.map((author, idx) => {
+                          const color = authorColors[idx] || '#64748b';
+                          const isHovered = hoveredAuthorId === author.id;
+                          return (
+                            <Line
+                              key={author.id}
+                              type="monotone"
+                              dataKey={`author_${author.id}`}
+                              name={author.name}
+                              stroke={color}
+                              strokeWidth={isHovered ? 4 : 2.5}
+                              dot={{ r: 4.5, fill: '#ffffff', stroke: color, strokeWidth: 2 }}
+                              activeDot={{ r: 6.5, fill: color, stroke: '#ffffff', strokeWidth: 2 }}
+                            />
+                          );
+                        })}
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
 
-                    return (
-                      <div
-                        key={author.id}
-                        onMouseEnter={() => setHoveredAuthorId(author.id)}
-                        onMouseLeave={() => setHoveredAuthorId(null)}
-                        onClick={() => navigate(`/authors/${author.id}`)}
-                        className={`flex items-center justify-between p-1.5 rounded-lg transition-colors cursor-pointer ${
-                          isHovered ? 'bg-surface-muted' : 'hover:bg-surface-muted/50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
+                  {/* Right Legend List for Real Top 4 Authors */}
+                  <div className="md:col-span-4 lg:col-span-3 flex flex-col justify-center space-y-2.5 pl-0 md:pl-4 border-t md:border-t-0 md:border-l border-border pt-3 md:pt-0">
+                    {top4Authors.map((author, idx) => {
+                      const color = authorColors[idx] || '#64748b';
+                      const rank = idx + 1;
+                      const isHovered = hoveredAuthorId === author.id;
+
+                      return (
+                        <div
+                          key={author.id}
+                          onMouseEnter={() => setHoveredAuthorId(author.id)}
+                          onMouseLeave={() => setHoveredAuthorId(null)}
+                          onClick={() => navigate(`/authors/${author.id}`)}
+                          className={`flex items-center justify-between p-1.5 rounded-lg transition-colors cursor-pointer ${
+                            isHovered ? 'bg-surface-muted' : 'hover:bg-surface-muted/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 truncate">
+                            <span
+                              className="size-2.5 rounded-full shrink-0"
+                              style={{ backgroundColor: color }}
+                            />
+                            <span className="text-xs font-semibold text-foreground truncate" title={author.name}>
+                              {author.name}
+                            </span>
+                          </div>
                           <span
-                            className="size-2.5 rounded-full shrink-0"
-                            style={{ backgroundColor: color }}
-                          />
-                          <span className="text-xs font-semibold text-foreground truncate" title={author.name}>
-                            {author.name}
+                            className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                            style={{
+                              backgroundColor: `${color}15`,
+                              color: color
+                            }}
+                          >
+                            #{rank}
                           </span>
                         </div>
-                        <span
-                          className="text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0"
-                          style={{
-                            backgroundColor: `${color}15`,
-                            color: color
-                          }}
-                        >
-                          #{rank}
-                        </span>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
 
-              {/* Footnote */}
-              <div className="mt-2 text-right">
-                <span className="text-[11px] text-muted-foreground italic">
-                  Illustrative trend based on indexed publication data
-                </span>
-              </div>
-            </Card>
+                {/* Footnote */}
+                <div className="mt-2 text-right">
+                  <span className="text-[11px] text-muted-foreground italic">
+                    Illustrative trend based on indexed publication data
+                  </span>
+                </div>
+              </Card>
+            </motion.div>
           )}
         </>
       )}

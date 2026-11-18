@@ -1,11 +1,13 @@
 ﻿import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import useAuthors from "../hooks/useAuthors";
 import Icon from "../../../shared/components/Icon";
 import { PageContainer } from "../../../shared/ui/page-layout";
 import { StatePanel } from "../../../shared/ui/state-panel";
 import { Button } from "../../../shared/ui/button";
 import { Breadcrumbs } from "../../../shared/ui/breadcrumb";
+import { MotionPage, fadeUp, staggerContainer, staggerItem } from "../../../shared/ui/motion";
 
 // Sub-components
 import AuthorProfileHero from "../components/AuthorProfileHero";
@@ -126,18 +128,24 @@ export default function AuthorDetailPage() {
 
   return (
     <PageContainer className="space-y-4">
-      <main className="ap-main-container space-y-4">
+      <MotionPage className="ap-main-container space-y-4">
         {/* RESEARCHER HERO */}
-        <AuthorProfileHero author={author} metrics={metrics} />
+        <motion.div variants={fadeUp}>
+          <AuthorProfileHero author={author} metrics={metrics} />
+        </motion.div>
 
         {/* 3. QUICK NAVIGATION (Sticky) */}
-        <AuthorQuickNav />
+        <motion.div variants={fadeUp}>
+          <AuthorQuickNav />
+        </motion.div>
 
         {/* 4. KEY RESEARCH METRICS STRIP */}
-        <AuthorMetricsCards metrics={metrics} />
+        <motion.div variants={fadeUp}>
+          <AuthorMetricsCards metrics={metrics} />
+        </motion.div>
 
         {/* 5. TWO-COLUMN GRID: Affiliations & Centers | Interests & Areas */}
-        <div className="ap-grid-two-col">
+        <motion.div variants={fadeUp} className="ap-grid-two-col">
           {/* Left Column */}
           <div className="ap-grid-col">
             <AuthorAffiliations affiliations={affiliations} />
@@ -149,47 +157,53 @@ export default function AuthorDetailPage() {
             <AuthorResearchInterests interests={interests} />
             <AuthorResearchAreas areas={researchAreas} />
           </div>
-        </div>
+        </motion.div>
 
         {/* 6. RESEARCH IMPACT & TRAJECTORY */}
-        <AuthorResearchImpact metrics={metrics} trend={impactTrend} />
+        <motion.div variants={fadeUp}>
+          <AuthorResearchImpact metrics={metrics} trend={impactTrend} />
+        </motion.div>
 
         {/* 7. SCIENTIFIC PUBLICATIONS */}
-        <AuthorPublications publications={publications} />
+        <motion.div variants={fadeUp}>
+          <AuthorPublications publications={publications} />
+        </motion.div>
 
         {/* 8. TWO-COLUMN: Most Cited | Top Journals */}
-        <div className="ap-grid-two-col">
+        <motion.div variants={fadeUp} className="ap-grid-two-col">
           <div className="ap-grid-col">
             <AuthorMostCited mostCited={mostCited} />
           </div>
           <div className="ap-grid-col">
             <AuthorJournals journals={journals} />
           </div>
-        </div>
+        </motion.div>
 
         {/* 9. TWO-COLUMN: Frequent Collaborators | Research Network */}
-        <div className="ap-grid-two-col">
+        <motion.div variants={fadeUp} className="ap-grid-two-col">
           <div className="ap-grid-col">
             <AuthorCollaborators collaborators={collaborators} />
           </div>
           <div className="ap-grid-col">
             <AuthorResearchNetwork network={network} />
           </div>
-        </div>
+        </motion.div>
 
         {/* 10. TWO-COLUMN: Awards & Honors | Education & Career */}
-        <div className="ap-grid-two-col">
+        <motion.div variants={fadeUp} className="ap-grid-two-col">
           <div className="ap-grid-col">
             <AuthorAwards awards={awards} />
           </div>
           <div className="ap-grid-col">
             <AuthorEducation education={education} />
           </div>
-        </div>
+        </motion.div>
 
         {/* 11. RELATED RESEARCHERS */}
-        <AuthorRelatedResearchers researchers={relatedResearchers} />
-      </main>
+        <motion.div variants={fadeUp}>
+          <AuthorRelatedResearchers researchers={relatedResearchers} />
+        </motion.div>
+      </MotionPage>
     </PageContainer>
   );
 }

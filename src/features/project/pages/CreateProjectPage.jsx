@@ -10,10 +10,41 @@ import keywordApi from '../../keywords/api/keywordApi';
 import SearchableSelect from '../../../shared/components/Select/SearchableSelect';
 import SearchableKeywordInput from '../../../shared/components/Input/SearchableKeywordInput';
 import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
-import { Card, CardContent } from '../../../shared/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '../../../shared/ui/card';
 import { Button } from '../../../shared/ui/button';
 import { Badge } from '../../../shared/ui/badge';
 import { Alert } from '../../../shared/ui/alert';
+
+const FALLBACK_SUBJECT_AREAS = [
+  { id: 11, subject_area_id: 11, display_name: "Agricultural and Biological Sciences", name: "Agricultural and Biological Sciences" },
+  { id: 12, subject_area_id: 12, display_name: "Arts and Humanities", name: "Arts and Humanities" },
+  { id: 13, subject_area_id: 13, display_name: "Biochemistry, Genetics and Molecular Biology", name: "Biochemistry, Genetics and Molecular Biology" },
+  { id: 14, subject_area_id: 14, display_name: "Business, Management and Accounting", name: "Business, Management and Accounting" },
+  { id: 15, subject_area_id: 15, display_name: "Chemical Engineering", name: "Chemical Engineering" },
+  { id: 16, subject_area_id: 16, display_name: "Chemistry", name: "Chemistry" },
+  { id: 17, subject_area_id: 17, display_name: "Computer Science", name: "Computer Science" },
+  { id: 18, subject_area_id: 18, display_name: "Decision Sciences", name: "Decision Sciences" },
+  { id: 19, subject_area_id: 19, display_name: "Earth and Planetary Sciences", name: "Earth and Planetary Sciences" },
+  { id: 20, subject_area_id: 20, display_name: "Economics, Econometrics and Finance", name: "Economics, Econometrics and Finance" },
+  { id: 21, subject_area_id: 21, display_name: "Energy", name: "Energy" },
+  { id: 22, subject_area_id: 22, display_name: "Engineering", name: "Engineering" },
+  { id: 23, subject_area_id: 23, display_name: "Environmental Science", name: "Environmental Science" },
+  { id: 24, subject_area_id: 24, display_name: "Immunology and Microbiology", name: "Immunology and Microbiology" },
+  { id: 25, subject_area_id: 25, display_name: "Materials Science", name: "Materials Science" },
+  { id: 26, subject_area_id: 26, display_name: "Mathematics", name: "Mathematics" },
+  { id: 27, subject_area_id: 27, display_name: "Medicine", name: "Medicine" },
+  { id: 28, subject_area_id: 28, display_name: "Neuroscience", name: "Neuroscience" },
+  { id: 29, subject_area_id: 29, display_name: "Nursing", name: "Nursing" },
+  { id: 30, subject_area_id: 30, display_name: "Pharmacology, Toxicology and Pharmaceutics", name: "Pharmacology, Toxicology and Pharmaceutics" },
+  { id: 31, subject_area_id: 31, display_name: "Physics and Astronomy", name: "Physics and Astronomy" },
+  { id: 32, subject_area_id: 32, display_name: "Psychology", name: "Psychology" },
+  { id: 33, subject_area_id: 33, display_name: "Social Sciences", name: "Social Sciences" },
+  { id: 34, subject_area_id: 34, display_name: "Veterinary", name: "Veterinary" },
+  { id: 35, subject_area_id: 35, display_name: "Dentistry", name: "Dentistry" },
+  { id: 36, subject_area_id: 36, display_name: "Health Professions", name: "Health Professions" },
+  { id: 10, subject_area_id: 10, display_name: "Multidisciplinary", name: "Multidisciplinary" }
+];
+
 const CreateProjectPage = () => {
   const { t: _t } = useTranslation();
   const navigate = useNavigate();
@@ -38,13 +69,19 @@ const CreateProjectPage = () => {
 
   // Initial Data Fetch
   useEffect(() => {
-    const fetchCatalogs = async () => {      setLoadingCatalogs(true);
+    const fetchCatalogs = async () => {
+      setLoadingCatalogs(true);
       try {
         const areasRes = await getSubjectAreasApi();
-        if (areasRes?.data) setAreas(areasRes.data?.data?.items || areasRes.data?.data || areasRes.data || []);
+        const items = areasRes?.data?.data?.items || areasRes?.data?.data || areasRes?.data || [];
+        if (Array.isArray(items) && items.length > 0) {
+          setAreas(items);
+        } else {
+          setAreas(FALLBACK_SUBJECT_AREAS);
+        }
       } catch (err) {
-        console.error(t("project.loiTaiDanhMuc"), err);
-        setError(t("project.khongTheTaiDuLieuDanhMucVuiLon"));
+        console.warn('Could not fetch subject areas from API, using fallback data:', err);
+        setAreas(FALLBACK_SUBJECT_AREAS);
       } finally {
         setLoadingCatalogs(false);
       }
@@ -125,7 +162,7 @@ const CreateProjectPage = () => {
     }
   };
   return (
-    <PageContainer className="max-w-[760px] py-6 sm:py-10 space-y-6">
+    <PageContainer className="max-w-[760px] py-6 sm:py-10 pb-36 space-y-6">
       <PageHeader
         breadcrumbs={[
           { label: 'Workspace', to: ROUTES.DASHBOARD },
@@ -136,7 +173,22 @@ const CreateProjectPage = () => {
         description={t("project.thietLapKhongGianLamViecDeTuDo")}
       />
 
-      <Card>
+      <Card className="border border-border shadow-xs">
+        <CardHeader className="border-b border-border/60 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="size-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+              <Icon icon="lucide:folder-plus" width={18} />
+            </div>
+            <div>
+              <CardTitle className="text-sm font-semibold text-foreground">
+                {t("project.thongTinDuAn", "Project Information")}
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {t("project.nhapThongTinCoBanDeTheoDoi", "Define tracking parameters to monitor trends and relevant publications")}
+              </p>
+            </div>
+          </div>
+        </CardHeader>
         <CardContent className="p-6 sm:p-8 space-y-6">
           {error && (
             <Alert variant="destructive" className="items-center">
@@ -173,14 +225,28 @@ const CreateProjectPage = () => {
                   label: a.display_name || a.name || a.area_name
                 }))}
                 fetchOptions={async search => {
-                  const res = await getSubjectAreasApi({
-                    search,
-                    limit: 20
-                  });
-                  const items = res?.data?.data?.items || res?.data?.data || res?.data || [];
-                  return items.map(a => ({
+                  try {
+                    const res = await getSubjectAreasApi({
+                      search,
+                      limit: 20
+                    });
+                    const items = res?.data?.data?.items || res?.data?.data || res?.data || [];
+                    if (Array.isArray(items) && items.length > 0) {
+                      return items.map(a => ({
+                        value: a.id || a.subject_area_id,
+                        label: a.display_name || a.name || a.area_name
+                      }));
+                    }
+                  } catch (e) {
+                    // Fallback to local areas list
+                  }
+                  const term = (search || '').toLowerCase();
+                  const filtered = FALLBACK_SUBJECT_AREAS.filter(a =>
+                    !term || (a.display_name || a.name || '').toLowerCase().includes(term)
+                  );
+                  return filtered.map(a => ({
                     value: a.id || a.subject_area_id,
-                    label: a.display_name || a.name || a.area_name
+                    label: a.display_name || a.name
                   }));
                 }}
                 value={subjectAreaId}
