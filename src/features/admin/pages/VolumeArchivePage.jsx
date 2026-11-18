@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
-import { Row, Col, Card, Button, Form, InputGroup } from 'react-bootstrap';
+import { Row, Col, Card, Form, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
+import { Button } from '../../../shared/ui/button';
 import { useJournalManagement } from '../../journal/hooks/useJournalManagement';
 import Pagination from '../../../shared/components/Pagination';
 import SwitchJournalModal from '../components/modals/SwitchJournalModal';
@@ -90,7 +91,7 @@ export default function VolumeArchivePage() {
                 <span className="fw-semibold text-main">{currentJournal?.title}</span>.
               </p>
             </div>
-            <Button variant="outline-dark" className="d-flex align-items-center gap-1.5 py-2 px-3 btn-custom-sm font-display" onClick={() => setShowSwitchModal(true)}>
+            <Button variant="outline" size="sm" className="d-flex align-items-center gap-1.5 font-display" onClick={() => setShowSwitchModal(true)}>
               <Icon icon="lucide:refresh-cw" width="14" />
               <span>Change Journal</span>
             </Button>
@@ -226,10 +227,10 @@ export default function VolumeArchivePage() {
                       <div className="d-flex gap-2 w-100 mt-auto pt-3 border-top" style={{
                 borderColor: 'var(--border)'
               }}>
-                        <Button className="w-100 font-display fw-semibold btn-custom-sm admin-btn-outline-accent d-flex align-items-center justify-content-center gap-1.5 py-2" onClick={() => handleViewDetails(vol.id)}>
+                        <Button variant="outline" size="sm" className="w-100 font-display font-semibold d-flex align-items-center justify-content-center gap-1.5" onClick={() => handleViewDetails(vol.id)}>
                           <span>View Details</span>
                         </Button>
-                        <Button variant="outline-dark" className="btn-custom-sm d-flex align-items-center justify-content-center p-2 rounded-2" title="Restore/History" onClick={() => alert(`Showing history for ${vol.volumeNumber}...`)}>
+                        <Button variant="outline" size="sm" className="d-flex align-items-center justify-content-center p-2 rounded-2" title="Restore/History" onClick={() => alert(`Showing history for ${vol.volumeNumber}...`)}>
                           <Icon icon="lucide:history" width="16" />
                         </Button>
                       </div>

@@ -11,7 +11,8 @@ import IssueTable from '../components/repository/IssueTable';
 import SwitchJournalModal from '../components/modals/SwitchJournalModal';
 import CreateVolumeModal from '../components/modals/CreateVolumeModal';
 import CreateIssueModal from '../components/modals/CreateIssueModal';
-import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
+import { Button } from '../../../shared/ui/button';
+import { Alert } from '../../../shared/ui/alert';
 
 /**
  * RepositoryManagementPage - Admin repository coordinator for selected journal volumes and issues.
@@ -150,10 +151,10 @@ export default function RepositoryManagementPage() {
             Manage volumes and publication issues for your active journals.
           </p>
         </div>
-        <PrimaryButton className="py-2 px-3" onClick={() => setShowVolumeModal(true)}>
+        <Button size="sm" onClick={() => setShowVolumeModal(true)} className="gap-1.5">
           <Icon icon="lucide:plus" width="16" />
           <span>New Volume</span>
-        </PrimaryButton>
+        </Button>
       </div>
 
       <div className="bg-white p-4 rounded-3 border d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-2" style={{
@@ -181,15 +182,15 @@ export default function RepositoryManagementPage() {
             </small>
           </div>
         </div>
-        <PrimaryButton variant="outline" className="py-2 px-3 btn-custom-sm" onClick={() => setShowSwitchModal(true)}>
+        <Button variant="outline" size="sm" onClick={() => setShowSwitchModal(true)} className="gap-1.5">
           <Icon icon="lucide:refresh-cw" width="14" />
           <span>Switch Journal</span>
-        </PrimaryButton>
+        </Button>
       </div>
 
-      {summaryError && <div className="alert alert-danger border-0 rounded-3 small mb-2">
+      {summaryError && <Alert variant="destructive" className="mb-2">
           {summaryError}
-        </div>}
+        </Alert>}
 
       <Row className="g-3 mb-2">
         <Col xs={12} sm={6} md={3}>
@@ -225,9 +226,7 @@ export default function RepositoryManagementPage() {
               <div className="text-muted-custom small text-uppercase fw-semibold">Next Release</div>
               <div className="text-muted bg-light p-1.5 rounded-2 d-flex"><Icon icon="lucide:calendar" width="16" /></div>
             </div>
-            <h3 className="fw-bold text-main m-0 font-monospace admin-accent-text" style={{
-            fontSize: '1.25rem'
-          }}>
+            <h3 className="fw-bold text-main m-0 font-monospace admin-accent-text text-base">
               {summaryLoading ? '...' : nextRelease}
             </h3>
           </Card>
@@ -258,10 +257,10 @@ export default function RepositoryManagementPage() {
                   Published: {activeVolObj?.frequency || 'Quarterly'} • Frequency: Q1, Q2, Q3, Q4
                 </small>
               </div>
-              <PrimaryButton className="btn-custom-sm px-3 py-2" disabled={!selectedVolume} onClick={() => setShowIssueModal(true)}>
+              <Button size="sm" disabled={!selectedVolume} onClick={() => setShowIssueModal(true)} className="gap-1.5">
                 <Icon icon="lucide:plus-circle" width="14" />
                 <span>Add Issue</span>
-              </PrimaryButton>
+              </Button>
             </div>
 
             <IssueTable issues={currentIssues} articleCountsByIssueId={articleCountsByIssueId} />

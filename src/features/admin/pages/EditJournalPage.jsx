@@ -5,7 +5,7 @@ import { Form, Row, Col, Card } from 'react-bootstrap';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { useJournalManagement } from '../../journal/hooks/useJournalManagement';
-import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
+import { Button } from '../../../shared/ui/button';
 export default function EditJournalPage() {
   const { t: _t } = useTranslation();
   const {
@@ -310,12 +310,12 @@ export default function EditJournalPage() {
         <div className="d-flex justify-content-end gap-3 mt-4 pt-3 border-top" style={{
         borderColor: 'var(--border)'
       }}>
-          <PrimaryButton type="button" variant="outline" className="py-2.5 px-4" onClick={() => navigate(`${basePath}/journals`)}>
+          <Button type="button" variant="outline" className="py-2 px-4" onClick={() => navigate(`${basePath}/journals`)}>
             Cancel Changes
-          </PrimaryButton>
-          <PrimaryButton type="submit" className="py-2.5 px-4">
+          </Button>
+          <Button type="submit" className="py-2 px-4">
             Update Journal
-          </PrimaryButton>
+          </Button>
         </div>
       </Form>
     </div>;

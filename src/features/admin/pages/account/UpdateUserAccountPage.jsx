@@ -1,12 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import { useEffect, useState } from 'react';
-import { Alert, Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import UserAccountForm from '../../components/account/UserAccountForm';
 import { getAdminUserById, updateAdminUser } from '../../api/adminUsers.api';
 import Icon from '../../../../shared/components/Icon';
 import ROUTES from '../../../../app/routes/routePaths';
+import { Alert } from '../../../../shared/ui/alert';
+import { Button } from '../../../../shared/ui/button';
 const getApiErrorMessage = (error, fallback) => {
   if (error.response?.status === 403) {
     return t("admin.backendTuChoiQuyenAdminTokenHi");
@@ -100,7 +102,7 @@ export default function UpdateUserAccountPage() {
           <Icon icon="lucide:alert-triangle" width="32" className="text-danger mb-2" />
           <h5 className="fw-bold mb-1">{t("admin.khongTimThayNguoiDung")}</h5>
           <p className="mb-3 small">{loadingError || t("admin.taiKhoanNayCoTheDaBiXoaHoacKho")}</p>
-          <button onClick={() => navigate(ROUTES.ADMIN_USERS)} className="btn btn-outline-danger btn-sm rounded-pill px-4">{t("admin.quayLaiDanhSach")}</button>
+          <Button variant="outline" size="sm" onClick={() => navigate(ROUTES.ADMIN_USERS)}>{t("admin.quayLaiDanhSach")}</Button>
         </div>
       </div>;
   }
@@ -114,10 +116,8 @@ export default function UpdateUserAccountPage() {
       </nav>
 
       <div className="mb-4">
-        <h1 className="font-display fw-bold text-main mb-1" style={{
-        fontSize: '1.8rem'
-      }}>{t("admin.capNhatThongTinNguoiDung")}</h1>
-        <p className="text-muted-custom small mb-0" style={{
+        <h1 className="font-display font-semibold text-base text-main mb-1">{t("admin.capNhatThongTinNguoiDung")}</h1>
+        <p className="text-muted-custom text-sm leading-relaxed mb-0" style={{
         maxWidth: '750px'
       }}>
           Modify profile settings, adjust organizational roles, and update security credentials for this platform contributor.
@@ -128,7 +128,7 @@ export default function UpdateUserAccountPage() {
       maxWidth: '800px'
     }}>
         <Card className="p-4 p-md-5 rounded-4 border bg-white shadow-sm mb-5">
-          {submitError && <Alert variant="danger" className="border-0 rounded-3 small">
+          {submitError && <Alert variant="destructive" className="mb-4">
               {submitError}
             </Alert>}
 

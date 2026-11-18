@@ -9,7 +9,7 @@ import ManualArticleForm from '../../components/article-submission/ManualArticle
 import PdfDropzone from '../../components/article-submission/PdfDropzone';
 import UploadFeatureCard from '../../components/article-submission/UploadFeatureCard';
 import { useAdminStore } from '../../../../app/store/adminStore';
-import PrimaryButton from '../../../../shared/components/Button/PrimaryButton';
+import { Button } from '../../../../shared/ui/button';
 
 /**
  * SubmitArticlePage Component
@@ -214,14 +214,14 @@ export default function SubmitArticlePage() {
 
             {/* Bottom-right alignment Submit Action Button */}
             <div className="d-flex justify-content-end pt-3 border-top">
-              <PrimaryButton type="submit" disabled={isSubmitting} className="px-4.5 py-2" style={{
+              <Button type="submit" disabled={isSubmitting} className="px-4 py-2" style={{
               minWidth: '150px'
             }}>
                 {isSubmitting ? <>
                     <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                     Submitting...
                   </> : 'Submit Article'}
-              </PrimaryButton>
+              </Button>
             </div>
           </Form>
         </Card>
@@ -264,15 +264,15 @@ export default function SubmitArticlePage() {
             </div>}
 
           <div className="d-flex flex-column gap-2">
-            <PrimaryButton className="py-2.5" onClick={() => {
+            <Button className="py-2.5" onClick={() => {
             setShowSuccessModal(false);
             navigate('/dashboard');
           }}>
               Go to Dashboard
-            </PrimaryButton>
-            <PrimaryButton variant="outline" className="py-2" onClick={resetSubmissionForm}>
+            </Button>
+            <Button variant="outline" className="py-2" onClick={resetSubmissionForm}>
               Submit Another Article
-            </PrimaryButton>
+            </Button>
           </div>
         </Modal.Body>
       </Modal>

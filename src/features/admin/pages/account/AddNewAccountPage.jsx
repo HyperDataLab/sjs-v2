@@ -1,12 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
 import { useState } from 'react';
-import { Alert, Card, Row, Col } from 'react-bootstrap';
+import { Card, Row, Col } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import Icon from '../../../../shared/components/Icon';
 import UserAccountForm from '../../components/account/UserAccountForm';
 import { createAdminUser } from '../../api/adminUsers.api';
 import ROUTES from '../../../../app/routes/routePaths';
+import { Alert } from '../../../../shared/ui/alert';
 const getApiErrorMessage = error => {
   if (error.response?.status === 403) {
     return t("admin.backendTuChoiQuyenAdminTokenHi");
@@ -49,9 +50,7 @@ export default function AddNewAccountPage() {
   return <div className="container-fluid py-2">
       {/* Page Breadcrumbs - Sử dụng hằng số ROUTES */}
       <nav className="mb-2">
-        <div className="d-flex align-items-center gap-2 text-xs text-muted-custom fw-semibold select-none" style={{
-        fontSize: '0.78rem'
-      }}>
+        <div className="d-flex align-items-center gap-2 text-xs text-muted-custom fw-semibold select-none">
           <Link to={ROUTES.ADMIN_USERS} className="text-decoration-none text-muted-custom hover-primary">Account</Link>
           <span className="text-muted-custom opacity-50">&gt;</span>
           <Link to={ROUTES.ADMIN_USERS} className="text-decoration-none text-muted-custom hover-primary">User Directory</Link>
@@ -62,14 +61,9 @@ export default function AddNewAccountPage() {
 
       {/* Main title banner matching Page 17 */}
       <div className="mb-4">
-        <h1 className="font-display fw-bold text-main mb-1.5" style={{
-        fontSize: '1.8rem',
-        letterSpacing: '-0.02em'
-      }}>{t("admin.themTaiKhoanMoi")}</h1>
-        <p className="text-muted-custom small mb-0" style={{
-        maxWidth: '750px',
-        fontSize: '0.85rem',
-        lineHeight: '1.5'
+        <h1 className="font-display font-semibold text-base text-main mb-1.5">{t("admin.themTaiKhoanMoi")}</h1>
+        <p className="text-muted-custom text-sm leading-relaxed mb-0" style={{
+        maxWidth: '750px'
       }}>{t("admin.vuiLongDienDayDuCacThongTinBen")}</p>
       </div>
 
@@ -78,7 +72,7 @@ export default function AddNewAccountPage() {
     }}>
         {/* Core Account Form card */}
         <Card className="p-4 p-md-5 rounded-4 border bg-white shadow-sm mb-4">
-          {submitError && <Alert variant="danger" className="border-0 rounded-3 small">
+          {submitError && <Alert variant="destructive" className="mb-4">
               {submitError}
             </Alert>}
 
