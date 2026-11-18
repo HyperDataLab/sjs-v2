@@ -1,5 +1,5 @@
-import { cn } from '../../../lib/utils';
-import { Badge } from '../../ui/badge';
+import { cn } from '../../../../lib/utils';
+import { Badge } from '../../../ui/badge';
 
 /**
  * Shared header/filter card for data pages that need a title, count badge,
