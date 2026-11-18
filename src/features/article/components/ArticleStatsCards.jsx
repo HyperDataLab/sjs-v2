@@ -15,41 +15,48 @@ export default function ArticleStatsCards({
 
   const statItems = [
     {
-      label: t("article.tongBaiBao"),
+      label: t("article.tongBaiBao", "TOTAL ARTICLES"),
       value: stats?.totalArticles || 0,
+      hint: t("article.indexedInDb", "Indexed in repository"),
       icon: 'lucide:file-text',
-      color: 'text-primary'
+      iconBg: 'bg-primary-subtle text-primary',
     },
     {
-      label: 'Open Access',
+      label: 'OPEN ACCESS',
       value: stats?.openAccessCount || 0,
+      hint: t("article.fullTextFree", "Freely accessible papers"),
       icon: 'lucide:unlock',
-      color: 'text-success'
+      iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
     },
     {
-      label: t("article.tongTacGia"),
+      label: t("article.tongTacGia", "ACTIVE AUTHORS"),
       value: stats?.authorsCount || 0,
+      hint: t("article.recordedAuthors", "Contributing researchers"),
       icon: 'lucide:users',
-      color: 'text-info'
+      iconBg: 'bg-sky-500/10 text-sky-600 dark:text-sky-400',
     },
     {
-      label: t("typeArea"),
+      label: t("typeArea", "RESEARCH TOPICS"),
       value: stats?.topicsCount || 0,
+      hint: t("article.fieldsAndDisciplines", "Scientific fields & topics"),
       icon: 'lucide:layers',
-      color: 'text-warning'
+      iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
     }
   ];
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="p-4 flex flex-col justify-between space-y-2">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-3.5 w-24 rounded" />
-              <Skeleton className="h-5 w-5 rounded-full" />
+          <Card key={i} className="p-4 sm:p-5 border-border bg-surface shadow-xs">
+            <div className="flex items-start justify-between gap-3">
+              <div className="space-y-2 w-full">
+                <Skeleton className="h-3.5 w-24 rounded" />
+                <Skeleton className="h-8 w-32 rounded" />
+                <Skeleton className="h-3 w-28 rounded" />
+              </div>
+              <Skeleton className="size-10 rounded-xl shrink-0" />
             </div>
-            <Skeleton className="h-6 w-16 rounded mt-1" />
           </Card>
         ))}
       </div>
@@ -57,15 +64,24 @@ export default function ArticleStatsCards({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {statItems.map((item, index) => (
-        <Card key={index} className="p-4 flex flex-col justify-between transition-shadow hover:shadow-md">
-          <div className="flex items-center justify-between gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            <span className="truncate">{item.label}</span>
-            <Icon icon={item.icon} width="16" className={item.color || 'text-primary'} />
-          </div>
-          <div className="mt-2 text-base font-bold text-foreground tabular-nums">
-            {formatNumber(item.value)}
+        <Card key={index} className="p-4 sm:p-5 border-border bg-surface shadow-xs transition-colors hover:border-primary/40">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1 min-w-0">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block truncate">
+                {item.label}
+              </span>
+              <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground tabular-nums">
+                {formatNumber(item.value)}
+              </div>
+              <p className="text-xs text-muted-foreground truncate m-0">
+                {item.hint}
+              </p>
+            </div>
+            <div className={`p-2.5 rounded-xl shrink-0 ${item.iconBg}`}>
+              <Icon icon={item.icon} width="18" height="18" />
+            </div>
           </div>
         </Card>
       ))}

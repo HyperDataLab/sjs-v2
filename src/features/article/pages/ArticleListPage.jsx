@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Modal } from 'react-bootstrap';
 import { Icon } from '@iconify/react';
-import Header from '../../landing/components/Header';
 import useArticleList from '../hooks/useArticleList';
 import ArticleStatsCards from '../components/ArticleStatsCards';
 import ArticleFilterBar from '../components/ArticleFilterBar';
@@ -31,90 +30,87 @@ export default function ArticleListPage() {
   } = useArticleList();
 
   return (
-    <div className="article-list-page grid-bg min-vh-100">
-      {/* Header (rendered null inside DashboardShell) */}
-      <Header />
-
-      <PageContainer className="article-list-shell">
-        {/* Unified Design System PageHeader */}
-        <PageHeader
-          breadcrumbs={[
-            { label: t("home"), to: "/" },
-            { label: t("articles") }
-          ]}
-          badge={
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-subtle text-primary text-xs font-semibold">
-              <Icon icon="lucide:library-big" width="14" height="14" />
-              <span>Trending System Articles</span>
-            </div>
-          }
-          title={t("article.khoLuuTruBaiBaoKhoaHoc")}
-          description={t("article.duyetQuaTimKiemVaLocHangNghinB")}
-          actions={
-            <aside className="article-list-summary text-end" aria-label="Tổng kết bài báo">
-              <div className="text-xs text-muted-foreground">{t("article.tongKetQua")}</div>
-              <div className="text-base font-bold text-foreground mt-0.5">
-                {new Intl.NumberFormat().format(total)}
-              </div>
-            </aside>
-          }
-        >
-          {(filters.selectedVolume || filters.selectedIssue) && (
-            <div className="flex flex-wrap items-center gap-3 mt-2">
-              {filters.selectedVolume && (
-                <div className="inline-flex items-center gap-1.5 text-xs text-primary font-medium">
-                  <Icon icon="solar:folder-with-files-bold" width="14" />
-                  <span>{t("article.dangXemBaiBaoThuocVolume")}{filters.selectedVolume}</span>
-                </div>
-              )}
-              {filters.selectedIssue && (
-                <div className="inline-flex items-center gap-1.5 text-xs text-primary font-medium">
-                  <Icon icon="lucide:layers-3" width="14" />
-                  <span>{t("article.dangXemBaiBaoThuocIssue")}{filters.selectedIssue}</span>
-                </div>
-              )}
-            </div>
-          )}
-        </PageHeader>
-
-        {/* Thẻ thống kê chuẩn hóa */}
-        <ArticleStatsCards stats={stats} isLoading={isLoading} />
-
-        {/* Thanh lọc & Sắp xếp */}
-        <ArticleFilterBar filters={filters} updateFilters={updateFilters} clearFilters={clearFilters} />
-
-        {/* Kết quả đếm */}
-        <div className="flex items-center justify-between flex-wrap gap-2 text-xs text-muted-foreground">
-          <div>
-            {t("pagination.showing", "Showing")}{" "}
-            <span className="font-bold text-foreground">{articles.length}</span>{" "}
-            {t("pagination.of", "of")}{" "}
-            <span className="font-bold text-foreground">{total ? total.toLocaleString() : 0}</span>{" "}
-            {t("article.baiBaoKhoaHoc", "scientific papers")}
+    <PageContainer>
+      {/* Unified Design System PageHeader */}
+      <PageHeader
+        breadcrumbs={[
+          { label: "Workspace", to: "/dashboard" },
+          { label: t("articles", "Scientific Articles") }
+        ]}
+        badge={
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-subtle text-primary text-xs font-semibold">
+            <Icon icon="lucide:library-big" width="14" height="14" />
+            <span>Trending System Repository</span>
           </div>
-        </div>
-
-        {/* Bảng dữ liệu */}
-        <ArticleTable
-          articles={articles}
-          isLoading={isLoading}
-          onDetailClick={handleDetailClick}
-          onClearFilters={clearFilters}
-        />
-
-        {/* Phân trang */}
-        {total > 0 && totalPages > 1 && (
-          <div className="mt-5">
-            <AdminPagination
-              totalItems={total}
-              currentPage={currentPage}
-              limit={10}
-              onPageChange={handlePageChange}
-              entityName="bài báo"
-            />
+        }
+        title={t("article.khoLuuTruBaiBaoKhoaHoc", "Scientific Articles Repository")}
+        description={t("article.duyetQuaTimKiemVaLocHangNghinB", "Search, filter, and discover millions of high-impact scientific publications.")}
+        actions={
+          <div className="flex items-center gap-3">
+            <div className="text-end">
+              <div className="text-xs text-muted-foreground">{t("article.tongKetQua", "Total Papers")}</div>
+              <div className="text-sm font-bold text-foreground">
+                {total ? total.toLocaleString() : '219M+'} papers
+              </div>
+            </div>
+          </div>
+        }
+      >
+        {(filters.selectedVolume || filters.selectedIssue) && (
+          <div className="flex flex-wrap items-center gap-3 mt-2">
+            {filters.selectedVolume && (
+              <div className="inline-flex items-center gap-1.5 text-xs text-primary font-medium bg-primary-subtle px-2.5 py-1 rounded-md">
+                <Icon icon="solar:folder-with-files-bold" width="14" />
+                <span>{t("article.dangXemBaiBaoThuocVolume", "Viewing volume: ")}{filters.selectedVolume}</span>
+              </div>
+            )}
+            {filters.selectedIssue && (
+              <div className="inline-flex items-center gap-1.5 text-xs text-primary font-medium bg-primary-subtle px-2.5 py-1 rounded-md">
+                <Icon icon="lucide:layers-3" width="14" />
+                <span>{t("article.dangXemBaiBaoThuocIssue", "Viewing issue: ")}{filters.selectedIssue}</span>
+              </div>
+            )}
           </div>
         )}
-      </PageContainer>
+      </PageHeader>
+
+      {/* Thẻ thống kê chuẩn hóa (Scimago / Scopus grade) */}
+      <ArticleStatsCards stats={stats} isLoading={isLoading} />
+
+      {/* Thanh lọc & Sắp xếp tích hợp */}
+      <ArticleFilterBar filters={filters} updateFilters={updateFilters} clearFilters={clearFilters} />
+
+      {/* Kết quả đếm */}
+      <div className="flex items-center justify-between flex-wrap gap-2 text-xs text-muted-foreground px-0.5">
+        <div>
+          {t("pagination.showing", "Showing")}{" "}
+          <span className="font-bold text-foreground">{articles.length}</span>{" "}
+          {t("pagination.of", "of")}{" "}
+          <span className="font-bold text-foreground">{total ? total.toLocaleString() : 0}</span>{" "}
+          {t("article.baiBaoKhoaHoc", "scientific papers")}
+        </div>
+      </div>
+
+      {/* Bảng dữ liệu */}
+      <ArticleTable
+        articles={articles}
+        isLoading={isLoading}
+        onDetailClick={handleDetailClick}
+        onClearFilters={clearFilters}
+      />
+
+      {/* Phân trang */}
+      {total > 0 && totalPages > 1 && (
+        <div className="pt-2">
+          <AdminPagination
+            totalItems={total}
+            currentPage={currentPage}
+            limit={10}
+            onPageChange={handlePageChange}
+            entityName="bài báo"
+          />
+        </div>
+      )}
 
       {/* Warning Auth Modal */}
       <Modal
@@ -129,22 +125,22 @@ export default function ArticleListPage() {
           </div>
           <div>
             <h4 className="text-base font-semibold text-foreground mb-1.5">
-              {t("article.yeuCauDangNhap")}
+              {t("article.yeuCauDangNhap", "Sign in Required")}
             </h4>
             <p className="text-xs text-muted-foreground m-0 leading-relaxed">
-              {t("article.deXemToanBoNoiDungChiTietBaiBa")}
+              {t("article.deXemToanBoNoiDungChiTietBaiBa", "Please sign in to your account to view the full details and analytics for this article.")}
             </p>
           </div>
           <div className="flex items-center justify-center gap-3 pt-2">
             <Button variant="outline" size="sm" onClick={() => setShowAuthModal(false)}>
-              {t("article.dong")}
+              {t("article.dong", "Close")}
             </Button>
             <Button size="sm" onClick={handleAuthRedirect}>
-              {t("article.dangNhapNgay")}
+              {t("article.dangNhapNgay", "Sign in Now")}
             </Button>
           </div>
         </Modal.Body>
       </Modal>
-    </div>
+    </PageContainer>
   );
 }
