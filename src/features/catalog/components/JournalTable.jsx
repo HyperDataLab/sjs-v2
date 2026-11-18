@@ -77,14 +77,12 @@ export default function JournalTable({
               <th className="px-3 py-3 text-start">Publisher & Region</th>
               <th className="px-3 py-3 text-center">Quartile</th>
               <th className="px-3 py-3 text-center">SJR Metric</th>
-              <th className="px-3 py-3 text-center">Access</th>
-              <th className="px-4 py-3 text-end">Action</th>
+              <th className="px-4 py-3 text-center">Access</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60">
             {journals.map((journal) => {
               const id = journal.id || journal.journal_id;
-              const isFollowed = !!followedJournals[id];
               return (
                 <tr
                   key={id}
@@ -135,27 +133,8 @@ export default function JournalTable({
                   </td>
 
                   {/* Access Type Badge */}
-                  <td className="px-3 py-3.5 text-center whitespace-nowrap">
+                  <td className="px-4 py-3.5 text-center whitespace-nowrap">
                     {renderAccessBadge(journal)}
-                  </td>
-
-                  {/* Follow Action Button */}
-                  <td className="px-4 py-3.5 text-end whitespace-nowrap">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant={isFollowed ? "secondary" : "outline"}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onFollow(id);
-                      }}
-                      className="h-8 px-2.5 text-xs gap-1.5"
-                      title={isFollowed ? 'Unfollow journal' : 'Follow journal'}
-                    >
-                      <Icon icon={isFollowed ? 'lucide:check' : 'lucide:plus'} width="13" />
-                      <span>{isFollowed ? t("catalog.daTheoDoi", "Following") : t("catalog.theoDoi", "Follow")}</span>
-                    </Button>
                   </td>
                 </tr>
               );

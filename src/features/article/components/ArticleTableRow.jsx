@@ -132,7 +132,7 @@ export default function ArticleTableRow({
       </td>
 
       {/* Open Access */}
-      <td className="px-3 py-3.5 text-center whitespace-nowrap">
+      <td className="px-4 py-3.5 text-center whitespace-nowrap">
         {article.is_open_access ? (
           <Badge variant="success" className="gap-1 text-[11px] font-bold px-2 py-0.5">
             <span className="size-1.5 rounded-full bg-success" />
@@ -143,20 +143,6 @@ export default function ArticleTableRow({
             Closed
           </Badge>
         )}
-      </td>
-
-      {/* Action: Details */}
-      <td className="px-4 py-3.5 text-end whitespace-nowrap">
-        <Button
-          type="button"
-          size="sm"
-          variant="ghost"
-          onClick={() => onDetailClick(article.article_id)}
-          className="h-8 px-2.5 text-xs font-semibold text-primary hover:text-primary-hover hover:bg-primary-subtle gap-1"
-        >
-          <span>{t("article.chiTiet1", "Details")}</span>
-          <Icon icon="lucide:arrow-right" width={13} />
-        </Button>
       </td>
     </tr>
   );

@@ -466,14 +466,14 @@ export default function ArticleFilterBar({
   const isMoreFiltersActive = filters.selectedAccess && filters.selectedAccess !== 'all';
 
   const content = (
-    <div className="p-4 bg-surface space-y-3.5">
-      {/* 1. Main Search Bar Row */}
-      <form onSubmit={handleSearchSubmit} className="flex items-center gap-2.5">
-        <div className="relative flex-1">
+    <div className="p-3 sm:p-3.5 bg-surface space-y-2.5">
+      {/* 1. Unified Search & Filters Row (Author-style inline bar) */}
+      <form onSubmit={handleSearchSubmit} className="flex flex-wrap items-center gap-2">
+        <div className="relative flex-1 min-w-[200px]">
           <Icon
             icon="lucide:search"
-            width="17"
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+            width="15"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
             aria-hidden="true"
           />
           <input
@@ -481,33 +481,19 @@ export default function ArticleFilterBar({
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder={t("article.timBaiBaoDoiTuKhoa", "Search papers by title, abstract, DOI, topic, or keywords...")}
-            className="w-full h-11 pl-10 pr-9 rounded-control border border-border bg-surface text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-0 focus-visible:outline-none focus-visible:border-primary focus-visible:ring-0 transition-colors shadow-2xs"
+            className="w-full h-9 pl-9 pr-8 rounded-control border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors shadow-2xs"
           />
           {searchInput && (
             <button
               type="button"
               onClick={handleClearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-0.5 rounded border-0 bg-transparent cursor-pointer"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-0.5 rounded border-0 bg-transparent cursor-pointer"
               aria-label="Clear search"
             >
-              <Icon icon="lucide:x" width="15" />
+              <Icon icon="lucide:x" width={13} />
             </button>
           )}
         </div>
-        <Button
-          type="submit"
-          className="h-11 px-5 rounded-control shadow-xs flex items-center gap-2 shrink-0"
-        >
-          <Icon icon="lucide:search" width="15" />
-          <span>Search</span>
-        </Button>
-      </form>
-
-      {/* 2. Dropdown Filters Toolbar */}
-      <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-border/60">
-        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mr-1 flex items-center gap-1">
-          <Icon icon="lucide:filter" width="13" /> Filters:
-        </span>
 
         {/* Dynamic dropdowns: Year, Journal, Topic */}
         {filterConfigs.map(renderDropdown)}
@@ -521,13 +507,13 @@ export default function ArticleFilterBar({
               isMoreFiltersActive ? 'border-primary text-primary bg-primary-subtle font-semibold' : 'border-border'
             }`}
           >
-            <Icon icon="lucide:unlock" width="13" className="shrink-0" />
+            <Icon icon="lucide:unlock" width={13} className="shrink-0" />
             <span>
               {isMoreFiltersActive
                 ? ACCESS_OPTIONS.find((o) => o.value === filters.selectedAccess)?.label || "Access"
                 : "Access Type"}
             </span>
-            <Icon icon="lucide:chevron-down" width="14" className="shrink-0 text-muted-foreground" />
+            <Icon icon="lucide:chevron-down" width={14} className="shrink-0 text-muted-foreground" />
           </Dropdown.Toggle>
           <Dropdown.Menu className="shadow-popover border border-border bg-surface p-2.5 rounded-card min-w-[220px]">
             <div className="pb-2 mb-2 border-b border-border flex items-center justify-between text-xs font-semibold text-foreground">
@@ -578,13 +564,13 @@ export default function ArticleFilterBar({
               currentSortValue !== 'created_at-desc' ? 'border-primary text-primary bg-primary-subtle font-semibold' : 'border-border'
             }`}
           >
-            <Icon icon="lucide:arrow-up-down" width="13" className="shrink-0" />
+            <Icon icon="lucide:arrow-up-down" width={13} className="shrink-0" />
             <span>
               {currentSortValue !== 'created_at-desc'
                 ? SORT_OPTIONS.find((o) => o.value === currentSortValue)?.label
                 : t("article.sapXep", "Sort By")}
             </span>
-            <Icon icon="lucide:chevron-down" width="14" className="shrink-0 text-muted-foreground" />
+            <Icon icon="lucide:chevron-down" width={14} className="shrink-0 text-muted-foreground" />
           </Dropdown.Toggle>
           <Dropdown.Menu className="shadow-popover border border-border bg-surface p-2.5 rounded-card min-w-[220px]">
             <div className="pb-2 mb-2 border-b border-border flex items-center justify-between text-xs font-semibold text-foreground">
@@ -626,22 +612,20 @@ export default function ArticleFilterBar({
           </Dropdown.Menu>
         </Dropdown>
 
-        {/* Reset All Inline Action */}
-        {activeChips.length > 0 && (
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="text-xs font-semibold text-danger hover:underline ml-auto flex items-center gap-1 border-0 bg-transparent p-1 cursor-pointer"
-          >
-            <Icon icon="lucide:rotate-ccw" width="12" />
-            <span>Reset all filters</span>
-          </button>
-        )}
-      </div>
+        {/* Search Submit Button */}
+        <Button
+          type="submit"
+          size="sm"
+          className="h-9 px-4 gap-1.5 shrink-0 text-xs"
+        >
+          <Icon icon="lucide:search" width={14} />
+          <span>{t("searchBtn", "Search")}</span>
+        </Button>
+      </form>
 
-      {/* 3. Active Chips Row */}
+      {/* 2. Active Chips Row */}
       {activeChips.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1.5 pt-2">
+        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/50">
           <span className="text-[11px] font-medium text-muted-foreground">Active filters:</span>
           {activeChips.map((chip) => (
             <Badge
@@ -658,10 +642,20 @@ export default function ArticleFilterBar({
                 title={`Remove ${chip.label}`}
                 aria-label={`Remove ${chip.label}`}
               >
-                <Icon icon="lucide:x" width="12" />
+                <Icon icon="lucide:x" width={12} />
               </button>
             </Badge>
           ))}
+
+          {/* Reset All Inline Action */}
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="text-xs font-semibold text-danger hover:underline ml-auto flex items-center gap-1 border-0 bg-transparent p-1 cursor-pointer"
+          >
+            <Icon icon="lucide:rotate-ccw" width={12} />
+            <span>Reset all filters</span>
+          </button>
         </div>
       )}
     </div>

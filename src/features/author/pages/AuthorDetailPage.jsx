@@ -1,8 +1,10 @@
 ﻿import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAuthors from "../hooks/useAuthors";
-import Header from "../../landing/components/Header";
 import Icon from "../../../shared/components/Icon";
+import { PageContainer } from "../../../shared/ui/page-layout";
+import { StatePanel } from "../../../shared/ui/state-panel";
+import { Button } from "../../../shared/ui/button";
 import { Breadcrumbs } from "../../../shared/ui/breadcrumb";
 
 // Sub-components
@@ -23,25 +25,6 @@ import AuthorAwards from "../components/AuthorAwards";
 import AuthorEducation from "../components/AuthorEducation";
 import AuthorRelatedResearchers from "../components/AuthorRelatedResearchers";
 
-// Dedicated Frontend Prototype Mock Data
-import {
-  MOCK_AUTHOR,
-  MOCK_METRICS,
-  MOCK_AFFILIATIONS,
-  MOCK_RESEARCH_CENTERS,
-  MOCK_RESEARCH_INTERESTS,
-  MOCK_RESEARCH_AREAS,
-  MOCK_IMPACT_TREND,
-  MOCK_PUBLICATIONS,
-  MOCK_MOST_CITED,
-  MOCK_JOURNALS,
-  MOCK_COLLABORATORS,
-  MOCK_NETWORK,
-  MOCK_AWARDS,
-  MOCK_EDUCATION,
-  MOCK_RELATED_RESEARCHERS,
-} from "../data/authorProfile.mock";
-
 import "./AuthorDetailPage.css";
 
 /**
@@ -52,7 +35,7 @@ import "./AuthorDetailPage.css";
 export default function AuthorDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { currentAuthor, fetchAuthorDetail } = useAuthors();
+  const { currentAuthor, fetchAuthorDetail, loadingAuthorDetail, errorAuthorDetail } = useAuthors();
 
   useEffect(() => {
     if (id) {
@@ -60,57 +43,90 @@ export default function AuthorDetailPage() {
     }
   }, [id, fetchAuthorDetail]);
 
+  if (loadingAuthorDetail) {
+    return (
+      <PageContainer className="space-y-4">
+        <div className="flex flex-col items-center justify-center p-16 text-center">
+          <Icon icon="lucide:loader-2" className="size-8 animate-spin text-primary mb-3" />
+          <p className="text-sm font-medium text-muted-foreground">Loading author profile...</p>
+        </div>
+      </PageContainer>
+    );
+  }
+
+  if (errorAuthorDetail || (!loadingAuthorDetail && !currentAuthor && id)) {
+    return (
+      <PageContainer className="space-y-4">
+        <StatePanel
+          variant="error"
+          icon={<Icon icon="lucide:wifi-off" width="36" className="text-danger" />}
+          title="Unable to load author profile"
+          description={errorAuthorDetail?.message || "Server request failed or rate limit reached. Please try again."}
+          actions={
+            <Button variant="outline" size="sm" onClick={() => fetchAuthorDetail(id)}>
+              Retry
+            </Button>
+          }
+        />
+      </PageContainer>
+    );
+  }
+
   const rawName = currentAuthor?.display_name || currentAuthor?.full_name || currentAuthor?.name || '';
-  const authorName = rawName && rawName.trim() ? rawName.trim() : (currentAuthor?.openalex_id ? `Author ${currentAuthor.openalex_id}` : MOCK_AUTHOR.full_name);
-  const institution = currentAuthor?.institution_1 || currentAuthor?.last_known_institution || currentAuthor?.affiliation || MOCK_AUTHOR.institution_1;
+  const authorName = rawName && rawName.trim() ? rawName.trim() : (currentAuthor?.openalex_id ? `Author ${currentAuthor.openalex_id}` : `Author #${id}`);
+  const institution = currentAuthor?.institution_1 || currentAuthor?.last_known_institution || currentAuthor?.affiliation || 'No institution listed';
 
-  const author = currentAuthor ? {
-    ...MOCK_AUTHOR,
-    ...currentAuthor,
-    id: currentAuthor.author_id || currentAuthor.id || id,
+  const author = {
+    id: currentAuthor?.author_id || currentAuthor?.id || id,
     full_name: authorName,
+    position: currentAuthor?.position || 'Academic Researcher',
     institution_1: institution,
-    orcid: currentAuthor.orcid || MOCK_AUTHOR.orcid,
-  } : MOCK_AUTHOR;
+    institution_2: currentAuthor?.institution_2 || currentAuthor?.department || '',
+    orcid: currentAuthor?.orcid || '',
+    homepage: currentAuthor?.homepage || '',
+    email: currentAuthor?.email || '',
+    bio: currentAuthor?.bio || '',
+    research_focus: currentAuthor?.subject_areas || [],
+    avatar_color: currentAuthor?.avatar_color || '#0071BC',
+  };
 
-  const metrics = currentAuthor ? {
-    ...MOCK_METRICS,
-    publications: currentAuthor.works_count ?? currentAuthor.article_count ?? MOCK_METRICS.publications,
-    citations: currentAuthor.cited_by_count ?? currentAuthor.citation_count ?? MOCK_METRICS.citations,
-    hIndex: currentAuthor.h_index ?? MOCK_METRICS.hIndex,
-    i10Index: currentAuthor.i10_index ?? MOCK_METRICS.i10Index,
-  } : MOCK_METRICS;
+  const metrics = {
+    publications: currentAuthor?.works_count ?? currentAuthor?.article_count ?? 0,
+    citations: currentAuthor?.cited_by_count ?? currentAuthor?.citation_count ?? 0,
+    hIndex: currentAuthor?.h_index ?? 0,
+    i10Index: currentAuthor?.i10_index ?? 0,
+    highlyCitedPapers: 0,
+    researchAreas: (currentAuthor?.subject_areas || []).length,
+  };
 
-  const affiliations = currentAuthor && institution ? [
+  const affiliations = institution && institution !== 'No institution listed' ? [
     {
       id: 1,
       institution: institution,
-      department: currentAuthor.institution_2 || currentAuthor.department || MOCK_AFFILIATIONS[0].department,
-      role: MOCK_AFFILIATIONS[0].role,
-      location: MOCK_AFFILIATIONS[0].location,
-      since: MOCK_AFFILIATIONS[0].since,
+      department: currentAuthor?.institution_2 || currentAuthor?.department || '',
+      role: 'Researcher',
+      location: '',
+      since: '',
       logoInitials: institution.slice(0, 2).toUpperCase(),
     }
-  ] : MOCK_AFFILIATIONS;
+  ] : [];
 
-  const researchCenters = MOCK_RESEARCH_CENTERS;
-  const interests = MOCK_RESEARCH_INTERESTS;
-  const researchAreas = MOCK_RESEARCH_AREAS;
-  const impactTrend = MOCK_IMPACT_TREND;
-  const publications = MOCK_PUBLICATIONS;
-  const mostCited = MOCK_MOST_CITED;
-  const journals = MOCK_JOURNALS;
-  const collaborators = MOCK_COLLABORATORS;
-  const network = MOCK_NETWORK;
-  const awards = MOCK_AWARDS;
-  const education = MOCK_EDUCATION;
-  const relatedResearchers = MOCK_RELATED_RESEARCHERS;
+  const researchCenters = [];
+  const interests = currentAuthor?.subject_areas || [];
+  const researchAreas = [];
+  const impactTrend = [];
+  const publications = [];
+  const mostCited = [];
+  const journals = [];
+  const collaborators = [];
+  const network = { nodes: [], links: [] };
+  const awards = [];
+  const education = [];
+  const relatedResearchers = [];
 
   return (
-    <div className="ap-page">
-      <Header />
-
-      <main className="ap-main-container">
+    <PageContainer className="space-y-4">
+      <main className="ap-main-container space-y-4">
         {/* RESEARCHER HERO */}
         <AuthorProfileHero author={author} metrics={metrics} />
 
@@ -174,6 +190,6 @@ export default function AuthorDetailPage() {
         {/* 11. RELATED RESEARCHERS */}
         <AuthorRelatedResearchers researchers={relatedResearchers} />
       </main>
-    </div>
+    </PageContainer>
   );
 }
