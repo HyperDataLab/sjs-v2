@@ -5,11 +5,7 @@
 
 /* Main page layout wrapper */
 .geography-page-wrapper {
-  background-color: var(--bg-main);
-  min-height: 100vh;
-  padding-top: 80px;
-  padding-bottom: 80px;
-  position: relative;
+  width: 100%;
 }
 
 /* Breadcrumb styling */

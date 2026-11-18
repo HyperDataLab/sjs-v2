@@ -2,17 +2,18 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { Icon } from '@iconify/react';
 import useZoneStats from '../hooks/useZoneStats';
 import { getCountryArticlesApi } from '../api/zone.api';
 import GeographyTerritoryChart from '../components/GeographyTerritoryChart';
 import GeographyRankingTable from '../components/GeographyRankingTable';
 import GeographyArticleList from '../components/GeographyArticleList';
-import Header from '../../landing/components/Header';
 import AuthRequiredModal from '../../../shared/components/AuthRequiredModal';
 import { useAuthStore } from '../../../app/store/authStore';
 import { isAuthenticated as checkAuthSession } from '../../../shared/utils/auth';
 import { Alert } from '../../../shared/ui/alert';
 import { Button } from '../../../shared/ui/button';
+import { Badge } from '../../../shared/ui/badge';
 import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
 import './GeographyPage.css';
 
@@ -115,39 +116,43 @@ export default function GeographyPage() {
   };
 
   return (
-    <div className="geography-page-wrapper grid-bg min-vh-100">
-      <Header />
-      <PageContainer className="geography-shell">
-        <PageHeader
-          breadcrumbs={[
-            { label: t("author.tongQuan"), to: "/" },
-            { label: t("zone.phanBoDiaLy") }
-          ]}
-          title={t("zone.phanBoTapChiTheoQuocGia")}
-          description={t("zone.xemThongKeSoLuongAnPhamKhoaHoc")}
-          actions={
-            <div className="flex items-center gap-2 shrink-0">
-              <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
-                {t("article.namXuatBan")}
-              </span>
-              <select
-                value={selectedYear}
-                onChange={(e) => {
-                  setSelectedYear(e.target.value);
-                  setArticlesPage(1);
-                }}
-                className="flex h-9 rounded-control border border-border bg-surface px-3 py-1.5 text-xs text-foreground shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
-              >
-                <option value="All">{t("zone.tatCaCacNam")}</option>
-                {['2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015'].map((yr) => (
-                  <option key={yr} value={yr}>
-                    {yr}
-                  </option>
-                ))}
-              </select>
-            </div>
-          }
-        />
+    <PageContainer>
+      <PageHeader
+        breadcrumbs={[
+          { label: "Workspace", to: "/dashboard" },
+          { label: t("zone.phanBoDiaLy", "Geography") }
+        ]}
+        badge={
+          <Badge variant="info" className="gap-1.5 py-1 px-2.5 text-xs font-semibold">
+            <Icon icon="lucide:globe" width="14" />
+            <span>Worldwide Output</span>
+          </Badge>
+        }
+        title={t("zone.phanBoTapChiTheoQuocGia", "Geographic Distribution of Publications")}
+        description={t("zone.xemThongKeSoLuongAnPhamKhoaHoc", "Explore worldwide scientific publication volume, top-producing nations, and country rankings.")}
+        actions={
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap">
+              {t("article.namXuatBan", "Publication Year")}
+            </span>
+            <select
+              value={selectedYear}
+              onChange={(e) => {
+                setSelectedYear(e.target.value);
+                setArticlesPage(1);
+              }}
+              className="h-9 rounded-control border border-border bg-background px-3 text-xs font-medium text-foreground transition-colors focus:border-primary focus:outline-none"
+            >
+              <option value="All">{t("zone.tatCaCacNam", "All Years")}</option>
+              {['2026', '2025', '2024', '2023', '2022', '2021', '2020', '2019', '2018', '2017', '2016', '2015'].map((yr) => (
+                <option key={yr} value={yr}>
+                  {yr}
+                </option>
+              ))}
+            </select>
+          </div>
+        }
+      />
 
         {/* Error handling for countries */}
         {errorCountries && (
@@ -210,10 +215,9 @@ export default function GeographyPage() {
             </Col>
           </Row>
         )}
-      </PageContainer>
 
-      {/* Login guard modal */}
-      <AuthRequiredModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
-    </div>
-  );
-}
+        {/* Login guard modal */}
+        <AuthRequiredModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
+      </PageContainer>
+    );
+  }
