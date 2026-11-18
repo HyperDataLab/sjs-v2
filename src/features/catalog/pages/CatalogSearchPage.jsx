@@ -234,6 +234,7 @@ export default function CatalogSearchPage() {
               limit={pageLimit}
               onPageChange={handlePageChange}
               entityName="journals"
+              className="pt-0"
             />
           </div>
         )}
