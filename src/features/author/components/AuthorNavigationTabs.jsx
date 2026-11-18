@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import Icon from '../../../shared/components/Icon';
 import { cn } from '../../../lib/utils';
 
@@ -20,9 +21,11 @@ export default function AuthorNavigationTabs({ activeTab, rightContent, children
         {tabs.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
-            <button
+            <motion.button
               key={tab.key}
               type="button"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => navigate(tab.path)}
               className={cn(
                 "flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-control transition-colors border cursor-pointer",
@@ -33,7 +36,7 @@ export default function AuthorNavigationTabs({ activeTab, rightContent, children
             >
               <Icon icon={tab.icon} width={15} />
               <span>{tab.label}</span>
-            </button>
+            </motion.button>
           );
         })}
       </div>

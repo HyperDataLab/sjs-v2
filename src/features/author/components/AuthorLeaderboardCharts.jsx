@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   ComposedChart,
   Line,
@@ -19,6 +20,7 @@ import {
 import { Icon } from '@iconify/react';
 import { Card } from '../../../shared/ui/card';
 import { Skeleton } from '../../../shared/ui/skeleton';
+import { fadeUp, staggerContainer, staggerItem } from '../../../shared/ui/motion';
 
 // Formatter for large numbers (e.g. 2,738 or 1.5M)
 const formatNum = (val) => {
@@ -210,7 +212,7 @@ export default function AuthorLeaderboardCharts({
   return (
     <div className="space-y-4 sm:space-y-5">
       {/* ── 1. Filter Toolbar & Metric Selector ── */}
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <motion.div variants={fadeUp} className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         {/* Left side: Real filters */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Year Range / Period Filter */}
@@ -288,7 +290,7 @@ export default function AuthorLeaderboardCharts({
             );
           })}
         </div>
-      </div>
+      </motion.div>
 
       {/* ── Loading State ── */}
       {loading ? (

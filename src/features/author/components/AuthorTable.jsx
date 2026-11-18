@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from "react-i18next";
+import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
 import AuthorTableRow from './AuthorTableRow';
 import AuthorCard from './AuthorCard';
@@ -51,7 +52,12 @@ export default function AuthorTable({
   return (
     <div className="space-y-4">
       {/* Desktop Table View */}
-      <div className="hidden md:block rounded-xl border border-border bg-surface shadow-card overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        className="hidden md:block rounded-xl border border-border bg-surface shadow-card overflow-hidden"
+      >
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -159,10 +165,15 @@ export default function AuthorTable({
             />
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Mobile Card View fallback */}
-      <div className="block md:hidden space-y-3">
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+        className="block md:hidden space-y-3"
+      >
         {loading ? (
           <div className="grid grid-cols-1 gap-3">
             {Array.from({ length: 4 }).map((_, idx) => (
@@ -198,7 +209,7 @@ export default function AuthorTable({
             />
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }

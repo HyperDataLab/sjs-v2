@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
 
 // Generates a consistent, pleasant pastel avatar color based on name
@@ -62,9 +63,13 @@ export default function AuthorTableRow({
   };
 
   return (
-    <tr
+    <motion.tr
       onClick={handleRowClick}
-      className="group border-b border-border hover:bg-surface-muted/60 transition-colors cursor-pointer"
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.15, ease: 'easeOut' }}
+      whileHover={{ backgroundColor: 'var(--ds-surface-muted, rgba(241, 245, 249, 0.6))' }}
+      className="group border-b border-border transition-colors cursor-pointer"
     >
       {/* 1. # Rank (Clean plain number, no circle) */}
       <td className="py-3 px-4 w-12 text-center text-xs font-semibold text-muted-foreground tabular-nums">
@@ -111,6 +116,6 @@ export default function AuthorTableRow({
       <td className="py-3 px-4 text-xs font-medium text-foreground/80 tabular-nums">
         {hIndex}
       </td>
-    </tr>
+    </motion.tr>
   );
 }

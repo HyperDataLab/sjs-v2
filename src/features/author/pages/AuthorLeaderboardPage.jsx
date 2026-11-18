@@ -7,6 +7,7 @@ import AuthorLeaderboardCharts from '../components/AuthorLeaderboardCharts';
 import AuthorNavigationTabs from '../components/AuthorNavigationTabs';
 import { Button } from '../../../shared/ui/button';
 import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
+import { MotionPage } from '../../../shared/ui/motion';
 import './AuthorLeaderboardPage.css';
 
 export default function AuthorLeaderboardPage() {
@@ -53,6 +54,7 @@ export default function AuthorLeaderboardPage() {
 
   return (
     <PageContainer>
+      <MotionPage className="space-y-4">
         <PageHeader
           title={t("author.bangXepHangTacGia")}
           description={t("author.cacTacGiaNoiBatNhatHeThongDuoc")}
@@ -92,6 +94,7 @@ export default function AuthorLeaderboardPage() {
             })
           }
         />
-      </PageContainer>
+      </MotionPage>
+    </PageContainer>
   );
 }
