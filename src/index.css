@@ -99,6 +99,20 @@ aside.app-sidebar {
   padding: 0.75rem !important;
 }
 
+/* ─── Design System Border Radius (Controls & Cards) ─────────────────── */
+.rounded-control {
+  border-radius: 8px !important;
+}
+
+.rounded-card {
+  border-radius: 12px !important;
+}
+
+/* Global button border-radius baseline */
+button:not(.rounded-none):not([class*="rounded-full"]) {
+  border-radius: 8px;
+}
+
 /* Custom background grid pattern for light mode */
 .grid-bg {
   background-color: var(--bg-main);

@@ -3,7 +3,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva } from 'class-variance-authority';
 import { cn } from '../../lib/utils';
 
-const buttonVariants = cva('inline-flex items-center justify-center gap-2 rounded-control border text-sm font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:pointer-events-none disabled:opacity-50 active:translate-y-px', {
+const buttonVariants = cva('inline-flex items-center justify-center gap-2 rounded-lg border text-sm font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:pointer-events-none disabled:opacity-50 active:translate-y-px', {
   variants: {
     variant: {
       default: 'border-primary bg-primary text-white shadow-card hover:border-primary-hover hover:bg-primary-hover',
