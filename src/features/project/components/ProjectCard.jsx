@@ -203,18 +203,35 @@ const ProjectCard = ({
           handleCardClick(e);
         }
       }}
-      className="group flex h-full flex-col justify-between p-4 transition-all hover:border-primary/50 hover:shadow-sm border border-border bg-surface rounded-xl cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary select-none no-underline"
+      className="group flex h-full flex-col justify-between p-4 transition-all hover:border-primary/50 hover:shadow-xs border border-border bg-surface rounded-xl cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary select-none !no-underline"
     >
       <div>
-        {/* Top Row: title [⋮] */}
-        <div className="flex items-start justify-between gap-2.5">
-          <div className="min-w-0 flex-1">
-            <h3 className="m-0 text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
-              {title}
-            </h3>
+        {/* Top Row: Icon + Title + Status + Action Menu [⋮] */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0 flex-1">
+            <div className="size-9 rounded-lg bg-primary-subtle text-primary flex items-center justify-center shrink-0 mt-0.5">
+              <Icon icon="lucide:folder-kanban" width="18" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="m-0 text-sm font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                {title}
+              </h3>
+              <div className="mt-1 flex items-center gap-2 flex-wrap">
+                <span className="inline-flex items-center text-[11px] font-medium text-muted-foreground bg-surface-muted px-2 py-0.5 rounded truncate max-w-[180px]" title={areaName}>
+                  {areaName}
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
+            <Badge
+              variant={isActive ? "success" : "outline"}
+              className="text-[10px] gap-1 px-2 py-0.5 font-semibold"
+            >
+              <span className={`size-1.5 rounded-full ${isActive ? 'bg-success animate-pulse' : 'bg-muted-foreground'}`} />
+              {isActive ? 'Active' : 'Inactive'}
+            </Badge>
 
             {/* Action Menu [⋮] */}
             {isOwner && (
@@ -298,30 +315,25 @@ const ProjectCard = ({
           </div>
         </div>
 
-        {/* Second Line: Field Metadata */}
-        <p className="m-0 mt-1 text-xs text-muted-foreground truncate">
-          Field: <span className="font-medium text-foreground">{areaName}</span>
-        </p>
-
-        {/* Third Line: Metrics Bar */}
-        <div className="mt-3.5 pt-3 border-t border-border/60 grid grid-cols-2 gap-2 text-xs">
-          <div className="flex items-center gap-1.5 text-muted-foreground">
+        {/* Metrics Bar: Integrated soft background container */}
+        <div className="mt-3.5 p-2 rounded-lg bg-surface-muted/40 grid grid-cols-2 gap-2 text-xs">
+          <div className="flex items-center gap-1.5 text-muted-foreground px-1">
             <Icon icon="lucide:file-text" width="14" className="text-primary shrink-0" />
-            <span>
-              <strong className="font-semibold text-foreground">{formatCount(articleCount)}</strong> {t('dashboard.articles', 'Articles')}
+            <span className="truncate">
+              <strong className="font-bold text-foreground font-mono">{formatCount(articleCount)}</strong> {t('dashboard.articles', 'Articles')}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 text-muted-foreground">
+          <div className="flex items-center gap-1.5 text-muted-foreground px-1">
             <Icon icon="lucide:key" width="14" className="text-amber-500 shrink-0" />
-            <span>
-              <strong className="font-semibold text-foreground">{formatCount(keywordCount)}</strong> {t('project.keywords', 'Keywords')}
+            <span className="truncate">
+              <strong className="font-bold text-foreground font-mono">{formatCount(keywordCount)}</strong> {t('project.keywords', 'Keywords')}
             </span>
           </div>
         </div>
       </div>
 
       {/* Bottom Line: 👥 [Avatar Group]   Updated 17/11/2026 */}
-      <div className="mt-3.5 pt-2.5 border-t border-border/40 flex items-center justify-between gap-2 text-xs text-muted-foreground">
+      <div className="mt-3 pt-2.5 border-t border-border/50 flex items-center justify-between gap-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-2 min-w-0">
           {renderAvatarGroup()}
           <span className="truncate text-[11px]">

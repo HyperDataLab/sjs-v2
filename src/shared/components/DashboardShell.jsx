@@ -38,6 +38,10 @@ export default function DashboardShell({ children }) {
     ? t('navigation.account', 'Profile')
     : t('navigation.projects', 'Projects');
 
+  // Group project sub-routes so navigating between analytics tabs does not remount the parent layout
+  const projectSubRouteMatch = location.pathname.match(/^(\/[^/]+\/project\/[^/]+)/);
+  const shellKey = projectSubRouteMatch ? projectSubRouteMatch[1] : location.pathname;
+
   // Ensure window and sidebar always scroll to top on page navigation
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -148,18 +152,15 @@ export default function DashboardShell({ children }) {
         </header>
 
         <DashboardShellContext.Provider value>
-          <AnimatePresence initial={false} mode="wait">
-            <motion.main
-              key={location.pathname}
-              className="app-main flex-1 min-w-0"
-              initial={reduceMotion ? false : { opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reduceMotion ? undefined : { opacity: 0 }}
-              transition={{ duration: reduceMotion ? 0 : 0.18, ease: 'easeOut' }}
-            >
-              {children}
-            </motion.main>
-          </AnimatePresence>
+          <motion.main
+            key={shellKey}
+            className="app-main flex-1 min-w-0"
+            initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.18, ease: 'easeOut' }}
+          >
+            {children}
+          </motion.main>
         </DashboardShellContext.Provider>
       </div>
 

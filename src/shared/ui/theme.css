@@ -475,18 +475,26 @@ textarea[aria-invalid="true"]:focus {
   color: var(--ds-primary-hover);
 }
 
-.app-main a {
-  text-decoration: none;
+.app-main a,
+.app-main a:hover,
+.app-main a:focus,
+.app-main a:visited,
+.app-main button,
+.app-main button:hover,
+.app-main [role="button"],
+.app-main [role="button"]:hover {
+  text-decoration: none !important;
 }
 
 .app-main a.hover-underline:hover,
 .app-main a.text-link:hover {
-  text-decoration: underline;
+  text-decoration: underline !important;
 }
 
 .no-underline,
 a.no-underline,
-a.no-underline:hover {
+a.no-underline:hover,
+a.no-underline:focus {
   text-decoration: none !important;
 }
 
@@ -562,7 +570,63 @@ a.no-underline:hover {
   border-bottom-color: var(--border, #E4E7EC);
 }
 
-/* 3. Harmonize Bootstrap Modals with ResearchPulse tokens */
+/* 3. Harmonize Bootstrap Modals with ResearchPulse tokens and ensure bulletproof centering */
+.modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1055 !important;
+}
+
+.modal.show,
+.modal[style*="display: block"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+.modal:not(.show):not([style*="display: block"]) {
+  display: none !important;
+}
+
+.modal-dialog {
+  position: relative !important;
+  margin: auto !important;
+  width: 100% !important;
+  max-width: var(--bs-modal-width, 500px) !important;
+  pointer-events: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+.modal-dialog.modal-sm {
+  max-width: 380px !important;
+}
+
+.modal-dialog.modal-lg {
+  max-width: 800px !important;
+}
+
+.modal-dialog.modal-xl {
+  max-width: 1140px !important;
+}
+
+.modal-dialog-centered {
+  margin: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: auto !important;
+}
+
 .modal-content {
   background-color: var(--ds-surface, #ffffff) !important;
   color: var(--ds-foreground, #0D1B1C) !important;
@@ -570,6 +634,8 @@ a.no-underline:hover {
   border-radius: var(--ds-radius-card, 12px) !important;
   box-shadow: var(--ds-shadow-popover, 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)) !important;
   overflow: hidden;
+  width: 100% !important;
+  margin: auto !important;
 }
 .modal-header,
 .modal-footer {
