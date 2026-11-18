@@ -45,16 +45,23 @@ const MOCK_BREAKDOWNS_MAP = {
 
 const normalizeAuthorRecord = (author) => {
   if (!author || typeof author !== 'object') return author;
-  const rawName = author.display_name ?? author.full_name ?? author.name ?? '';
-  const cleanedName = String(rawName).trim().replace(/^[\s;'"`]+/, '').trim() || 'Tác giả';
+  const cleanStr = (val) => String(val ?? '').replace(/[\t\r\n]+/g, ' ').trim();
+  const rawName = cleanStr(author.display_name || author.full_name || author.name || author.author_name || '');
+  const cleanedName = rawName || (author.openalex_id ? `Author ${author.openalex_id}` : (author.author_id ? `Author #${author.author_id}` : 'Tác giả'));
+  const rawInst1 = cleanStr(author.institution_1 ?? author.last_known_institution ?? author.affiliation ?? author.institution ?? '');
+  const rawInst2 = cleanStr(author.institution_2 ?? author.department ?? '');
   return {
     ...author,
     full_name: cleanedName,
     name: cleanedName,
-    institution_1: author.institution_1 ?? author.last_known_institution ?? author.institution ?? '',
-    institution_2: author.institution_2 ?? author.department ?? author.affiliation ?? '',
+    display_name: cleanedName,
+    institution_1: rawInst1,
+    institution_2: rawInst2,
     article_count: author.article_count ?? author.works_count ?? 0,
+    works_count: author.works_count ?? author.article_count ?? 0,
     citation_count: author.citation_count ?? author.cited_by_count ?? 0,
+    cited_by_count: author.cited_by_count ?? author.citation_count ?? 0,
+    h_index: author.h_index ?? author.hindex ?? 0,
     homepage: author.homepage ?? author.homepage_url ?? '',
     bio: author.bio ?? author.description ?? '',
     orcid: author.orcid ?? '',
@@ -151,7 +158,18 @@ export default function useAuthors() {
     queryKey: ['authors', 'list', authorsParams],
     queryFn: async () => {
       try {
-        const response = await getAuthorsApi(authorsParams);
+        const apiParams = { ...authorsParams };
+        if (authorsParams?.sort === 'citations') {
+          apiParams.sort_by = 'cited_by_count';
+          apiParams.order = 'desc';
+        } else if (authorsParams?.sort === 'impact' || authorsParams?.sort === 'h_index') {
+          apiParams.sort_by = 'h_index';
+          apiParams.order = 'desc';
+        } else {
+          apiParams.sort_by = 'works_count';
+          apiParams.order = 'desc';
+        }
+        const response = await getAuthorsApi(apiParams);
         if (response.data && typeof response.data === 'object' && response.data.success !== false) {
           const payload = response.data.data;
           const items = extractItemsFromCollectionPayload(payload);
