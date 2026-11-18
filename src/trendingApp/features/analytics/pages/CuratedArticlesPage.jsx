@@ -11,6 +11,10 @@ import { Pagination } from '../components/Pagination/Pagination';
 import DashboardFooter from '../../../shared/components/layout/DashboardFooter';
 import { ManageKeywordsModal } from '../components/ManageKeywordsModal/ManageKeywordsModal';
 import { useCuratedArticles } from '../hooks/useCuratedArticles';
+import { Skeleton } from '../../../../shared/ui/skeleton';
+import { StatePanel } from '../../../../shared/ui/state-panel';
+import { Card } from '../../../../shared/ui/card';
+import { Icon } from '@iconify/react';
 import styles from '../styles/curatedArticles.module.css';
 import analyticsStyles from '../styles/Analytics.module.css';
 
@@ -165,15 +169,22 @@ const CuratedArticlesPage = () => {
           <div className={styles.articlesWrapper}>
             <div className={styles.leftColumn}>
               {loading && articles.length === 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '16px' }}>
-                  <div className="update-icon spin" style={{ width: '32px', height: '32px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%' }}></div>
-                  <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{t('analytics.loadingArticles', 'Loading articles...')}</div>
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <Card key={i} className="p-4 space-y-3">
+                      <Skeleton className="h-5 w-3/4 rounded" />
+                      <Skeleton className="h-4 w-1/2 rounded" />
+                      <Skeleton className="h-12 w-full rounded" />
+                    </Card>
+                  ))}
                 </div>
               ) : error && articles.length === 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '12px', border: 'var(--border-light)', borderRadius: 'var(--radius-md)', background: 'var(--color-surface)' }}>
-                  <div style={{ color: '#ef4444', fontSize: '16px', fontWeight: 'bold' }}>{t('common.error', 'Error')}</div>
-                  <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{error}</div>
-                </div>
+                <StatePanel
+                  variant="error"
+                  icon={<Icon icon="lucide:alert-triangle" width="32" className="text-danger" />}
+                  title={t('common.error', 'Error')}
+                  description={error}
+                />
               ) : (
                 articles.map(article => (
                   <CuratedArticleCard key={article.id} article={article} />

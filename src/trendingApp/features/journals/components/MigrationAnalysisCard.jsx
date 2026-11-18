@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Sankey, ResponsiveContainer, Tooltip } from 'recharts';
 import Card from '../../../shared/components/common/Card';
 import InlineErrorState from '../../../shared/components/common/InlineErrorState';
+import { Skeleton } from '../../../../shared/ui/skeleton';
 
 const PeriodBadge = () => (
   <div className="mac-badge">
@@ -116,9 +117,8 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: '350px' }}>
-          <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 10px' }}></div>
-          {t('common.loading', 'Loading migration analysis...')}
+        <div className="p-6 flex flex-col justify-center items-center h-full min-h-[350px] w-full">
+          <Skeleton className="h-[300px] w-full rounded-lg" />
         </div>
       );
     }
