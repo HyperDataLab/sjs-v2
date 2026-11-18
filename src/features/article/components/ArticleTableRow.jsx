@@ -58,7 +58,7 @@ export default function ArticleTableRow({
       {/* Index */}
       <td className="text-muted-custom ps-3 font-display" style={{
       width: '40px',
-      fontSize: '0.8rem'
+      fontSize: '13px'
     }}>
         {index + 1}
       </td>
@@ -104,7 +104,7 @@ export default function ArticleTableRow({
       {/* Publication Year */}
       <td className="text-center font-display" style={{
       width: '80px',
-      fontSize: '0.85rem',
+      fontSize: '14px',
       color: 'var(--text-muted)'
     }}>
         {article.publication_year}
@@ -116,7 +116,7 @@ export default function ArticleTableRow({
     }}>
         {article.doi ? <div className="d-flex align-items-center gap-1.5">
             <span className="text-muted-custom text-xs text-truncate font-display" style={{
-          fontSize: '0.75rem'
+          fontSize: '13px'
         }}>
               {article.doi}
             </span>

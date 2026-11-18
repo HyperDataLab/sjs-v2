@@ -166,7 +166,7 @@ export default function RepositoryManagementPage() {
           </div>
           <div>
             <div className="text-muted-custom text-uppercase small fw-bold" style={{
-            fontSize: '0.7rem',
+            fontSize: '13px',
             letterSpacing: '0.05em'
           }}>
               Select Journal Repository

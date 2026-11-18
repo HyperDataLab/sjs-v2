@@ -169,7 +169,7 @@ const ImpactMatrixCard = ({ data, loading, error, onRetry }) => {
                     value: t('journals.sjrCitationScoreUpper', 'SJR CITATION SCORE'), 
                     position: 'bottom', 
                     offset: 15, 
-                    fontSize: 10, 
+                    fontSize: 13, 
                     fontWeight: 600,
                     letterSpacing: '0.05em',
                     fill: 'var(--color-neutral-500)' 
@@ -189,7 +189,7 @@ const ImpactMatrixCard = ({ data, loading, error, onRetry }) => {
                     angle: -90, 
                     position: 'left', 
                     offset: 15,
-                    fontSize: 10, 
+                    fontSize: 13, 
                     fontWeight: 600,
                     letterSpacing: '0.05em',
                     fill: 'var(--color-neutral-500)' 

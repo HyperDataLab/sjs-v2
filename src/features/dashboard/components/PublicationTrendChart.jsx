@@ -70,7 +70,7 @@ function SimpleSvgChart({
         const isTooCloseToLast = i % step === 0 && years.length - 1 - i < step * 0.5 && i !== years.length - 1;
         if (!shouldShow || isTooCloseToLast) return null;
         return <text key={yr} x={xScale(i)} y={H - 4} textAnchor="middle" style={{
-          fontSize: 9,
+          fontSize: 13,
           fill: 'var(--text-muted)',
           fontFamily: 'var(--font-display)'
         }}>
@@ -114,11 +114,11 @@ function SimpleSvgChart({
       transform: 'translate(-50%, -100%) translateY(-8px)'
     }}>
           <div className="fw-semibold mb-0" style={{
-        fontSize: '10px',
+        fontSize: '13px',
         color: 'var(--text-muted)'
       }}>{t("article.nam")}{hoveredPoint.year}</div>
           <div className="fw-bold" style={{
-        fontSize: '12px',
+        fontSize: '13px',
         color: 'var(--primary)'
       }}>{hoveredPoint.value}{t("author.baiBao")}</div>
         </div>}
@@ -151,17 +151,17 @@ export default function PublicationTrendChart({
         backgroundColor: LINE_COLORS[i % LINE_COLORS.length]
       }} />
           <span className="text-muted-custom" style={{
-        fontSize: '0.65rem'
+        fontSize: '13px'
       }}>{s.label ? t(s.label, s.label) : `Series ${i + 1}`}</span>
         </div>)}
     </div> : null;
   const description = <>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <p className="text-muted-custom mb-0" style={{
-          fontSize: '0.72rem'
+          fontSize: '13px'
         }}>{t("dashboard.soBaiBaoTheoNamTrongProjectsCu")}</p>
         {isFetching && (
-          <span className="d-inline-flex align-items-center gap-1 text-muted-custom" style={{ fontSize: '0.7rem' }}>
+          <span className="d-inline-flex align-items-center gap-1 text-muted-custom" style={{ fontSize: '13px' }}>
             <Icon icon="lucide:loader" className="spin-animation" width={12} />
             <span>{t("common.dangCapNhat", "Đang cập nhật...")}</span>
           </span>
@@ -177,7 +177,7 @@ export default function PublicationTrendChart({
           color: '#ef4444'
         }} />
             <p className="text-muted-custom mb-0" style={{
-          fontSize: '0.8rem'
+          fontSize: '13px'
         }}>{error}</p>
             {onRetry && <button className="btn btn-sm btn-outline-primary mt-2" onClick={onRetry}>{t("article.thuLai")}</button>}
           </div> : years.length === 0 ? <div className="d-flex flex-column align-items-center justify-content-center gap-2 py-5">
@@ -185,10 +185,10 @@ export default function PublicationTrendChart({
           color: 'var(--text-muted)'
         }} />
             <p className="text-main fw-semibold mb-1" style={{
-          fontSize: '0.85rem'
+          fontSize: '14px'
         }}>{t("dashboard.chuaCoDuLieuXuHuongPublication")}</p>
             <p className="text-muted-custom mb-0" style={{
-          fontSize: '0.75rem'
+          fontSize: '13px'
         }}>{t("dashboard.taoProjectDauTienDeBatDauTheoD")}</p>
           </div> : <div style={{
             opacity: isFetching ? 0.6 : 1,

@@ -184,13 +184,13 @@ export default function ArticleTable({
 
                   <h6 className="text-main font-weight-semibold mb-2" style={{
                 lineHeight: '1.4',
-                fontSize: '0.9rem'
+                fontSize: '14px'
               }}>
                     <LatexText text={article.title} />
                   </h6>
 
                   {article.abstract && <p className="text-muted-custom text-xs mb-3 text-truncate-2" style={{
-                fontSize: '0.75rem',
+                fontSize: '13px',
                 lineHeight: '1.4'
               }}>
                       <LatexText text={article.abstract} />
@@ -199,12 +199,12 @@ export default function ArticleTable({
                   <div className="pt-2 border-top border-light d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <div>
                       {article.journal && <div className="text-primary text-xs font-weight-semibold" style={{
-                    fontSize: '0.75rem'
+                    fontSize: '13px'
                   }}>
                           {article.journal.display_name}
                         </div>}
                       <div className="text-muted-custom text-xs font-display mt-0.5" style={{
-                    fontSize: '0.7rem'
+                    fontSize: '13px'
                   }}>{t("article.nam2")}{article.publication_year} {article.doi ? `· DOI: ${article.doi}` : ''}
                       </div>
                     </div>

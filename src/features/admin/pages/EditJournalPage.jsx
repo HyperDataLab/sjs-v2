@@ -249,7 +249,7 @@ export default function EditJournalPage() {
                     <small className="text-muted-custom">Visible in main index</small>
                   </div>
                   <Form.Check type="switch" id="visibility-switch" className="admin-toggle-switch" checked={formData.visibility === 'Public'} onChange={handleToggleVisibility} style={{
-                  fontSize: '1.2rem',
+                  fontSize: '16px',
                   cursor: 'pointer'
                 }} />
                 </div>

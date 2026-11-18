@@ -121,7 +121,7 @@ export default function VolumeArchivePage() {
                   <Form.Control type="text" placeholder={t("admin.searchByVolumeNumberEgVolume1")} value={search} onChange={e => setSearch(e.target.value)} style={{
                 backgroundColor: 'var(--bg-chip)',
                 borderColor: 'var(--border)',
-                fontSize: '0.9rem'
+                fontSize: '14px'
               }} />
                 </InputGroup>
               </Form.Group>
@@ -138,7 +138,7 @@ export default function VolumeArchivePage() {
                 <Form.Select value={frequencyFilter} onChange={e => setFrequencyFilter(e.target.value)} style={{
               backgroundColor: 'var(--bg-chip)',
               borderColor: 'var(--border)',
-              fontSize: '0.9rem',
+              fontSize: '14px',
               cursor: 'pointer'
             }}>
                   <option value="All">All Periods</option>
@@ -160,7 +160,7 @@ export default function VolumeArchivePage() {
                 <Form.Select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{
               backgroundColor: 'var(--bg-chip)',
               borderColor: 'var(--border)',
-              fontSize: '0.9rem',
+              fontSize: '14px',
               cursor: 'pointer'
             }}>
                   <option value="newest">Newest to Oldest</option>

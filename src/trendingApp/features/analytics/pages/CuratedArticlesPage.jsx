@@ -121,17 +121,17 @@ const CuratedArticlesPage = () => {
                 
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px', color: '#64748b' }}>{t('analytics.fromYear', 'From Year')}</label>
+                    <label style={{ display: 'block', fontSize: '13px', marginBottom: '4px', color: '#64748b' }}>{t('analytics.fromYear', 'From Year')}</label>
                     <input type="number" placeholder="YYYY" value={filterForm.from_year} onChange={e => setFilterForm(f => ({ ...f, from_year: e.target.value }))} style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '13px' }} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px', color: '#64748b' }}>{t('analytics.toYear', 'To Year')}</label>
+                    <label style={{ display: 'block', fontSize: '13px', marginBottom: '4px', color: '#64748b' }}>{t('analytics.toYear', 'To Year')}</label>
                     <input type="number" placeholder="YYYY" value={filterForm.to_year} onChange={e => setFilterForm(f => ({ ...f, to_year: e.target.value }))} style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #cbd5e1', fontSize: '13px' }} />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px', color: '#64748b' }}>{t('analytics.trackedKeywords', 'Tracked Keywords')}</label>
+                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '4px', color: '#64748b' }}>{t('analytics.trackedKeywords', 'Tracked Keywords')}</label>
                   <select 
                     value={filterForm.keywords} 
                     onChange={e => setFilterForm(f => ({ ...f, keywords: e.target.value }))} 

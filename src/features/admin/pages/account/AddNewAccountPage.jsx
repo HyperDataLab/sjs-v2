@@ -98,11 +98,11 @@ export default function AddNewAccountPage() {
                 </div>
                 <div>
                   <h6 className="fw-bold mb-1.5" style={{
-                  fontSize: '0.85rem',
+                  fontSize: '14px',
                   color: '#7f1d1d'
                 }}>{t("admin.thongBaoTuDong")}</h6>
                   <p className="small mb-0 lh-sm" style={{
-                  fontSize: '0.78rem',
+                  fontSize: '13px',
                   color: '#991b1b',
                   opacity: 0.95
                 }}>{t("admin.heThongSeTuDongGuiEmailKichHoa")}</p>
@@ -128,11 +128,11 @@ export default function AddNewAccountPage() {
                 </div>
                 <div>
                   <h6 className="fw-bold mb-1.5" style={{
-                  fontSize: '0.85rem',
+                  fontSize: '14px',
                   color: '#9a3412'
                 }}>{t("admin.phanQuyenThongMinh")}</h6>
                   <p className="small mb-0 lh-sm" style={{
-                  fontSize: '0.78rem',
+                  fontSize: '13px',
                   color: '#9a3412',
                   opacity: 0.95
                 }}>{t("admin.vaiTroXacDinhCacQuyenTruyCapVa")}</p>
@@ -158,11 +158,11 @@ export default function AddNewAccountPage() {
                 </div>
                 <div>
                   <h6 className="fw-bold mb-1.5" style={{
-                  fontSize: '0.85rem',
+                  fontSize: '14px',
                   color: '#1e293b'
                 }}>{t("admin.lichSuThaoTac")}</h6>
                   <p className="small mb-0 lh-sm" style={{
-                  fontSize: '0.78rem',
+                  fontSize: '13px',
                   color: '#475569',
                   opacity: 0.95
                 }}>{t("admin.moiHanhDongTaoTaiKhoanDeuDuocG")}</p>

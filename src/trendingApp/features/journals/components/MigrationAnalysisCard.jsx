@@ -69,7 +69,7 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
         <rect x={x} y={rectY} width={width} height={rectHeight} fill={payload.fill} rx="2" />
         <foreignObject x={x} y={rectY - 20} width={width} height={rectHeight + 40}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '0 4px', textAlign: 'center' }}>
-             <span style={{ color: payload.textColor, fontSize: '10px', fontWeight: 'bold', letterSpacing: '0.05em', lineHeight: 1.2 }}>
+             <span style={{ color: payload.textColor, fontSize: '13px', fontWeight: 'bold', letterSpacing: '0.05em', lineHeight: 1.2 }}>
                {nodeName}
              </span>
           </div>
@@ -104,7 +104,7 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
       
       return (
         <div style={{ background: '#fff', border: '1px solid var(--color-neutral-200)', padding: '10px', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
-          <p style={{ margin: 0, fontSize: '12px', color: 'var(--color-neutral-600)' }}>
+          <p style={{ margin: 0, fontSize: '13px', color: 'var(--color-neutral-600)' }}>
             {t('journals.journals', 'Journals')}: <strong style={{ color: 'var(--color-neutral-900)' }}>{data.value}</strong>
           </p>
         </div>

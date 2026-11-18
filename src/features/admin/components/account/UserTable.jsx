@@ -33,7 +33,7 @@ export default function UserTable({
     }}>
         {/* Table Header */}
         <thead className="border-bottom text-muted-custom" style={{
-        fontSize: '0.75rem',
+        fontSize: '13px',
         letterSpacing: '0.05em'
       }}>
           <tr>
@@ -73,17 +73,17 @@ export default function UserTable({
                 width: '42px',
                 height: '42px',
                 background: 'linear-gradient(135deg, #3393CB 0%, #005A96 100%)',
-                fontSize: '0.95rem',
+                fontSize: '15px',
                 boxShadow: '0 8px 18px rgba(234, 88, 12, 0.14)'
               }} aria-label={`Avatar chữ cái đầu của ${user.name || user.email || t("admin.nguoiDung")}`}>
                     {String(user.name || user.email || 'U').trim().charAt(0).toUpperCase() || 'U'}
                   </div>
                   <div>
                     <div className="fw-bold text-main" style={{
-                  fontSize: '0.9rem'
+                  fontSize: '14px'
                 }}>{user.name}</div>
                     <div className="text-muted-custom" style={{
-                  fontSize: '0.78rem'
+                  fontSize: '13px'
                 }}>{user.email}</div>
                   </div>
                 </div>

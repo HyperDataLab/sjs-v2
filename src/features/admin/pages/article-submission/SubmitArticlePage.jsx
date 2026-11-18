@@ -167,13 +167,13 @@ export default function SubmitArticlePage() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 className="font-display fw-bold text-main mb-1" style={{
-          fontSize: '1.8rem'
+          fontSize: '16px'
         }}>Submit Article</h1>
         </div>
         
         {/* Top Aligned Save Draft Button */}
         <Button variant="light" onClick={handleSaveDraft} className="border rounded-3 py-2 px-3 fw-semibold text-main hover-primary-light" style={{
-        fontSize: '0.85rem'
+        fontSize: '14px'
       }}>
           Save Draft
         </Button>
@@ -247,7 +247,7 @@ export default function SubmitArticlePage() {
 
           {successInfo && <div className="p-3.5 rounded-3 border mb-4 text-start" style={{
           backgroundColor: '#f8fafc',
-          fontSize: '0.85rem'
+          fontSize: '14px'
         }}>
               <div className="mb-2">
                 <span className="text-muted-custom">Mode: </span>

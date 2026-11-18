@@ -66,14 +66,14 @@ export default function ArticleStatsCards({
             <Card.Body className="d-flex align-items-center justify-content-between p-3">
               <div>
                 <div className="text-muted-custom font-weight-bold mb-1" style={{
-              fontSize: '0.75rem',
+              fontSize: '13px',
               letterSpacing: '0.05em',
               textTransform: 'uppercase'
             }}>
                   {item.label}
                 </div>
                 <h3 className="text-main mb-0 font-display font-weight-bold" style={{
-              fontSize: '1.75rem'
+              fontSize: '16px'
             }}>
                   {formatNumber(item.value)}
                 </h3>
