@@ -6,11 +6,12 @@ import { Icon } from "@iconify/react";
 import Header from "../../landing/components/Header";
 import useAuth from "../../auth/hooks/useAuth";
 import { isAuthenticated as isAuthenticatedUtil } from "../../../shared/utils/auth";
-import { PageContainer } from "../../../shared/ui/page-layout";
+import { PageContainer, PageHeader } from "../../../shared/ui/page-layout";
 import { Card } from "../../../shared/ui/card";
 import { Button } from "../../../shared/ui/button";
 import { Badge } from "../../../shared/ui/badge";
 import { StatePanel } from "../../../shared/ui/state-panel";
+import { Skeleton } from "../../../shared/ui/skeleton";
 
 export default function ProfilePage() {
   const { t } = useTranslation();
@@ -122,12 +123,27 @@ export default function ProfilePage() {
 
   if (isLoading && !user) {
     return (
-      <div className="min-vh-100 flex flex-col grid-bg text-foreground">
+      <div className="min-vh-100 flex flex-col text-foreground">
         <Header />
-        <div className="flex-1 flex flex-col items-center justify-center p-8">
-          <Icon icon="lucide:loader-2" className="animate-spin text-primary" width="36" />
-          <p className="mt-3 text-xs text-muted-foreground">{t("journal.dangTaiDuLieu")}</p>
-        </div>
+        <PageContainer className="flex-1 max-w-5xl py-6 space-y-6">
+          <Skeleton className="h-8 w-48" />
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <Card className="md:col-span-4 p-5 flex flex-col items-center space-y-4">
+              <Skeleton className="size-20 rounded-full" />
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-4 w-20" />
+            </Card>
+            <Card className="md:col-span-8 p-6 space-y-4">
+              <Skeleton className="h-6 w-48" />
+              <div className="grid grid-cols-2 gap-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </Card>
+          </div>
+        </PageContainer>
       </div>
     );
   }
@@ -155,33 +171,18 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-vh-100 flex flex-col grid-bg text-foreground">
+    <div className="min-vh-100 flex flex-col text-foreground">
       <Header />
 
-      <PageContainer className="flex-1 max-w-5xl py-6">
-        {/* Breadcrumb */}
-        <nav aria-label="breadcrumb" className="mb-4">
-          <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
-            <li>
-              <Link to="/" className="no-underline text-muted-foreground hover:text-primary transition-colors">
-                {t("author.tongQuan")}
-              </Link>
-            </li>
-            <li aria-hidden="true" className="select-none">/</li>
-            <li className="font-medium text-foreground" aria-current="page">
-              {t("profile.hoSoCaNhan")}
-            </li>
-          </ol>
-        </nav>
-
-        <div className="mb-6">
-          <h1 className="m-0 text-base sm:text-lg font-bold text-foreground leading-snug">
-            {t("profile.hoSo")}
-          </h1>
-          <p className="mt-1 mb-0 text-xs text-muted-foreground">
-            {t("profile.quanLyThongTinCaNhanVaThietLap")}
-          </p>
-        </div>
+      <PageContainer className="flex-1 max-w-5xl py-6 space-y-6">
+        <PageHeader
+          breadcrumbs={[
+            { label: t("author.tongQuan"), to: "/" },
+            { label: t("profile.hoSoCaNhan") }
+          ]}
+          title={t("profile.hoSo")}
+          description={t("profile.quanLyThongTinCaNhanVaThietLap")}
+        />
 
         {!computedIsAuthenticated ? (
           <StatePanel
