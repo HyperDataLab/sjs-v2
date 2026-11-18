@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-import LandingPage from '../../features/landing/pages/LandingPage';
 import JournalDetailPage from '../../features/journal/pages/JournalDetailPage';
 import CatalogSearchPage from '../../features/catalog/pages/CatalogSearchPage';
 import ArticleListPage from '../../features/article/pages/ArticleListPage';
@@ -77,7 +76,7 @@ export default function AppRoutes() {
 
       {/* Language Prefixed Route Tree */}
       <Route path="/:lang" element={<LangLayout />}>
-        <Route index element={<LandingPage />} />
+        <Route index element={<Navigate to="login" replace />} />
 
         <Route element={<PublicRoute />}>
           <Route path="login" element={<LoginPage />} />
@@ -181,8 +180,8 @@ export default function AppRoutes() {
           <Route path="admin-preview/journals/:id/edit" element={<EditJournalPage />} />
         </Route>
 
-        {/* Fallback inside language to LandingPage */}
-        <Route path="*" element={<LandingPage />} />
+        {/* Unknown language-prefixed URLs return to the app entry point. */}
+        <Route path="*" element={<Navigate to="login" replace />} />
       </Route>
 
       {/* Legacy/Invalid Route Fallback Handler (Matches any URL not caught above, e.g. /login or /jp/login) */}

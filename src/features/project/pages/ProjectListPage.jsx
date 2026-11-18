@@ -7,10 +7,12 @@ import ProjectCard from '../components/ProjectCard';
 import EmptyState from '../../../shared/components/EmptyState';
 import LoadingSkeleton from '../../../shared/components/LoadingSkeleton';
 import { Icon } from '@iconify/react';
-import { Modal, Button } from 'react-bootstrap';
-import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
+import { Modal } from 'react-bootstrap';
+import { Button } from '../../../shared/ui/button';
+import { Alert } from '../../../shared/ui/alert';
 import useAuth from '../../auth/hooks/useAuth';
 import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
+
 const ProjectListPage = () => {
   const navigate = useNavigate();
   const {
@@ -19,9 +21,10 @@ const ProjectListPage = () => {
     error,
     deleteProject,
     restoreProject,
-    refetch
+    refetch,
   } = useProjects();
   const [recentIds, setRecentIds] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [confirmModal, setConfirmModal] = useState({ show: false, projectId: null, action: null });
   const { t } = useTranslation();
   const auth = useAuth();
@@ -36,8 +39,9 @@ const ProjectListPage = () => {
     } catch (e) {
       console.error(t("project.loiDocDuAnXemGanDay"), e);
     }
-  }, []);
-  const handleDelete = async id => {
+  }, [t]);
+
+  const handleDelete = async (id) => {
     setConfirmModal({ show: true, projectId: id, action: 'delete' });
   };
 
@@ -52,7 +56,7 @@ const ProjectListPage = () => {
       const storageKey = 'recently_viewed_projects';
       const raw = localStorage.getItem(storageKey);
       if (raw) {
-        const list = JSON.parse(raw).filter(recentId => String(recentId) !== String(id));
+        const list = JSON.parse(raw).filter((recentId) => String(recentId) !== String(id));
         localStorage.setItem(storageKey, JSON.stringify(list));
         setRecentIds(list);
       }
@@ -61,7 +65,7 @@ const ProjectListPage = () => {
     }
   };
 
-  const handleRestore = async id => {
+  const handleRestore = async (id) => {
     setConfirmModal({ show: true, projectId: id, action: 'restore' });
   };
 
@@ -76,134 +80,214 @@ const ProjectListPage = () => {
     }
   };
 
-  const activeProjects = projects.filter(p => p.status !== 'DELETED');
+  const activeProjects = projects.filter((p) => p.status !== 'DELETED');
   
+  // Lọc theo từ khóa tìm kiếm nếu có
+  const filteredProjects = activeProjects.filter((p) => {
+    if (!searchTerm.trim()) return true;
+    const term = searchTerm.toLowerCase();
+    const titleMatch = (p.title || '').toLowerCase().includes(term);
+    const areaMatch = (p.subject_area?.name || p.subject_area || '').toLowerCase().includes(term);
+    const keywordMatch = (p.watch_keywords || []).some((kw) => (kw.keyword || kw || '').toLowerCase().includes(term));
+    return titleMatch || areaMatch || keywordMatch;
+  });
+
   // Lọc các dự án xem gần đây từ danh sách active projects
-  const recentProjects = recentIds.map(id => activeProjects.find(p => (p.project_id || p.id) === id)).filter(Boolean);
-  return <PageContainer className="grid-bg max-w-[1200px] py-8">
-        {/* Breadcrumb */}
-        <nav aria-label="breadcrumb" className="mb-4">
-          <ol className="breadcrumb mb-2 text-muted-custom small">
-            <li className="breadcrumb-item"><Link to={ROUTES.DASHBOARD} className="text-decoration-none text-muted-custom hover-primary">{t("author.tongQuan")}</Link></li>
-            <li className="breadcrumb-item active" aria-current="page">{t("project.duAnTheoDoi")}</li>
-          </ol>
-        </nav>
+  const recentProjects = recentIds
+    .map((id) => activeProjects.find((p) => (p.project_id || p.id) === id))
+    .filter(Boolean);
 
-        {/* Page Header */}
-        <PageHeader
-          className="mb-5 border-0 pb-0"
-          title={t("project.duAnNghienCuuCuaToi")}
-          description={t("project.quanLyCacKeywordWatchlistsPhan")}
-          actions={<PrimaryButton icon="lucide:plus" onClick={() => navigate(ROUTES.PROJECT_CREATE)}>{t("journal.taoDuAnMoi")}</PrimaryButton>}
-        />
+  return (
+    <PageContainer className="grid-bg max-w-[1200px] py-8">
+      {/* Breadcrumb */}
+      <nav aria-label="breadcrumb" className="mb-4">
+        <ol className="flex items-center gap-2 p-0 m-0 list-none text-xs text-muted-foreground">
+          <li>
+            <Link to={ROUTES.DASHBOARD} className="no-underline text-muted-foreground hover:text-primary transition-colors">
+              {t("author.tongQuan")}
+            </Link>
+          </li>
+          <li aria-hidden="true" className="select-none">/</li>
+          <li className="font-medium text-foreground" aria-current="page">
+            {t("project.duAnTheoDoi")}
+          </li>
+        </ol>
+      </nav>
 
-        {/* Filter / Search Bar Placeholder */}
-        <div className="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-          <div className="position-relative" style={{
-          maxWidth: '300px',
-          width: '100%'
-        }}>
-            <Icon icon="lucide:search" width="18" className="position-absolute top-50 translate-middle-y text-muted" style={{
-            left: '12px'
-          }} />
-            <input type="text" className="form-control ps-5 bg-white border" placeholder={t("project.timKiemDuAn")} style={{
-            fontSize: '0.9rem',
-            borderRadius: '15px',
-            boxShadow: 'none'
-          }} onFocus={e => {
-            e.currentTarget.style.borderColor = 'var(--border)';
-            e.currentTarget.style.boxShadow = 'none';
-            e.currentTarget.style.outline = 'none';
-          }} onBlur={e => {
-            e.currentTarget.style.borderColor = 'var(--border)';
-          }} />
-          </div>
-          <div className="d-flex gap-4 text-muted-custom small">
-            <span>{t("project.tongSoDuAn")}{" "}<strong className="text-main">{activeProjects.length}</strong></span>
-            <span>{t("project.dangHoatDong")}{" "}<strong className="text-success">{activeProjects.filter(p => p.status === 'ACTIVE').length}</strong></span>
-          </div>
+      {/* Page Header */}
+      <PageHeader
+        className="mb-6 border-0 pb-0"
+        title={t("project.duAnNghienCuuCuaToi")}
+        description={t("project.quanLyCacKeywordWatchlistsPhan")}
+        actions={
+          <Button onClick={() => navigate(ROUTES.PROJECT_CREATE)}>
+            <Icon icon="lucide:plus" width="16" aria-hidden="true" />
+            <span>{t("journal.taoDuAnMoi")}</span>
+          </Button>
+        }
+      />
+
+      {/* Filter / Search Bar */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-border">
+        <div className="relative w-full sm:max-w-xs">
+          <Icon
+            icon="lucide:search"
+            width="16"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+            aria-hidden="true"
+          />
+          <input
+            type="text"
+            className="w-full h-10 pl-9 pr-4 rounded-control border border-border bg-surface text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 transition-all"
+            placeholder={t("project.timKiemDuAn")}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <span>
+            {t("project.tongSoDuAn")}{" "}
+            <strong className="font-semibold text-foreground">{activeProjects.length}</strong>
+          </span>
+          <span>
+            {t("project.dangHoatDong")}{" "}
+            <strong className="font-semibold text-success">
+              {activeProjects.filter((p) => p.status === 'ACTIVE').length}
+            </strong>
+          </span>
+        </div>
+      </div>
 
-        {/* Content */}
-        {error ? <div className="alert alert-danger border-0 rounded-4 shadow-sm p-4 d-flex align-items-center gap-3">
-            <Icon icon="lucide:alert-triangle" width="24" className="text-danger flex-shrink-0" />
-            <div>
-              <h6 className="fw-bold mb-1">{t("article.loiTaiDuLieu")}</h6>
-              <p className="mb-0 small">{error}</p>
-            </div>
-            <PrimaryButton variant="outline" className="ms-auto" onClick={() => refetch()}>{t("article.thuLai")}</PrimaryButton>
-          </div> : isLoading ? <div className="row g-4">
-            {[1, 2, 3].map(i => <div key={i} className="col-12 col-md-6 col-lg-4">
-                <div className="card glass-card border-0 shadow-sm rounded-4 p-4 h-100">
-                  <LoadingSkeleton height="24px" width="40%" className="mb-3 rounded-pill" />
-                  <LoadingSkeleton height="28px" width="80%" className="mb-4 rounded" />
-                  <LoadingSkeleton height="16px" width="60%" className="mb-2 rounded" />
-                  <LoadingSkeleton height="16px" width="50%" className="mb-4 rounded" />
-                  <LoadingSkeleton height="1px" width="100%" className="mb-3 rounded" />
-                  <div className="d-flex justify-content-between mt-auto">
-                    <LoadingSkeleton height="16px" width="40%" className="rounded" />
-                    <LoadingSkeleton height="16px" width="20%" className="rounded" />
-                  </div>
-                </div>
-              </div>)}
-          </div> : projects.length === 0 ? <EmptyState title={t("project.banChuaCoDuAnNao")} description={t("project.taoDuAnDauTienDeBatDauTheoDoiT")} icon="lucide:folder-open" actionLabel="+ Tạo dự án mới" onAction={() => navigate(ROUTES.PROJECT_CREATE)} className="mt-4" /> : <div className="d-flex flex-column gap-5">
-            {/* Section: Dự án xem gần đây */}
-            {recentProjects.length > 0 && <div>
-                <h5 className="font-display fw-bold text-main mb-3 d-flex align-items-center gap-2">
-                  <Icon icon="lucide:clock" width={18} style={{
-              color: 'var(--primary)'
-            }} />
-                  <span>{t("project.duAnXemGanDay")}</span>
-                </h5>
-                <div className="row g-4">
-                  {recentProjects.map(project => <div key={`recent-${project.project_id || project.id}`} className="col-12 col-md-6 col-lg-4">
-                      <ProjectCard project={project} onDelete={handleDelete} onRestore={handleRestore} isRecent={true} currentUser={currentUser} />
-                    </div>)}
-                </div>
-              </div>}
-
-            {/* Section: Tất cả dự án */}
-            <div>
-              <h5 className="font-display fw-bold text-main mb-3 d-flex align-items-center gap-2">
-                <Icon icon="lucide:folder" width={18} style={{
-              color: 'var(--primary)'
-            }} />
-                <span>{t("project.tatCaDuAn")} ({activeProjects.length})</span>
-              </h5>
-              <div className="row g-4">
-                {activeProjects.map(project => <div key={project.project_id || project.id} className="col-12 col-md-6 col-lg-4">
-                    <ProjectCard project={project} onDelete={handleDelete} onRestore={handleRestore} currentUser={currentUser} />
-                  </div>)}
+      {/* Content */}
+      {error ? (
+        <Alert variant="destructive" className="mb-6 items-center">
+          <Icon icon="lucide:alert-triangle" width="20" className="shrink-0" aria-hidden="true" />
+          <div className="flex-1">
+            <h4 className="font-semibold text-base mb-1">{t("article.loiTaiDuLieu")}</h4>
+            <p className="text-xs text-muted-foreground m-0">{error}</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => refetch()}>
+            {t("article.thuLai")}
+          </Button>
+        </Alert>
+      ) : isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-card border border-border bg-surface p-4">
+              <LoadingSkeleton height="20px" width="40%" className="mb-3 rounded-control" />
+              <LoadingSkeleton height="24px" width="80%" className="mb-4 rounded-control" />
+              <LoadingSkeleton height="14px" width="60%" className="mb-2 rounded-control" />
+              <LoadingSkeleton height="14px" width="50%" className="mb-4 rounded-control" />
+              <LoadingSkeleton height="1px" width="100%" className="mb-3 rounded-control" />
+              <div className="flex justify-between items-center mt-auto pt-2">
+                <LoadingSkeleton height="14px" width="40%" className="rounded-control" />
+                <LoadingSkeleton height="14px" width="20%" className="rounded-control" />
               </div>
             </div>
-          </div>}
-      <Modal show={confirmModal.show} onHide={() => setConfirmModal({ show: false, projectId: null, action: null })} centered>
-        <Modal.Header border="0" closeButton>
-          <Modal.Title className="fw-bold">
-            {confirmModal.action === 'delete' ? t("project.xacNhanXoaDuAn", "Xác nhận xóa dự án") : "Xác nhận khôi phục dự án"}
+          ))}
+        </div>
+      ) : projects.length === 0 ? (
+        <EmptyState
+          title={t("project.banChuaCoDuAnNao")}
+          description={t("project.taoDuAnDauTienDeBatDauTheoDoiT")}
+          icon="lucide:folder-open"
+          actionLabel="+ Tạo dự án mới"
+          onAction={() => navigate(ROUTES.PROJECT_CREATE)}
+          className="mt-4"
+        />
+      ) : (
+        <div className="flex flex-col gap-8">
+          {/* Section: Dự án xem gần đây */}
+          {recentProjects.length > 0 && !searchTerm && (
+            <div>
+              <h3 className="m-0 mb-3.5 flex items-center gap-2 text-base font-semibold text-foreground">
+                <Icon icon="lucide:clock" width="18" className="text-primary" aria-hidden="true" />
+                <span>{t("project.duAnXemGanDay")}</span>
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {recentProjects.map((project) => (
+                  <ProjectCard
+                    key={`recent-${project.project_id || project.id}`}
+                    project={project}
+                    onDelete={handleDelete}
+                    onRestore={handleRestore}
+                    isRecent={true}
+                    currentUser={currentUser}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Section: Tất cả dự án */}
+          <div>
+            <h3 className="m-0 mb-3.5 flex items-center gap-2 text-base font-semibold text-foreground">
+              <Icon icon="lucide:folder" width="18" className="text-primary" aria-hidden="true" />
+              <span>
+                {t("project.tatCaDuAn")} ({filteredProjects.length})
+              </span>
+            </h3>
+            {filteredProjects.length === 0 ? (
+              <EmptyState
+                title={t("common.khongTimThayKetQuaPhuHop", "Không tìm thấy kết quả phù hợp")}
+                description={t("project.thuTimKiemVoiTuKhoaKhac", "Thử tìm kiếm với từ khóa khác")}
+                icon="lucide:search-x"
+                className="mt-2"
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {filteredProjects.map((project) => (
+                  <ProjectCard
+                    key={project.project_id || project.id}
+                    project={project}
+                    onDelete={handleDelete}
+                    onRestore={handleRestore}
+                    currentUser={currentUser}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      <Modal
+        show={confirmModal.show}
+        onHide={() => setConfirmModal({ show: false, projectId: null, action: null })}
+        centered
+      >
+        <Modal.Header closeButton className="border-0 pb-0">
+          <Modal.Title className="text-base font-semibold text-foreground">
+            {confirmModal.action === 'delete'
+              ? t("project.xacNhanXoaDuAn", "Xác nhận xóa dự án")
+              : "Xác nhận khôi phục dự án"}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <p className="text-muted-custom mb-0">
-            {confirmModal.action === 'delete' 
+        <Modal.Body className="py-3">
+          <p className="text-sm text-muted-foreground m-0">
+            {confirmModal.action === 'delete'
               ? (t("project.banCoChacMuonXoaDuAnNayHanhDon") || "Bạn có chắc muốn xóa dự án này? Hành động này không thể hoàn tác.")
               : "Bạn có chắc muốn khôi phục dự án này?"}
           </p>
         </Modal.Body>
-        <Modal.Footer border="0" className="gap-2">
-          <Button variant="light" className="px-4 fw-medium" onClick={() => setConfirmModal({ show: false, projectId: null, action: null })} style={{ borderRadius: '10px' }}>
-            Hủy bỏ
+        <Modal.Footer className="border-0 pt-0 gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setConfirmModal({ show: false, projectId: null, action: null })}
+          >
+            {t("admin.huy", "Hủy bỏ")}
           </Button>
-          <Button 
-            variant={confirmModal.action === 'delete' ? "danger" : "success"} 
-            className="px-4 fw-medium text-white" 
+          <Button
+            variant={confirmModal.action === 'delete' ? 'destructive' : 'default'}
             onClick={confirmModal.action === 'delete' ? executeDelete : executeRestore}
-            style={{ borderRadius: '10px' }}
           >
             {confirmModal.action === 'delete' ? t("project.xoaDuAn") : "Khôi phục"}
           </Button>
         </Modal.Footer>
       </Modal>
-    </PageContainer>;
+    </PageContainer>
+  );
 };
+
 export default ProjectListPage;
