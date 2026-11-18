@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Table } from '../../../shared/ui/table';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Badge } from '../../../shared/ui/badge';
 import { Button } from '../../../shared/ui/button';
 
@@ -81,11 +82,14 @@ export default function JournalTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60">
-            {journals.map((journal) => {
+            {journals.map((journal, idx) => {
               const id = journal.id || journal.journal_id;
               return (
-                <tr
+                <motion.tr
                   key={id}
+                  initial={{ opacity: 0, y: 3 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.15, delay: Math.min(idx * 0.02, 0.2) }}
                   onClick={() => navigate(`/journals/${id}`)}
                   className="cursor-pointer transition-colors hover:bg-primary-subtle/20 group"
                 >
@@ -136,7 +140,7 @@ export default function JournalTable({
                   <td className="px-4 py-3.5 text-center whitespace-nowrap">
                     {renderAccessBadge(journal)}
                   </td>
-                </tr>
+                </motion.tr>
               );
             })}
           </tbody>

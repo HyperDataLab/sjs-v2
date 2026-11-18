@@ -197,7 +197,7 @@ const ProjectListPage = () => {
         <MotionGrid staggerDelay={0.04} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {/* KPI 1: Total Projects */}
           <MotionItem>
-            <Card className="p-3 sm:p-3.5 flex items-center justify-between border-border bg-surface shadow-xs h-full">
+            <Card className="p-3 sm:p-3.5 border-border bg-surface shadow-xs h-full">
               <div className="space-y-0.5">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground m-0">
                   Total Projects
@@ -209,15 +209,12 @@ const ProjectListPage = () => {
                   In your workspace
                 </p>
               </div>
-              <div className="flex size-9 items-center justify-center rounded-lg bg-primary-subtle text-primary shrink-0">
-                <Icon icon="lucide:folder-kanban" width="18" aria-hidden="true" />
-              </div>
             </Card>
           </MotionItem>
 
           {/* KPI 2: Active Monitoring */}
           <MotionItem>
-            <Card className="p-3 sm:p-3.5 flex items-center justify-between border-border bg-surface shadow-xs h-full">
+            <Card className="p-3 sm:p-3.5 border-border bg-surface shadow-xs h-full">
               <div className="space-y-0.5">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground m-0">
                   Active Monitoring
@@ -229,15 +226,12 @@ const ProjectListPage = () => {
                   Live feeds enabled
                 </p>
               </div>
-              <div className="flex size-9 items-center justify-center rounded-lg bg-success-subtle text-success shrink-0">
-                <Icon icon="lucide:activity" width="18" aria-hidden="true" />
-              </div>
             </Card>
           </MotionItem>
 
           {/* KPI 3: Keywords */}
           <MotionItem>
-            <Card className="p-3 sm:p-3.5 flex items-center justify-between border-border bg-surface shadow-xs h-full">
+            <Card className="p-3 sm:p-3.5 border-border bg-surface shadow-xs h-full">
               <div className="space-y-0.5">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground m-0">
                   Keywords
@@ -248,9 +242,6 @@ const ProjectListPage = () => {
                 <p className="text-[11px] text-muted-foreground m-0">
                   Across all watchlists
                 </p>
-              </div>
-              <div className="flex size-9 items-center justify-center rounded-lg bg-primary-subtle text-primary shrink-0">
-                <Icon icon="lucide:key" width="18" aria-hidden="true" />
               </div>
             </Card>
           </MotionItem>
