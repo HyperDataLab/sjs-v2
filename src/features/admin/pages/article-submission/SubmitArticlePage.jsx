@@ -66,7 +66,7 @@ export default function SubmitArticlePage() {
 
       try {
         setIsSubmitting(true);
-        const { createArticleApi } = await import('../../../article/api/article.api');
+        const { createArticleApi } = await import('../../../article/api/articleApi');
         const payload = {
           title,
           abstract,

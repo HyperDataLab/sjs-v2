@@ -28,7 +28,7 @@ export default function AuthorLeaderboardPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState('charts'); // 'charts' | 'table'
-  const limit = 10;
+  const [limit, setLimit] = useState(10);
 
   useEffect(() => {
     if (!subjectAreas || subjectAreas.length === 0) {
@@ -43,10 +43,20 @@ export default function AuthorLeaderboardPage() {
       page: currentPage,
       limit: limit,
     });
-  }, [selectedArea, selectedPeriod, currentPage, fetchLeaderboard]);
+  }, [selectedArea, selectedPeriod, currentPage, limit, fetchLeaderboard]);
 
   const handleAreaChange = (e) => {
     setSelectedArea(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handlePeriodChange = (val) => {
+    setSelectedPeriod(val);
+    setCurrentPage(1);
+  };
+
+  const handleLimitChange = (val) => {
+    setLimit(val);
     setCurrentPage(1);
   };
 
@@ -104,8 +114,20 @@ export default function AuthorLeaderboardPage() {
             subjectAreas={subjectAreas}
             selectedArea={selectedArea}
             onAreaChange={handleAreaChange}
+            period={selectedPeriod}
+            onPeriodChange={handlePeriodChange}
+            limit={limit}
+            onLimitChange={handleLimitChange}
             loading={loadingLeaderboard}
             error={errorLeaderboard}
+            onRetry={() =>
+              fetchLeaderboard({
+                subject_area: selectedArea,
+                period: selectedPeriod,
+                page: currentPage,
+                limit: limit,
+              })
+            }
           />
         ) : (
           <>
