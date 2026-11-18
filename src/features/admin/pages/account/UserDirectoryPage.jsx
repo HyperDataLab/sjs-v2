@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Icon from '../../../../shared/components/Icon';
 import { Button } from '../../../../shared/ui/button';
 import { Alert } from '../../../../shared/ui/alert';
+import { PageHeader } from '../../../../shared/ui/page-layout';
 import UserTable from '../../components/account/UserTable';
 import UserFilterBar from '../../components/account/UserFilterBar';
 import { getAdminUsers } from '../../api/adminUsers.api';
@@ -132,24 +133,25 @@ export default function UserDirectoryPage() {
   const activePercentage = users.length > 0 ? Math.round((activeUsersCount / users.length) * 100) : 0;
 
   return (
-    <div className="d-flex flex-column gap-3 text-start">
-      <div className="admin-page-header">
-        <div className="admin-page-header__copy">
-          <p className="admin-page-kicker">Platform Directory</p>
-          <h1 className="admin-page-title">User Accounts</h1>
-          <p className="admin-page-lede">
-            Oversee researcher, lecturer, student, and administrator accounts across the trending platform.
-          </p>
-        </div>
-        <Button
-          type="button"
-          onClick={() => navigate(ROUTES.ADMIN_USER_CREATE)}
-          className="admin-btn-consistent self-start sm:self-auto"
-        >
-          <Icon icon="lucide:user-plus" width="16" aria-hidden="true" />
-          <span>New User Account</span>
-        </Button>
-      </div>
+    <div className="d-flex flex-column gap-4 text-start">
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Platform Directory' },
+          { label: 'User Accounts' }
+        ]}
+        title="User Accounts"
+        description="Oversee researcher, lecturer, student, and administrator accounts across the trending platform."
+        actions={
+          <Button
+            type="button"
+            onClick={() => navigate(ROUTES.ADMIN_USER_CREATE)}
+            className="flex items-center gap-1.5"
+          >
+            <Icon icon="lucide:user-plus" width="16" aria-hidden="true" />
+            <span>New User Account</span>
+          </Button>
+        }
+      />
 
       <UserFilterBar
         search={search}

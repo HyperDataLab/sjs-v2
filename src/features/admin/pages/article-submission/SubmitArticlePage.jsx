@@ -10,6 +10,7 @@ import PdfDropzone from '../../components/article-submission/PdfDropzone';
 import UploadFeatureCard from '../../components/article-submission/UploadFeatureCard';
 import { useAdminStore } from '../../../../app/store/adminStore';
 import { Button } from '../../../../shared/ui/button';
+import { PageHeader } from '../../../../shared/ui/page-layout';
 
 /**
  * SubmitArticlePage Component
@@ -154,30 +155,26 @@ export default function SubmitArticlePage() {
     setSelectedFile(null);
     setShowSuccessModal(false);
   };
-  return <div className="container-fluid py-2">
-      {/* Page Breadcrumbs */}
-      <nav aria-label="breadcrumb" className="mb-3">
-        <ol className="breadcrumb text-muted-custom small mb-0">
-          <li className="breadcrumb-item"><Link to="/dashboard" className="text-decoration-none text-muted-custom hover-primary">Articles</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">New Submission</li>
-        </ol>
-      </nav>
-
-      {/* Main Header banner with Save Draft */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h1 className="font-display fw-bold text-main mb-1" style={{
-          fontSize: '16px'
-        }}>Submit Article</h1>
-        </div>
-        
-        {/* Top Aligned Save Draft Button */}
-        <Button variant="light" onClick={handleSaveDraft} className="border rounded-3 py-2 px-3 fw-semibold text-main hover-primary-light" style={{
-        fontSize: '14px'
-      }}>
-          Save Draft
-        </Button>
-      </div>
+  return (
+    <div className="container-fluid py-2 space-y-6">
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Articles', to: '/admin/articles' },
+          { label: 'New Submission' }
+        ]}
+        title="Submit Article"
+        description="Provide manuscript details or upload PDF files to register research publications in the repository."
+        actions={
+          <Button
+            variant="outline"
+            onClick={handleSaveDraft}
+            className="flex items-center gap-1.5"
+          >
+            <Icon icon="lucide:save" width="14" />
+            <span>Save Draft</span>
+          </Button>
+        }
+      />
 
       <div className="mx-auto" style={{
       maxWidth: '850px'
@@ -276,5 +273,6 @@ export default function SubmitArticlePage() {
           </div>
         </Modal.Body>
       </Modal>
-    </div>;
+    </div>
+  );
 }

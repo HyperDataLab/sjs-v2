@@ -8,6 +8,7 @@ import UserAccountForm from '../../components/account/UserAccountForm';
 import { createAdminUser } from '../../api/adminUsers.api';
 import ROUTES from '../../../../app/routes/routePaths';
 import { Alert } from '../../../../shared/ui/alert';
+import { PageHeader } from '../../../../shared/ui/page-layout';
 const getApiErrorMessage = error => {
   if (error.response?.status === 403) {
     return t("admin.backendTuChoiQuyenAdminTokenHi");
@@ -47,25 +48,17 @@ export default function AddNewAccountPage() {
       setSubmitting(false);
     }
   };
-  return <div className="container-fluid py-2">
-      {/* Page Breadcrumbs - Sử dụng hằng số ROUTES */}
-      <nav className="mb-2">
-        <div className="d-flex align-items-center gap-2 text-xs text-muted-custom fw-semibold select-none">
-          <Link to={ROUTES.ADMIN_USERS} className="text-decoration-none text-muted-custom hover-primary">Account</Link>
-          <span className="text-muted-custom opacity-50">&gt;</span>
-          <Link to={ROUTES.ADMIN_USERS} className="text-decoration-none text-muted-custom hover-primary">User Directory</Link>
-          <span className="text-muted-custom opacity-50">&gt;</span>
-          <span className="text-main">New Account</span>
-        </div>
-      </nav>
-
-      {/* Main title banner matching Page 17 */}
-      <div className="mb-4">
-        <h1 className="font-display font-semibold text-base text-main mb-1.5">{t("admin.themTaiKhoanMoi")}</h1>
-        <p className="text-muted-custom text-sm leading-relaxed mb-0" style={{
-        maxWidth: '750px'
-      }}>{t("admin.vuiLongDienDayDuCacThongTinBen")}</p>
-      </div>
+  return (
+    <div className="container-fluid py-2 space-y-6">
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Platform Directory', to: ROUTES.ADMIN_USERS },
+          { label: 'User Directory', to: ROUTES.ADMIN_USERS },
+          { label: 'New Account' }
+        ]}
+        title={t("admin.themTaiKhoanMoi")}
+        description={t("admin.vuiLongDienDayDuCacThongTinBen")}
+      />
 
       <div className="mx-auto" style={{
       maxWidth: '820px'
@@ -172,5 +165,6 @@ export default function AddNewAccountPage() {
           </Col>
         </Row>
       </div>
-    </div>;
+    </div>
+  );
 }

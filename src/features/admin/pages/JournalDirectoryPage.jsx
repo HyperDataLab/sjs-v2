@@ -8,6 +8,9 @@ import JournalCardAdmin from '../components/journals/JournalCardAdmin';
 import AddJournalModal from '../components/modals/AddJournalModal';
 import Pagination from '../../../shared/components/Pagination';
 import { Alert } from '../../../shared/ui/alert';
+import { PageHeader } from '../../../shared/ui/page-layout';
+import { Skeleton } from '../../../shared/ui/skeleton';
+import { StatePanel } from '../../../shared/ui/state-panel';
 
 /**
  * JournalDirectoryPage - Màn hình chính quản lý thư mục các Tạp chí dành cho Admin.
@@ -59,17 +62,15 @@ export default function JournalDirectoryPage() {
   );
 
   return (
-    <div className="d-flex flex-column gap-3 text-start">
-      {/* Header Title Section */}
-      <div className="admin-page-header mb-1">
-        <div className="admin-page-header__copy">
-          <p className="admin-page-kicker">Portfolio Operations</p>
-          <h1 className="admin-page-title">Journal Directory</h1>
-          <p className="admin-page-lede">
-            Manage and monitor the entire publication lifecycle for your academic portfolio.
-          </p>
-        </div>
-      </div>
+    <div className="d-flex flex-column gap-4 text-start">
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Portfolio Operations' },
+          { label: 'Journal Directory' }
+        ]}
+        title="Journal Directory"
+        description="Manage and monitor the entire publication lifecycle for your academic portfolio."
+      />
 
       {/* Filters and Search toolbar */}
       <JournalFilterBar
@@ -86,9 +87,17 @@ export default function JournalDirectoryPage() {
 
       {/* Display journals */}
       {loading ? (
-        <div className="text-center py-5" aria-live="polite">
-          <Icon icon="lucide:loader-2" className="animate-spin text-primary mx-auto" width="32" />
-          <p className="mt-2 text-xs text-muted-custom">Loading journals...</p>
+        <div className="admin-card p-4 space-y-3 bg-white">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
+              <div className="space-y-1.5 flex-1 max-w-md">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+              <Skeleton className="h-6 w-20 rounded-full" />
+              <Skeleton className="h-8 w-24 rounded" />
+            </div>
+          ))}
         </div>
       ) : error ? (
         <Alert variant="destructive" className="items-center mb-0">
@@ -96,9 +105,11 @@ export default function JournalDirectoryPage() {
           <div className="flex-1 text-xs">{error}</div>
         </Alert>
       ) : filteredJournals.length === 0 ? (
-        <div className="text-center py-5 bg-white rounded-3 border" style={{ borderColor: 'var(--border)' }}>
-          <p className="text-muted-custom text-xs mb-0">No journals match the selected filters.</p>
-        </div>
+        <StatePanel
+          variant="neutral"
+          title="No Journals Found"
+          description="No journals match the selected filters. Try adjusting your search query or filters."
+        />
       ) : viewMode === 'table' ? (
         <div className="admin-card p-0 overflow-hidden">
           <JournalTableAdmin journals={paginatedJournals} />

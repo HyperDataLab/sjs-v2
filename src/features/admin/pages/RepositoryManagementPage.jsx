@@ -13,6 +13,7 @@ import CreateVolumeModal from '../components/modals/CreateVolumeModal';
 import CreateIssueModal from '../components/modals/CreateIssueModal';
 import { Button } from '../../../shared/ui/button';
 import { Alert } from '../../../shared/ui/alert';
+import { PageHeader } from '../../../shared/ui/page-layout';
 
 /**
  * RepositoryManagementPage - Admin repository coordinator for selected journal volumes and issues.
@@ -138,24 +139,22 @@ export default function RepositoryManagementPage() {
     year: 'numeric'
   }) : 'N/A';
   const activeVolObj = currentVolumes.find(volume => volume.id === selectedVolume);
-  return <div className="d-flex flex-column gap-3 text-start">
-      <div className="d-flex justify-content-between align-items-center mb-1">
-        <div>
-          <span className="text-muted-custom small text-uppercase fw-semibold" style={{
-          letterSpacing: '0.05em'
-        }}>
-            Resource Management
-          </span>
-          <h2 className="font-display fw-bold text-main mb-1">Repository Management</h2>
-          <p className="text-muted-custom small mb-0">
-            Manage volumes and publication issues for your active journals.
-          </p>
-        </div>
-        <Button size="sm" onClick={() => setShowVolumeModal(true)} className="gap-1.5">
-          <Icon icon="lucide:plus" width="16" />
-          <span>New Volume</span>
-        </Button>
-      </div>
+  return (
+    <div className="d-flex flex-column gap-4 text-start">
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Resource Management' },
+          { label: 'Repository Management' }
+        ]}
+        title="Repository Management"
+        description="Manage volumes and publication issues for your active journals."
+        actions={
+          <Button size="sm" onClick={() => setShowVolumeModal(true)} className="flex items-center gap-1.5">
+            <Icon icon="lucide:plus" width="16" />
+            <span>New Volume</span>
+          </Button>
+        }
+      />
 
       <div className="bg-white p-4 rounded-3 border d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-2" style={{
       borderColor: 'var(--border)'
@@ -271,5 +270,6 @@ export default function RepositoryManagementPage() {
       <SwitchJournalModal show={showSwitchModal} handleClose={() => setShowSwitchModal(false)} />
       <CreateVolumeModal show={showVolumeModal} handleClose={() => setShowVolumeModal(false)} />
       <CreateIssueModal show={showIssueModal} handleClose={() => setShowIssueModal(false)} />
-    </div>;
+    </div>
+  );
 }

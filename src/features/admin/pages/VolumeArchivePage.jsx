@@ -7,6 +7,7 @@ import { Button } from '../../../shared/ui/button';
 import { useJournalManagement } from '../../journal/hooks/useJournalManagement';
 import Pagination from '../../../shared/components/Pagination';
 import SwitchJournalModal from '../components/modals/SwitchJournalModal';
+import { PageHeader } from '../../../shared/ui/page-layout';
 
 /**
  * VolumeArchivePage - Màn hình Lưu trữ các Tập (Volume Archive) của Tạp chí đang chọn (Figma Screen Page 10).
@@ -72,31 +73,27 @@ export default function VolumeArchivePage() {
     setSelectedVolume(volumeId);
     navigate(`${basePath}/journals/repository`);
   };
-  return <div className="d-flex flex-column gap-3 text-start">
-        {/* Breadcrumb */}
-        <div>
-          <div className="admin-breadcrumb mb-2">
-            <span className="cursor-pointer text-muted-custom" onClick={() => navigate(`${basePath}/journals/repository`)}>
-              Repository
-            </span>
-            <Icon icon="lucide:chevron-right" className="mx-1" />
-            <span className="admin-breadcrumb__current">Volume Archive</span>
-          </div>
-          
-          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-            <div>
-              <h2 className="font-display fw-bold text-main mb-1">Volume Archive</h2>
-              <p className="text-muted-custom small mb-0">
-                Explore the historical collection of published volumes and issue logs for{' '}
-                <span className="fw-semibold text-main">{currentJournal?.title}</span>.
-              </p>
-            </div>
-            <Button variant="outline" size="sm" className="d-flex align-items-center gap-1.5 font-display" onClick={() => setShowSwitchModal(true)}>
-              <Icon icon="lucide:refresh-cw" width="14" />
-              <span>Change Journal</span>
-            </Button>
-          </div>
-        </div>
+  return (
+    <div className="d-flex flex-column gap-4 text-start">
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Repository', to: `${basePath}/journals/repository` },
+          { label: 'Volume Archive' }
+        ]}
+        title="Volume Archive"
+        description={`Explore the historical collection of published volumes and issue logs for ${currentJournal?.title || 'the selected journal'}.`}
+        actions={
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-1.5 font-display"
+            onClick={() => setShowSwitchModal(true)}
+          >
+            <Icon icon="lucide:refresh-cw" width="14" />
+            <span>Change Journal</span>
+          </Button>
+        }
+      />
 
         {/* Filter Bar */}
         <div className="bg-white p-4 rounded-3 border mb-2 mt-2" style={{
@@ -246,5 +243,6 @@ export default function VolumeArchivePage() {
 
         {/* Switch Journal Modal */}
         <SwitchJournalModal show={showSwitchModal} handleClose={() => setShowSwitchModal(false)} />
-      </div>;
+    </div>
+  );
 }

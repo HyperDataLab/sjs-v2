@@ -4,6 +4,7 @@ import { Table } from 'react-bootstrap';
 import RoleBadge from './RoleBadge';
 import UserStatusBadge from './UserStatusBadge';
 import Icon from '../../../../shared/components/Icon';
+import { Skeleton } from '../../../../shared/ui/skeleton';
 
 /**
  * UserTable Component
@@ -11,15 +12,39 @@ import Icon from '../../../../shared/components/Icon';
  * 
  * @param {Object} props - Props
  * @param {Array} props.users - List of user objects
+ * @param {boolean} props.loading - Loading state
  * @param {function} props.onEdit - Edit action handler: (userId) => void
  * @param {function} props.onDelete - Delete action handler: (userId) => void
  */
 export default function UserTable({
   users = [],
+  loading = false,
   onEdit,
   onDelete
 }) {
   const { t: _t } = useTranslation();
+
+  if (loading) {
+    return (
+      <div className="p-4 space-y-3 bg-white rounded-3 border">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="space-y-1.5">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-44" />
+              </div>
+            </div>
+            <Skeleton className="h-6 w-20 rounded-full" />
+            <Skeleton className="h-6 w-16 rounded-full" />
+            <Skeleton className="h-8 w-20 rounded-md" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   if (users.length === 0) {
     return <div className="text-center py-5 border rounded-3 bg-white">
         <Icon icon="lucide:users" width="48" className="text-muted mb-2 opacity-50" />

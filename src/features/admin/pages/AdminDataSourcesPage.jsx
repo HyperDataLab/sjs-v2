@@ -4,6 +4,8 @@ import Icon from '../../../shared/components/Icon';
 import api from '../../../shared/services/api';
 import { Alert } from '../../../shared/ui/alert';
 import { Button } from '../../../shared/ui/button';
+import { PageHeader } from '../../../shared/ui/page-layout';
+import { Skeleton } from '../../../shared/ui/skeleton';
 
 const statusPath = '/admin/integrations/openalex';
 const importPath = '/admin/imports/scimago';
@@ -87,21 +89,28 @@ export default function AdminDataSourcesPage() {
   };
 
   return (
-    <div className="admin-page admin-data-sources">
-      <div className="admin-page__header">
-        <div>
-          <div className="admin-page__breadcrumb">Management <span>/</span> Data Sources</div>
-          <h1>Data Sources</h1>
-          <p>Manage the OpenAlex API key and import journal rankings for in-depth analysis.</p>
-        </div>
-      </div>
+    <div className="admin-page admin-data-sources space-y-6">
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Management' },
+          { label: 'Data Sources' }
+        ]}
+        title="Data Sources"
+        description="Manage the OpenAlex API key and import journal rankings for in-depth analysis."
+      />
       {message && <Alert variant={message.type === 'danger' ? 'destructive' : message.type} onDismiss={() => setMessage(null)}>{message.text}</Alert>}
 
       <div className="admin-data-sources__grid">
         <Card className="admin-data-sources__card">
           <Card.Body>
             <div className="admin-data-sources__title"><span className="admin-data-sources__icon"><Icon icon="lucide:key-round" /></span><div><h2>OpenAlex API key</h2><p>Rotate the key used by Worker requests to OpenAlex.</p></div></div>
-            {loadingKey ? <div className="admin-data-sources__loading"><Spinner size="sm" /> Loading key status…</div> : (
+            {loadingKey ? (
+              <div className="p-4 space-y-3">
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-9 w-32" />
+              </div>
+            ) : (
               <>
                 <div className="admin-data-sources__status"><span className={`admin-data-sources__dot ${keyStatus?.configured ? 'is-on' : ''}`} />
                   {keyStatus?.keyUnreadable ? 'An admin key is stored but cannot be decrypted' : keyStatus?.configured ? `Configured via ${keyStatus.source === 'admin' ? 'admin settings' : 'Worker environment'}${keyStatus.maskedSuffix ? ` · ending ${keyStatus.maskedSuffix}` : ''}` : 'No key configured'}
