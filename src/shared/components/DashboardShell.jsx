@@ -57,7 +57,7 @@ export default function DashboardShell({ children }) {
   }, [mobileOpen]);
 
   const sidebar = (
-    <aside className="app-sidebar flex h-full flex-col border-r border-border bg-surface px-4 py-5" aria-label="Primary navigation">
+    <aside className="app-sidebar flex min-h-full flex-col border-r border-border bg-surface px-4 py-5" aria-label="Primary navigation">
       <div className="border-b border-border px-2 pb-5"><Logo size={30} fontSize="1.05rem" /></div>
       <nav className="flex flex-col gap-1 pt-4">
         {items.map(({ label, path, icon: Icon }) => (
@@ -99,7 +99,7 @@ export default function DashboardShell({ children }) {
 
       {/* Desktop Sticky Sidebar (Flex item, zero margin needed for main) */}
       <div className="hidden md:block w-[248px] shrink-0">
-        <div className="sticky top-0 h-screen">{sidebar}</div>
+        <div className="sticky top-0 h-screen overflow-y-auto">{sidebar}</div>
       </div>
 
       {/* Main Content Column */}
