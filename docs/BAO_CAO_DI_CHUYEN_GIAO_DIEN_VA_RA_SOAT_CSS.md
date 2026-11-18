@@ -157,6 +157,37 @@ graph TD
 
 ---
 
-## 5. Kết luận
+## 5. Kết quả thực hiện dọn dẹp & giải quyết xung đột CSS (Đã hoàn thành)
 
-Toàn bộ công tác di chuyển giao diện theo kế hoạch `docs/UI_MIGRATION_TODO.md` đã hoàn tất và được nghiệm thu với kết quả build và lint đạt 100% chuẩn kỹ thuật. Bản rà soát CSS trên đã định danh chính xác các điểm nghẽn xung đột CSS sẵn sàng cho giai đoạn tối ưu hóa tiếp theo.
+Toàn bộ các đề xuất dọn dẹp và cô lập tại Mục 4 đã được thực thi triệt để trong phiên làm việc:
+
+1. **Cô lập Scope triệt để cho `ProjectsPage.css`**:
+   - Toàn bộ các class dễ gây rò rỉ toàn cục (`.modal-overlay`, `.modal-container`, `.modal-header`, `.modal-title`, `.modal-close-btn`, `.modal-form`, `.form-group`, `.form-label`, `.modal-actions`, `.modal-btn`, `.btn-cancel`, `.btn-submit`, `.dropdown-menu`, `.dropdown-item`, `.form-select`) đã được gắn tiền tố cha `.projects-page-container`. Loại bỏ hoàn toàn nguy cơ ghi đè Bootstrap và layout của các trang khác.
+2. **Cô lập xung đột liên trang (Cross-page collision isolation)**:
+   - `KeywordListPage.css`: Đã scope `.keyword-card*` dưới namespace `.keyword-list-page` (không còn xung đột với `Article.css`).
+   - `JournalListPage.css`: Đã scope `.journal-metric-value`, `.journal-metric-label`, `.journal-empty-state` dưới `.journal-list-page` (không còn xung đột với `JournalDetail.css`).
+   - `GlobalEcosystemPage.css`: Đã scope `.heatmap-legend .legend-title` dưới namespace riêng.
+   - `admin.css`: Đã scope `.admin-layout .btn-dark-solid` để không đè lên button toàn cục của `index.css`.
+   - `WalletLayout.css`: Đã chuyển `--header-height: 72px;` vào `.wallet-layout-page` thay vì định nghĩa đè lên `:root`.
+3. **Hợp nhất `ChatbotWidget.css` thành Single Source of Truth**:
+   - Chuyển toàn bộ stylesheet 913 dòng hoàn thiện về `src/shared/components/Chatbot/ChatbotWidget.css`.
+   - Xóa file trùng lặp `src/trendingApp/shared/components/chatbot/ChatbotWidget.css`, cả 2 widget đều trỏ về một file duy nhất.
+4. **Xóa bỏ toàn bộ CSS mồ côi (Dead / Orphan Files)**:
+   - Đã xóa an toàn 5 file CSS không còn sử dụng: `src/App.css`, `src/features/landing/components/Landing.css`, `src/features/landing/components/Header.css`, `src/features/landing/components/Sandbox.css`, `src/trendingApp/shared/styles/index.css`.
+   - Cắt giảm **2.746 dòng mã CSS thừa** khỏi codebase.
+5. **Hợp nhất Selector trùng lặp trong `admin.css`**:
+   - Gộp và dọn dẹp các selector `.admin-layout`, `.admin-main`, `.admin-content` trùng lặp giữa Section 1 và Section 26.
+6. **Chỉ số xung đột sau dọn dẹp**:
+   - Số selector va chạm chéo (cross-file collision) giảm mạnh từ **62 xuống còn 12** (trong đó toàn bộ 12 selector còn lại đều là các media breakpoint responsive hợp lệ hoặc base element styles `html, body` thống nhất).
+
+---
+
+## 6. Kết luận & Nghiệm thu
+
+- **Build**: `vite v8.0.14 building client environment for production... ✓ built in 1.32s` (0 errors).
+- **Linter**: `npm run lint` đạt **0 errors** (100% pass).
+- **Type Scale**: Bảo toàn nghiêm ngặt chuẩn 13–16px trên toàn bộ ứng dụng.
+- **Hệ thống CSS**: Đã dọn dẹp gọn gàng, namespace rõ ràng, loại bỏ hoàn toàn các điểm rò rỉ style nguy hiểm và tệp mồ côi.
+
+---
+*Báo cáo được hoàn thiện và cập nhật sau công tác dọn dẹp - 18/11/2026.*
