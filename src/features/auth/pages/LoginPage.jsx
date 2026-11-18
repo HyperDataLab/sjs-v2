@@ -68,49 +68,36 @@ export default function LoginPage() {
       setSsoLoading(false);
     }
   };
-  return <AuthLayout banner={<AuthBanner />}>
-      <div className="mb-4">
-        <h2 className="font-display font-semibold text-base text-main mb-1">{t("signIn")}</h2>
-        <p className="text-muted-custom text-sm mb-0" style={{
-        color: 'var(--text-muted) !important'
-      }}>{t("auth.chaoMungTroLaiVuiLongNhapThong")}</p>
+  return (
+    <AuthLayout banner={<AuthBanner />}>
+      <div className="mb-6 space-y-1">
+        <h2 className="font-display font-semibold text-base text-foreground m-0">{t("signIn")}</h2>
+        <p className="text-sm text-muted-foreground m-0">{t("auth.chaoMungTroLaiVuiLongNhapThong")}</p>
       </div>
 
       {/* Single sign-on entry point. */}
-      <div className="mb-4">
+      <div className="mb-6">
         <SocialAuthButton onClick={handleLoginWithSso} disabled={isLoading || ssoLoading} label={t('auth.dangNhapBangSso')} />
       </div>
 
-      {error && <Alert variant="destructive" className="mb-3 py-3">{error}</Alert>}
+      {error && <Alert variant="destructive" className="mb-4 py-3">{error}</Alert>}
 
       {/* Đường phân cách giữa SSO và form email/password. */}
-      <div className="d-flex align-items-center justify-content-center mb-4 text-xs font-semibold select-none text-muted-custom" style={{
-      color: 'var(--text-muted) !important'
-    }}>
-        <div className="w-100" style={{
-        height: '1px',
-        background: 'var(--border)'
-      }} />
-        <span className="px-3 text-nowrap" style={{
-        letterSpacing: '0.05em'
-      }}>{t("auth.hoac")}</span>
-        <div className="w-100" style={{
-        height: '1px',
-        background: 'var(--border)'
-      }} />
+      <div className="flex items-center justify-center my-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground select-none">
+        <div className="flex-1 h-px bg-border" />
+        <span className="px-3">{t("auth.hoac")}</span>
+        <div className="flex-1 h-px bg-border" />
       </div>
 
       <LoginForm onSubmit={handleLoginSubmit} isLoading={isLoading} apiError={error} />
 
       {/* Điều hướng sang trang đăng ký nếu người dùng chưa có tài khoản. */}
-      <div className="text-center mt-4 text-sm font-medium">
-        <span className="text-muted-custom" style={{
-        color: '#94a3b8 !important'
-      }}>{t("auth.chuaCoTaiKhoan")}</span>{' '}
-        <Link to={ROUTES.REGISTER} className="text-decoration-none transition-all" style={{
-        color: 'var(--primary)',
-        fontWeight: 600
-      }}>{t("signUp")}</Link>
+      <div className="text-center mt-6 text-sm">
+        <span className="text-muted-foreground">{t("auth.chuaCoTaiKhoan")}</span>{' '}
+        <Link to={ROUTES.REGISTER} className="text-primary font-semibold hover:underline">
+          {t("signUp")}
+        </Link>
       </div>
-    </AuthLayout>;
+    </AuthLayout>
+  );
 }

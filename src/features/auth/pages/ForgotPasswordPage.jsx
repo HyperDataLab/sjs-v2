@@ -60,11 +60,9 @@ export default function ForgotPasswordPage() {
             </span>
           </div>
 
-          <div className="mb-4">
-            <h2 className="font-display font-semibold text-base text-main mb-1">{t("auth.quenMatKhau")}</h2>
-            <p className="text-muted-custom text-sm mb-0" style={{
-          color: 'var(--text-muted)'
-        }}>{t("auth.nhapEmailTaiKhoanCuaBanNeuEmai")}</p>
+          <div className="mb-6 space-y-1">
+            <h2 className="font-display font-semibold text-base text-foreground m-0">{t("auth.quenMatKhau")}</h2>
+            <p className="text-sm text-muted-foreground m-0">{t("auth.nhapEmailTaiKhoanCuaBanNeuEmai")}</p>
           </div>
 
           <ForgotPasswordForm onSubmit={handleForgotPasswordSubmit} isLoading={isLoading} apiError={error} />
