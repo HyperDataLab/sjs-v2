@@ -71,8 +71,8 @@ export default function AdminDataSourcesPage() {
     event.preventDefault();
     const form = event.currentTarget;
     if (!file) return;
-    if (file.size > 8 * 1024 * 1024) {
-      setMessage({ type: 'danger', text: 'The SCImago CSV must be 8 MB or smaller.' });
+    if (file.size > 50 * 1024 * 1024) {
+      setMessage({ type: 'danger', text: 'The SCImago CSV must be 50 MB or smaller.' });
       return;
     }
     setImporting(true); setMessage(null);
