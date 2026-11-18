@@ -65,9 +65,16 @@ export default function DashboardShell({ children }) {
             key={path}
             to={`${base}/${path}`}
             onClick={() => setMobileOpen(false)}
-            className={({ isActive }) => `group flex min-h-11 w-full items-center gap-3 rounded-control border-l-2 px-3 py-2.5 text-left text-sm font-medium no-underline transition-colors ${isActive ? 'border-primary bg-primary-subtle text-primary' : 'border-transparent text-muted-foreground hover:bg-surface-muted hover:text-foreground'}`}
+            className={({ isActive }) =>
+              `group flex min-h-11 w-full items-center gap-3 rounded-control border-l-3 px-3 py-2.5 text-left text-sm transition-colors ${
+                isActive
+                  ? 'border-primary bg-primary-subtle font-semibold !text-primary'
+                  : 'border-transparent font-medium !text-muted-foreground hover:bg-surface-muted hover:!text-foreground'
+              }`
+            }
           >
-            <Icon aria-hidden="true" /> <span>{t(`navigation.${path}`, label)}</span>
+            <Icon aria-hidden="true" className="shrink-0 text-lg" />
+            <span>{t(`navigation.${path}`, label)}</span>
           </NavLink>
         ))}
       </nav>

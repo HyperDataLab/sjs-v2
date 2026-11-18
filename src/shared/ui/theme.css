@@ -352,9 +352,50 @@ textarea[aria-invalid="true"]:focus {
 }
 
 .app-sidebar nav a,
+.app-sidebar nav a:visited {
+  color: var(--ds-muted-foreground, #475467) !important;
+  text-decoration: none !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--ds-radius-control, 8px);
+  border-left: 3px solid transparent;
+  transition: all 0.15s ease-in-out;
+}
+
+.app-sidebar nav a svg {
+  color: var(--ds-muted-foreground, #64748b) !important;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+  transition: color 0.15s ease-in-out;
+}
+
 .app-sidebar nav a:hover,
 .app-sidebar nav a:focus-visible {
-  text-decoration: none;
+  color: var(--ds-foreground, #0f172a) !important;
+  background-color: var(--ds-surface-muted, #f1f5f9) !important;
+  text-decoration: none !important;
+}
+
+.app-sidebar nav a:hover svg,
+.app-sidebar nav a:focus-visible svg {
+  color: var(--ds-foreground, #0f172a) !important;
+}
+
+.app-sidebar nav a.active,
+.app-sidebar nav a[aria-current="page"] {
+  color: var(--ds-primary, #0071bc) !important;
+  background-color: var(--ds-primary-subtle, #e0f2fe) !important;
+  border-left-color: var(--ds-primary, #0071bc) !important;
+  font-weight: 600 !important;
+}
+
+.app-sidebar nav a.active svg,
+.app-sidebar nav a[aria-current="page"] svg {
+  color: var(--ds-primary, #0071bc) !important;
 }
 
 .dashboard-welcome {
