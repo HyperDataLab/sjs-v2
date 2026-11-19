@@ -6,7 +6,7 @@ import ROUTES from '../../../app/routes/routePaths';
 import useProjects from '../hooks/useProjects';
 import { getProjectByIdApi } from '../api/project.api';
 import { Icon } from '@iconify/react';
-import { getSubjectAreasApi } from '../../catalog/api/catalogApi';
+import { getSubjectAreasApi, getSubjectCategoriesApi } from '../../catalog/api/catalogApi';
 import keywordApi from '../../keywords/api/keywordApi';
 import SearchableSelect from '../../../shared/components/Select/SearchableSelect';
 import SearchableKeywordInput from '../../../shared/components/Input/SearchableKeywordInput';
@@ -51,6 +51,60 @@ const createRequestId = () => {
   return `project-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 };
 
+const PENDING_CREATE_PREFIX = 'trending-system:pending-project-create:';
+const PENDING_CREATE_TTL_MS = 30 * 60 * 1000;
+
+const getPayloadFingerprint = async payload => {
+  try {
+    if (!globalThis.crypto?.subtle || !globalThis.TextEncoder) return null;
+    const bytes = await globalThis.crypto.subtle.digest(
+      'SHA-256',
+      new TextEncoder().encode(JSON.stringify(payload))
+    );
+    return Array.from(new Uint8Array(bytes), byte => byte.toString(16).padStart(2, '0')).join('');
+  } catch {
+    return null;
+  }
+};
+
+const getOrCreateSubmission = async (payload, signature, currentSubmission) => {
+  if (currentSubmission?.signature === signature) return currentSubmission;
+
+  const fingerprint = await getPayloadFingerprint(payload);
+  const storageKey = fingerprint ? `${PENDING_CREATE_PREFIX}${fingerprint}` : null;
+  if (storageKey) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+      const age = saved?.createdAt ? Date.now() - saved.createdAt : Infinity;
+      if (saved?.projectId && age >= 0 && age < PENDING_CREATE_TTL_MS) {
+        return { signature, projectId: saved.projectId, storageKey };
+      }
+      if (saved) localStorage.removeItem(storageKey);
+    } catch {
+      // Storage may be unavailable; the in-memory ID still protects this mounted form.
+    }
+  }
+
+  const submission = { signature, projectId: createRequestId(), storageKey };
+  if (storageKey) {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify({ projectId: submission.projectId, createdAt: Date.now() }));
+    } catch {
+      // Continue without persistence when browser storage is unavailable.
+    }
+  }
+  return submission;
+};
+
+const clearPendingSubmission = submission => {
+  if (!submission?.storageKey) return;
+  try {
+    localStorage.removeItem(submission.storageKey);
+  } catch {
+    // Ignore storage cleanup failures; the entry expires automatically.
+  }
+};
+
 const CreateProjectPage = () => {
   const { t: _t } = useTranslation();
   const navigate = useNavigate();
@@ -61,15 +115,18 @@ const CreateProjectPage = () => {
   // Form State
   const [title, setTitle] = useState('');
   const [subjectAreaId, setSubjectAreaId] = useState('');
+  const [subjectCategoryId, setSubjectCategoryId] = useState('');
   const [keywords, setKeywords] = useState([]);
 
   // API Data State
   const [areas, setAreas] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [suggestedKeywords, setSuggestedKeywords] = useState([]);
 
   // Loading States
   const [loading, setLoading] = useState(false);
   const [loadingCatalogs, setLoadingCatalogs] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(false);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [error, setError] = useState(null);
   const submitInFlightRef = useRef(false);
@@ -97,9 +154,33 @@ const CreateProjectPage = () => {
     fetchCatalogs();
   }, []);
 
-  // Fetch suggested keywords based on selected subject area
+  // Fetch subject categories when subjectAreaId changes
   useEffect(() => {
     if (!subjectAreaId) {
+      setCategories([]);
+      setSubjectCategoryId('');
+      return;
+    }
+
+    const fetchCategories = async () => {
+      setLoadingCategories(true);
+      try {
+        const res = await getSubjectCategoriesApi({ subject_area_id: subjectAreaId, limit: 100 });
+        const items = res?.data?.data?.items || res?.data?.data || res?.data || [];
+        setCategories(Array.isArray(items) ? items : []);
+      } catch (err) {
+        console.warn('Could not fetch subject categories:', err);
+        setCategories([]);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+    fetchCategories();
+  }, [subjectAreaId]);
+
+  // Fetch suggested keywords based on selected subject area and category
+  useEffect(() => {
+    if (!subjectAreaId && !subjectCategoryId) {
       setSuggestedKeywords([]);
       return;
     }
@@ -107,7 +188,10 @@ const CreateProjectPage = () => {
     const fetchSuggestions = async () => {
       setLoadingSuggestions(true);
       try {
-        const queryParams = { limit: 10, subject_area_id: subjectAreaId };
+        const queryParams = {
+          limit: 10,
+          ...(subjectCategoryId ? { subject_category_id: subjectCategoryId } : { subject_area_id: subjectAreaId })
+        };
         const res = await keywordApi.getKeywords(queryParams);
         const items = res?.data?.data?.items || res?.data?.data || res?.data || [];
         // Map to string names for the UI suggestions
@@ -119,9 +203,13 @@ const CreateProjectPage = () => {
       }
     };
     fetchSuggestions();
-  }, [subjectAreaId]);
+  }, [subjectAreaId, subjectCategoryId]);
+
   const selectedAreaObj = areas.find(a => String(a.id || a.subject_area_id) === String(subjectAreaId));
   const selectedAreaName = selectedAreaObj ? selectedAreaObj.display_name || selectedAreaObj.name || selectedAreaObj.area_name : '';
+  const selectedCategoryObj = categories.find(c => String(c.id || c.subject_category_id) === String(subjectCategoryId));
+  const selectedCategoryName = selectedCategoryObj ? selectedCategoryObj.display_name || selectedCategoryObj.name : '';
+
   const removeKeyword = kw => {
     setKeywords(keywords.filter(k => k !== kw));
   };
@@ -134,11 +222,19 @@ const CreateProjectPage = () => {
   // Handle Area Change
   const handleAreaChange = val => {
     setSubjectAreaId(val);
+    setSubjectCategoryId('');
   };
+
   const areaOptions = Array.isArray(areas) ? areas.map(area => ({
     value: area.id || area.subject_area_id,
     label: area.display_name || area.name || area.area_name
   })) : [];
+
+  const categoryOptions = Array.isArray(categories) ? categories.map(cat => ({
+    value: cat.id || cat.subject_category_id,
+    label: cat.display_name || cat.name
+  })) : [];
+
   const handleSubmit = async e => {
     e.preventDefault();
     // A ref closes the gap before React renders the disabled submit button.
@@ -150,21 +246,34 @@ const CreateProjectPage = () => {
     const payload = {
       title: title.trim(),
       subject_area_id: parseInt(subjectAreaId, 10),
-      subject_category_ids: [],
+      subject_category_ids: subjectCategoryId ? [parseInt(subjectCategoryId, 10)] : [],
       journal_ids: [],
       keywords: [...keywords]
     };
     const signature = JSON.stringify(payload);
-    if (!submissionRef.current || submissionRef.current.signature !== signature) {
-      submissionRef.current = { signature, projectId: createRequestId() };
-    }
-    const projectId = submissionRef.current.projectId;
     submitInFlightRef.current = true;
     setLoading(true);
     setError(null);
     try {
+      submissionRef.current = await getOrCreateSubmission(payload, signature, submissionRef.current);
+      const { projectId } = submissionRef.current;
+
+      // A reload can happen after the Worker committed the project but before the
+      // browser received its response. Resolve the persisted ID before POSTing again.
+      try {
+        await getProjectByIdApi(projectId, { timeout: 5000 });
+        clearPendingSubmission(submissionRef.current);
+        submissionRef.current = null;
+        navigate(`/projects/${projectId}`);
+        return;
+      } catch {
+        // Not created yet (or not visible); retry the same stable project ID below.
+      }
+
       const res = await createProject({ ...payload, project_id: projectId }, { timeout: 30000 });
       const createdProjectId = res?.project_id || res?.id || res?.data?.project_id || res?.data?.id || projectId;
+      clearPendingSubmission(submissionRef.current);
+      submissionRef.current = null;
       navigate(`/projects/${createdProjectId}`);
     } catch (err) {
       console.error('Error creating project:', err);
@@ -177,6 +286,8 @@ const CreateProjectPage = () => {
       if (ambiguousResult) {
         try {
           await getProjectByIdApi(projectId, { timeout: 8000 });
+          clearPendingSubmission(submissionRef.current);
+          submissionRef.current = null;
           navigate(`/projects/${projectId}`);
           return;
         } catch {
@@ -185,6 +296,10 @@ const CreateProjectPage = () => {
       }
 
       const isTimeout = err.code === 'ECONNABORTED' || err.code === 'ETIMEDOUT';
+      if (status >= 400 && status < 500 && status !== 409) {
+        clearPendingSubmission(submissionRef.current);
+        submissionRef.current = null;
+      }
       setError(isTimeout
         ? t("project.taoDuAnDangXuLyQuaLau", "The request timed out. Retry safely; this will not create another project.")
         : err.response?.data?.message || err.message || t("project.daCoLoiXayRaKhiTaoDuAn"));
@@ -259,51 +374,99 @@ const CreateProjectPage = () => {
                   </p>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="subjectArea" className="block text-xs font-semibold uppercase tracking-wider text-foreground">
-                    {t("project.linhVucNghienCuuChinh")} <span className="text-destructive">*</span>
-                  </label>
-                  <SearchableSelect
-                    options={areas.map(a => ({
-                      value: a.id || a.subject_area_id,
-                      label: a.display_name || a.name || a.area_name
-                    }))}
-                    fetchOptions={async search => {
-                      try {
-                        const res = await getSubjectAreasApi({
-                          search,
-                          limit: 20
-                        });
-                        const items = res?.data?.data?.items || res?.data?.data || res?.data || [];
-                        if (Array.isArray(items) && items.length > 0) {
-                          return items.map(a => ({
-                            value: a.id || a.subject_area_id,
-                            label: a.display_name || a.name || a.area_name
-                          }));
-                        }
-                      } catch (e) {
-                        // Fallback to local areas list
-                      }
-                      const term = (search || '').toLowerCase();
-                      const filtered = FALLBACK_SUBJECT_AREAS.filter(a =>
-                        !term || (a.display_name || a.name || '').toLowerCase().includes(term)
-                      );
-                      return filtered.map(a => ({
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Major Domain */}
+                  <div className="space-y-2">
+                    <label htmlFor="subjectArea" className="block text-xs font-semibold uppercase tracking-wider text-foreground">
+                      {t("project.linhVucNghienCuuChinh", "RESEARCH FIELD")} <span className="text-destructive">*</span>
+                    </label>
+                    <SearchableSelect
+                      options={areas.map(a => ({
                         value: a.id || a.subject_area_id,
-                        label: a.display_name || a.name
-                      }));
-                    }}
-                    value={subjectAreaId}
-                    onChange={handleAreaChange}
-                    placeholder={t("project.chonLinhVucNghienCuu")}
-                    disabled={loadingCatalogs || loading}
-                    debounceTime={100}
-                    loading={loadingCatalogs}
-                    limit={20}
-                  />
-                  <p className="text-[11px] text-muted-foreground m-0">
-                    {t("project.chonLinhVucGoiY", "Select Scopus ASJC subject area for journal ranking and baseline metrics.")}
-                  </p>
+                        label: a.display_name || a.name || a.area_name
+                      }))}
+                      fetchOptions={async search => {
+                        try {
+                          const res = await getSubjectAreasApi({
+                            search,
+                            limit: 20
+                          });
+                          const items = res?.data?.data?.items || res?.data?.data || res?.data || [];
+                          if (Array.isArray(items) && items.length > 0) {
+                            return items.map(a => ({
+                              value: a.id || a.subject_area_id,
+                              label: a.display_name || a.name || a.area_name
+                            }));
+                          }
+                        } catch (e) {
+                          // Fallback to local areas list
+                        }
+                        const term = (search || '').toLowerCase();
+                        const filtered = FALLBACK_SUBJECT_AREAS.filter(a =>
+                          !term || (a.display_name || a.name || '').toLowerCase().includes(term)
+                        );
+                        return filtered.map(a => ({
+                          value: a.id || a.subject_area_id,
+                          label: a.display_name || a.name
+                        }));
+                      }}
+                      value={subjectAreaId}
+                      onChange={handleAreaChange}
+                      placeholder={t("project.chonLinhVucNghienCuu", "Select a research field...")}
+                      disabled={loadingCatalogs || loading}
+                      debounceTime={100}
+                      loading={loadingCatalogs}
+                      limit={20}
+                    />
+                    <p className="text-[11px] text-muted-foreground m-0">
+                      {t("project.chonLinhVucGoiY", "Select Scopus ASJC subject area for journal ranking and baseline metrics.")}
+                    </p>
+                  </div>
+
+                  {/* Sub-Field / Category */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label htmlFor="subjectCategory" className="block text-xs font-semibold uppercase tracking-wider text-foreground">
+                        {t("project.nhomNganhNho", "SUB-FIELD / DISCIPLINE")}
+                      </label>
+                      <span className="text-[11px] text-muted-foreground font-medium">
+                        {t("common.optional", "Optional")}
+                      </span>
+                    </div>
+                    <SearchableSelect
+                      options={categoryOptions}
+                      fetchOptions={async search => {
+                        try {
+                          const res = await getSubjectCategoriesApi({
+                            search,
+                            subject_area_id: subjectAreaId,
+                            limit: 30
+                          });
+                          const items = res?.data?.data?.items || res?.data?.data || res?.data || [];
+                          if (Array.isArray(items) && items.length > 0) {
+                            return items.map(c => ({
+                              value: c.id || c.subject_category_id,
+                              label: c.display_name || c.name
+                            }));
+                          }
+                        } catch (e) {
+                          // Fallback to local categories
+                        }
+                        const term = (search || '').toLowerCase();
+                        return categoryOptions.filter(c => !term || c.label.toLowerCase().includes(term));
+                      }}
+                      value={subjectCategoryId}
+                      onChange={val => setSubjectCategoryId(val)}
+                      placeholder={!subjectAreaId ? t("project.chonLinhVucTruoc", "Select research field first...") : t("project.chonChuyenNganh", "Select specific sub-field...")}
+                      disabled={loadingCatalogs || loading || !subjectAreaId || loadingCategories}
+                      debounceTime={100}
+                      loading={loadingCategories}
+                      limit={30}
+                    />
+                    <p className="text-[11px] text-muted-foreground m-0">
+                      {t("project.chuyenNganhMoTa", "Filter specific discipline for targeted keywords & metrics.")}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -322,6 +485,7 @@ const CreateProjectPage = () => {
                   <SearchableKeywordInput
                     keywords={keywords}
                     subjectAreaId={subjectAreaId}
+                    subjectCategoryId={subjectCategoryId}
                     placeholder={t("project.chonTuKhoaTheoDoi")}
                     disabled={loading}
                     onAddKeyword={val => {
@@ -400,7 +564,10 @@ const CreateProjectPage = () => {
                   </h3>
                   <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5 truncate m-0">
                     <Icon icon="lucide:book-open" width={12} className="shrink-0 text-muted-foreground/70" />
-                    <span>{selectedAreaName || t("project.chuaChonLinhVuc", "No research field selected")}</span>
+                    <span>
+                      {selectedAreaName || t("project.chuaChonLinhVuc", "No research field selected")}
+                      {selectedCategoryName ? ` · ${selectedCategoryName}` : ''}
+                    </span>
                   </p>
                 </div>
               </div>

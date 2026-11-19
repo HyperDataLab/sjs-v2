@@ -9,8 +9,8 @@ import {
 const importPath = '/admin/imports/scimago';
 const IMPORT_SESSION_STORAGE_KEY = 'admin.scimagoImportSession';
 const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
-const MAX_CHUNK_BYTES = 256 * 1024;
-const MAX_CHUNK_ROWS = 50;
+const MAX_CHUNK_BYTES = 2 * 1024 * 1024;
+const MAX_CHUNK_ROWS = 250;
 const MAX_CHUNK_ATTEMPTS = 8;
 const MAX_RETRY_DELAY_MS = 30000;
 
@@ -331,81 +331,88 @@ export const useScimagoImportStore = create((set, get) => ({
   runUploadLoop: async (importId, batches, uploadedBatches, signal) => {
     set({ status: 'importing', isImporting: true });
     let completed = uploadedBatches.size;
+    const totalBatches = batches.length;
+    const CONCURRENCY = 4;
 
-    for (let batchIndex = 0; batchIndex < batches.length; batchIndex += 1) {
-      if (signal?.aborted) {
-        throw new Error('Import aborted by user.');
-      }
-      if (uploadedBatches.has(batchIndex)) continue;
+    const pendingIndexes = [];
+    for (let i = 0; i < totalBatches; i += 1) {
+      if (!uploadedBatches.has(i)) pendingIndexes.push(i);
+    }
 
-      await postChunkWithRetry(
-        `${importPath}/${importId}/chunks`,
-        {
-          batch_index: batchIndex,
-          csv: batches[batchIndex],
-        },
-        ({ attempt, delay }) => {
-          set({
-            importProgress: {
-              percent: Math.round((completed / batches.length) * 95),
-              completed,
-              total: batches.length,
-              phase: `Connection retry ${attempt}/${MAX_CHUNK_ATTEMPTS} for batch ${batchIndex + 1} in ${Math.ceil(delay / 1000)}s...`,
-            },
-          });
-        },
-        signal
-      );
+    let cursor = 0;
+    const worker = async () => {
+      while (cursor < pendingIndexes.length) {
+        if (signal?.aborted) throw new Error('Import aborted by user.');
+        const batchIndex = pendingIndexes[cursor++];
+        if (batchIndex === undefined) break;
 
-      uploadedBatches.add(batchIndex);
-      completed += 1;
+        await postChunkWithRetry(
+          `${importPath}/${importId}/chunks`,
+          {
+            batch_index: batchIndex,
+            csv: batches[batchIndex],
+          },
+          ({ attempt, delay }) => {
+            set({
+              importProgress: {
+                percent: Math.round((completed / totalBatches) * 95),
+                completed,
+                total: totalBatches,
+                phase: `Connection retry ${attempt}/${MAX_CHUNK_ATTEMPTS} for batch ${batchIndex + 1} in ${Math.ceil(delay / 1000)}s...`,
+              },
+            });
+          },
+          signal
+        );
 
-      const nextUploadedIndexes = [...uploadedBatches];
-      set({
-        uploadedIndexes: nextUploadedIndexes,
-        importProgress: {
-          percent: Math.round((completed / batches.length) * 95),
-          completed,
-          total: batches.length,
-          phase: `Importing batch ${batchIndex + 1} of ${batches.length}...`,
-        },
-      });
+        uploadedBatches.add(batchIndex);
+        completed += 1;
 
-      // Periodically persist progress to IndexedDB and sessionStorage (every 5 batches or last batch)
-      if (batchIndex % 5 === 0 || batchIndex === batches.length - 1) {
-        const { fileName, fileSize, fileLastModified, year } = get();
-        saveImportSessionToDb({
-          importId,
-          fileName,
-          fileSize,
-          fileLastModified,
-          year,
-          batches,
+        const nextUploadedIndexes = [...uploadedBatches];
+        set({
           uploadedIndexes: nextUploadedIndexes,
+          importProgress: {
+            percent: Math.round((completed / totalBatches) * 95),
+            completed,
+            total: totalBatches,
+            phase: `Importing batch ${completed} of ${totalBatches}...`,
+          },
         });
 
-        try {
-          window.sessionStorage.setItem(
-            IMPORT_SESSION_STORAGE_KEY,
-            JSON.stringify({
-              importId,
-              fileName,
-              fileSize,
-              fileLastModified,
-              year,
-              uploadedIndexes: nextUploadedIndexes,
-            })
-          );
-        } catch {}
-      }
+        if (completed % 10 === 0 || completed === totalBatches) {
+          const { fileName, fileSize, fileLastModified, year } = get();
+          saveImportSessionToDb({
+            importId,
+            fileName,
+            fileSize,
+            fileLastModified,
+            year,
+            batches,
+            uploadedIndexes: nextUploadedIndexes,
+          });
 
-      // Small delay between batches to avoid overloading server.
-      // If the tab is hidden, reduce wait to prevent browser timer throttling.
-      if (batchIndex < batches.length - 1) {
-        const gap = typeof document !== 'undefined' && document.hidden ? 15 : 60;
-        await new Promise((resolve) => window.setTimeout(resolve, gap));
+          try {
+            window.sessionStorage.setItem(
+              IMPORT_SESSION_STORAGE_KEY,
+              JSON.stringify({
+                importId,
+                fileName,
+                fileSize,
+                fileLastModified,
+                year,
+                uploadedIndexes: nextUploadedIndexes,
+              })
+            );
+          } catch {}
+        }
       }
-    }
+    };
+
+    const workers = Array.from(
+      { length: Math.min(CONCURRENCY, pendingIndexes.length) },
+      () => worker()
+    );
+    await Promise.all(workers);
 
     // Complete import
     set({
