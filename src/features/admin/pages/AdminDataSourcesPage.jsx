@@ -26,6 +26,10 @@ export default function AdminDataSourcesPage() {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState(null);
   const [backfill, setBackfill] = useState({ running: false, collection: null, copied: 0, message: null });
+  const [showImportSummary, setShowImportSummary] = useState(false);
+  const [loadingImportSummary, setLoadingImportSummary] = useState(false);
+  const [importSummaryError, setImportSummaryError] = useState('');
+  const [importSummaryYears, setImportSummaryYears] = useState([]);
 
   const {
     isImporting,
@@ -151,6 +155,26 @@ export default function AdminDataSourcesPage() {
     }
   };
 
+  const toggleImportSummary = async () => {
+    if (showImportSummary) {
+      setShowImportSummary(false);
+      return;
+    }
+    setShowImportSummary(true);
+    setLoadingImportSummary(true);
+    setImportSummaryError('');
+    try {
+      const response = await api.get('/admin/imports/scimago/summary');
+      const result = response.data?.data || response.data;
+      setImportSummaryYears(result?.years || []);
+    } catch (error) {
+      setImportSummaryError(error.response?.data?.message || 'Could not load the imported SCImago data summary.');
+      setImportSummaryYears([]);
+    } finally {
+      setLoadingImportSummary(false);
+    }
+  };
+
   return (
     <div className="admin-page admin-data-sources space-y-6 text-left">
       <PageHeader
@@ -231,13 +255,63 @@ export default function AdminDataSourcesPage() {
             <div className="mb-4 rounded-lg border border-border bg-surface-muted/40 p-3 space-y-2">
               <div>
                 <h3 className="text-sm font-semibold text-foreground">Existing SCImago data</h3>
-                <p className="text-xs text-muted-foreground">Copy previous rankings and import progress from Firestore to Cloudflare D1.</p>
+                <p className="text-xs text-muted-foreground">Copy existing rankings and progress to D1, and build an ISSN lookup index from Firestore.</p>
               </div>
               {backfill.message && <Alert variant={backfill.running ? 'info' : backfill.message.includes('copied') ? 'success' : 'destructive'} className="text-xs">{backfill.message}</Alert>}
               {backfill.running && <p className="text-xs text-muted-foreground" aria-live="polite">Copying {backfill.collection} · {backfill.copied.toLocaleString()} records copied</p>}
-              <Button type="button" size="sm" variant="outline" disabled={backfill.running || isImporting || backfillComplete} isLoading={backfill.running} loadingText="Copying to D1…" onClick={migrateExistingScimagoData}>
-                {backfillComplete ? 'Copy complete' : 'Copy existing data to D1'}
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" size="sm" variant="outline" disabled={backfill.running || isImporting || backfillComplete} isLoading={backfill.running} loadingText="Copying to D1…" onClick={migrateExistingScimagoData}>
+                  {backfillComplete ? 'D1 migration complete' : 'Copy existing data to D1'}
+                </Button>
+                <Button type="button" size="sm" variant="outline" onClick={toggleImportSummary}>
+                  <Icon icon="lucide:chart-column-increasing" width="16" />
+                  {showImportSummary ? 'Hide import summary' : 'View imported years'}
+                </Button>
+              </div>
+              {showImportSummary && (
+                <div className="mt-3 overflow-hidden rounded-lg border border-border bg-surface" aria-live="polite">
+                  <div className="border-b border-border px-3 py-2">
+                    <h4 className="text-sm font-semibold text-foreground">Imported SCImago data by year</h4>
+                    <p className="text-xs text-muted-foreground">Counts reflect ranking records currently stored in D1.</p>
+                  </div>
+                  {loadingImportSummary ? (
+                    <p className="px-3 py-4 text-sm text-muted-foreground">Loading yearly totals…</p>
+                  ) : importSummaryError ? (
+                    <Alert variant="destructive" className="m-3 text-xs">{importSummaryError}</Alert>
+                  ) : importSummaryYears.length === 0 ? (
+                    <p className="px-3 py-4 text-sm text-muted-foreground">No imported ranking data is available in D1 yet.</p>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-[680px] text-left text-xs">
+                        <thead className="bg-surface-muted/50 text-muted-foreground">
+                          <tr>
+                            <th className="px-3 py-2 font-semibold">Year</th>
+                            <th className="px-3 py-2 text-right font-semibold">Ranking values</th>
+                            <th className="px-3 py-2 text-right font-semibold">Journals</th>
+                            <th className="px-3 py-2 text-right font-semibold">Metrics</th>
+                            <th className="px-3 py-2 text-right font-semibold">CSV rows</th>
+                            <th className="px-3 py-2 text-right font-semibold">Completed batches</th>
+                            <th className="px-3 py-2 text-right font-semibold">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {importSummaryYears.map(item => (
+                            <tr key={item.year} className="border-t border-border">
+                              <td className="px-3 py-2 font-semibold text-foreground">{item.year}</td>
+                              <td className="px-3 py-2 text-right tabular-nums">{Number(item.ranking_values || 0).toLocaleString()}</td>
+                              <td className="px-3 py-2 text-right tabular-nums">{Number(item.journals || 0).toLocaleString()}</td>
+                              <td className="px-3 py-2 text-right tabular-nums">{Number(item.metrics || 0).toLocaleString()}</td>
+                              <td className="px-3 py-2 text-right tabular-nums">{Number(item.imported_rows || 0).toLocaleString()}</td>
+                              <td className="px-3 py-2 text-right tabular-nums">{Number(item.completed_batches || 0).toLocaleString()}</td>
+                              <td className="px-3 py-2 text-right">{String(item.status || '').replaceAll('_', ' ').toLowerCase()}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {importMessage && (
