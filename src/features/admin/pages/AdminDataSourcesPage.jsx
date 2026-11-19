@@ -30,6 +30,8 @@ export default function AdminDataSourcesPage() {
   const [loadingImportSummary, setLoadingImportSummary] = useState(false);
   const [importSummaryError, setImportSummaryError] = useState('');
   const [importSummaryYears, setImportSummaryYears] = useState([]);
+  const [importSummaryNotice, setImportSummaryNotice] = useState('');
+  const [deletingImportYear, setDeletingImportYear] = useState(null);
 
   const {
     isImporting,
@@ -175,6 +177,25 @@ export default function AdminDataSourcesPage() {
     }
   };
 
+  const deleteImportYear = async (year) => {
+    if (!window.confirm(`Delete all SCImago ranking data and import history for ${year}? Journal records and shared metrics will be kept.`)) return;
+    setDeletingImportYear(year);
+    setImportSummaryError('');
+    setImportSummaryNotice('');
+    try {
+      const response = await api.delete(`/admin/imports/scimago/${year}`);
+      const result = response.data?.data || response.data;
+      setImportSummaryNotice(`Deleted ${Number(result?.ranking_values_deleted || 0).toLocaleString()} ranking values for ${year}.`);
+      const summaryResponse = await api.get('/admin/imports/scimago/summary');
+      const summary = summaryResponse.data?.data || summaryResponse.data;
+      setImportSummaryYears(summary?.years || []);
+    } catch (error) {
+      setImportSummaryError(error.response?.data?.message || `Could not delete SCImago data for ${year}.`);
+    } finally {
+      setDeletingImportYear(null);
+    }
+  };
+
   return (
     <div className="admin-page admin-data-sources space-y-6 text-left">
       <PageHeader
@@ -282,6 +303,7 @@ export default function AdminDataSourcesPage() {
                     <p className="px-3 py-4 text-sm text-muted-foreground">No imported ranking data is available in D1 yet.</p>
                   ) : (
                     <div className="overflow-x-auto">
+                      {importSummaryNotice && <Alert variant="success" className="m-3 text-xs">{importSummaryNotice}</Alert>}
                       <table className="w-full min-w-[680px] text-left text-xs">
                         <thead className="bg-surface-muted/50 text-muted-foreground">
                           <tr>
@@ -292,6 +314,7 @@ export default function AdminDataSourcesPage() {
                             <th className="px-3 py-2 text-right font-semibold">CSV rows</th>
                             <th className="px-3 py-2 text-right font-semibold">Completed batches</th>
                             <th className="px-3 py-2 text-right font-semibold">Status</th>
+                            <th className="px-3 py-2 text-right font-semibold">Action</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -304,6 +327,11 @@ export default function AdminDataSourcesPage() {
                               <td className="px-3 py-2 text-right tabular-nums">{Number(item.imported_rows || 0).toLocaleString()}</td>
                               <td className="px-3 py-2 text-right tabular-nums">{Number(item.completed_batches || 0).toLocaleString()}</td>
                               <td className="px-3 py-2 text-right">{String(item.status || '').replaceAll('_', ' ').toLowerCase()}</td>
+                              <td className="px-3 py-2 text-right">
+                                <Button type="button" size="sm" variant="outline" className="h-7 px-2 text-destructive" disabled={deletingImportYear !== null} isLoading={deletingImportYear === item.year} loadingText="Deleting…" onClick={() => deleteImportYear(item.year)}>
+                                  Delete
+                                </Button>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
