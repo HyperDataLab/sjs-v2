@@ -2205,7 +2205,7 @@
   }
 }
 
-/* Author Detail typography follows the shared design-system type scale. */
+/* Keep Author Detail type roles aligned with the Authors directory page. */
 .ap-main-container {
   font-family: var(--ds-font-sans);
   font-size: var(--ds-font-size-body);
@@ -2213,17 +2213,19 @@
 }
 
 .ap-main-container .ap-hero-name {
-  font-size: var(--text-2xl, 1.5rem);
+  font-size: var(--text-xl, 1.25rem);
   font-weight: var(--ds-font-weight-bold);
   line-height: 1.2;
 }
 
 .ap-main-container .ap-section-title {
   font-size: var(--ds-font-size-heading);
-  font-weight: var(--ds-font-weight-semibold);
+  font-weight: var(--ds-font-weight-bold);
 }
 
 .ap-main-container :is(
+  .ap-hero-position,
+  .ap-hero-inst-primary,
   .ap-affiliation-name,
   .ap-center-name,
   .ap-pub-title,
@@ -2234,8 +2236,27 @@
   .ap-edu-inst,
   .ap-related-name
 ) {
-  font-size: var(--ds-font-size-emphasis);
+  font-size: var(--ds-font-size-body);
   font-weight: var(--ds-font-weight-semibold);
+}
+
+.ap-main-container :is(
+  .ap-hero-inst-secondary,
+  .ap-hero-location,
+  .ap-affiliation-dept,
+  .ap-affiliation-meta,
+  .ap-pub-meta,
+  .ap-pub-authors,
+  .ap-cited-meta,
+  .ap-journal-meta,
+  .ap-collab-meta,
+  .ap-award-org,
+  .ap-award-desc,
+  .ap-edu-year,
+  .ap-edu-type-tag,
+  .ap-related-meta
+) {
+  font-size: var(--text-xs, 0.75rem);
 }
 
 .ap-main-container :is(.ap-hero-summary-val, .ap-metric-tile-val, .ap-impact-stat-number, .ap-cited-citations-num) {
