@@ -5,9 +5,13 @@
  * @description Lightweight, clean SVG-based academic collaboration & research network visualization.
  */
 export default function AuthorResearchNetwork({ network }) {
-  if (!network) return null;
+  if (!network || (!network.nodes?.length && !network.center)) return null;
 
   const { center, nodes = [] } = network;
+  const centerLabel = center?.label || 'Author';
+  const nameParts = centerLabel.split(' ');
+  const line1 = nameParts.slice(0, Math.ceil(nameParts.length / 2)).join(' ');
+  const line2 = nameParts.slice(Math.ceil(nameParts.length / 2)).join(' ');
   const cx = 200;
   const cy = 150;
   const r = 105;
@@ -93,7 +97,7 @@ export default function AuthorResearchNetwork({ network }) {
             fontWeight="700"
             fontFamily="var(--font-display)"
           >
-            Zhong Lin
+            {line1}
           </text>
           <text
             x={cx}
@@ -104,7 +108,7 @@ export default function AuthorResearchNetwork({ network }) {
             fontWeight="700"
             fontFamily="var(--font-display)"
           >
-            Wang
+            {line2}
           </text>
         </svg>
 

@@ -6,8 +6,6 @@ import AuthorAvatar from "./AuthorAvatar";
  * @description Frequent academic collaborators list.
  */
 export default function AuthorCollaborators({ collaborators = [] }) {
-  if (!collaborators || collaborators.length === 0) return null;
-
   return (
     <div className="ap-section" id="collaborators">
       <div className="ap-section-header">
@@ -15,10 +13,12 @@ export default function AuthorCollaborators({ collaborators = [] }) {
           <Icon icon="lucide:users" width="16" className="ap-section-icon" />
           <h2 className="ap-section-title">Frequent Collaborators</h2>
         </div>
-        <span className="ap-section-badge">{collaborators.length} primary co-authors</span>
+        <span className="ap-section-badge">{collaborators.length} co-authors in loaded works</span>
       </div>
 
-      <div className="ap-collab-grid">
+      {collaborators.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Co-author details are not available for the loaded publications.</p>
+      ) : <div className="ap-collab-grid">
         {collaborators.map((c) => (
           <div key={c.id} className="ap-collab-card">
             <div className="ap-collab-avatar">
@@ -44,7 +44,7 @@ export default function AuthorCollaborators({ collaborators = [] }) {
             </div>
           </div>
         ))}
-      </div>
+      </div>}
     </div>
   );
 }

@@ -522,6 +522,54 @@
   gap: 0.75rem;
 }
 
+.ap-affiliations-section {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.ap-affiliations-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.9rem;
+}
+
+.ap-affiliations-page-summary,
+.ap-affiliations-page-number {
+  color: var(--text-muted, #64748b);
+  font-size: 13px;
+}
+
+.ap-affiliations-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.ap-affiliations-page-btn {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 7px;
+  background: var(--bg-card, #fff);
+  color: var(--text-main, #0f172a);
+  cursor: pointer;
+}
+
+.ap-affiliations-page-btn:disabled {
+  color: var(--text-muted, #94a3b8);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .ap-affiliation-item {
   display: flex;
   gap: 0.85rem;
