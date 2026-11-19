@@ -11,8 +11,8 @@ const IMPORT_SESSION_STORAGE_KEY = 'admin.scimagoImportSession';
 const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
 const MAX_CHUNK_BYTES = 2 * 1024 * 1024;
 const MAX_CHUNK_ROWS = 250;
-const MAX_CHUNK_ATTEMPTS = 8;
-const MAX_RETRY_DELAY_MS = 30000;
+const MAX_CHUNK_ATTEMPTS = 5;
+const MAX_RETRY_DELAY_MS = 3000;
 
 function splitCsvRecords(text) {
   const input = String(text || '').replace(/^\uFEFF/, '');
@@ -91,8 +91,8 @@ async function postChunkWithRetry(url, body, onRetry, signal) {
       const transient = !status || status === 408 || status === 429 || status >= 500;
       if (!transient) throw error;
       if (attempt < MAX_CHUNK_ATTEMPTS) {
-        const delay = Math.min(2000 * (2 ** (attempt - 1)), MAX_RETRY_DELAY_MS);
-        const jitter = Math.floor(Math.random() * 500);
+        const delay = Math.min(1000 * attempt, MAX_RETRY_DELAY_MS);
+        const jitter = Math.floor(Math.random() * 200);
         onRetry?.({ attempt: attempt + 1, error, delay: delay + jitter });
         await new Promise((resolve) => window.setTimeout(resolve, delay + jitter));
       }
