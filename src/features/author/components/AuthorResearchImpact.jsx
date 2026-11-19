@@ -21,10 +21,11 @@ export default function AuthorResearchImpact({ metrics, trend = [] }) {
     return num.toLocaleString();
   };
 
-  const chartHeight = 110;
+  const chartHeight = 190;
   const barWidth = 26;
   const gap = 12;
   const svgWidth = trend.length * (barWidth + gap);
+  const yearRange = `${trend[0]?.year ?? ""} – ${trend[trend.length - 1]?.year ?? ""}`;
 
   return (
     <div className="ap-section">
@@ -83,7 +84,7 @@ export default function AuthorResearchImpact({ metrics, trend = [] }) {
         <div className="ap-impact-chart-box">
           <div className="ap-impact-chart-header">
             <span className="ap-impact-chart-caption">
-              Annual {metricMode === "citations" ? "Citations" : "Publications Output"} (2018 – 2026)
+              Annual {metricMode === "citations" ? "Citations" : "Publications Output"} ({yearRange})
             </span>
             <span className="ap-impact-chart-note">2026 data partial</span>
           </div>
@@ -91,7 +92,7 @@ export default function AuthorResearchImpact({ metrics, trend = [] }) {
           <div className="ap-impact-svg-wrap">
             <svg
               width="100%"
-              height="150"
+              height="230"
               viewBox={`0 0 ${svgWidth} ${chartHeight + 35}`}
               preserveAspectRatio="xMidYMid meet"
               className="ap-impact-svg"

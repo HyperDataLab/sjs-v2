@@ -120,6 +120,8 @@ export default function AuthorDetailPage() {
       .map((aff, idx) => ({
         id: aff.id || idx,
         institution: aff.institution,
+        institutionId: aff.institution_id || aff.id || null,
+        ror: aff.ror || null,
         department: aff.type || '',
         role: 'Researcher',
         location: aff.country_code || '',
@@ -130,6 +132,8 @@ export default function AuthorDetailPage() {
       ? lastKnownInsts.map((inst, idx) => ({
           id: inst.id || idx,
           institution: inst.display_name || 'Unknown',
+          institutionId: inst.id || inst.institution_id || null,
+          ror: inst.ror || null,
           department: inst.type || '',
           role: 'Researcher',
           location: inst.country_code || '',
@@ -212,13 +216,22 @@ export default function AuthorDetailPage() {
     title: article.title || article.display_name || 'Untitled',
     journal: article.journal_name || article.primary_location?.source?.display_name || article.journal || '',
     year: article.publication_year || article.year || null,
-    authors: (article.authorships || []).map(a => a.author?.display_name || a.display_name || '').filter(Boolean),
+    authors: (article.authorships || article.authors || []).map((authorship) => {
+      const person = authorship.author || authorship;
+      const name = person.display_name || person.full_name || person.name || authorship.display_name || '';
+      const authorId = person.author_id || person.id || person.openalex_id || authorship.author_id || null;
+      return name ? { id: authorId, name } : null;
+    }).filter(Boolean),
     citations: article.cited_by_count ?? article.citation_count ?? 0,
     doi: article.doi || null,
     tags: (article.topics || article.keywords || []).slice(0, 3).map(t => t.display_name || t.name || t),
   }));
 
   const mostCited = [...publications].sort((a, b) => (b.citations || 0) - (a.citations || 0)).slice(0, 5);
+  const showMostCitedPublications = () => {
+    document.getElementById('publications')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.dispatchEvent(new CustomEvent('author-publications-sort', { detail: { sortBy: 'cited' } }));
+  };
 
   // Build venue and co-author tables from the loaded publication records.
   const venueStats = new Map();
@@ -247,7 +260,7 @@ export default function AuthorDetailPage() {
     const seenOnArticle = new Set();
     authorships.forEach((authorship) => {
       const person = authorship.author || authorship;
-      const id = person.id || person.author_id || person.openalex_id || authorship.author_id;
+      const id = person.author_id || person.id || person.openalex_id || authorship.author_id;
       const name = person.display_name || person.full_name || person.name || authorship.display_name;
       if (!name) return;
       const identifier = id ? String(id) : name;
@@ -319,7 +332,7 @@ export default function AuthorDetailPage() {
         </motion.div>
 
         {/* 3. QUICK NAVIGATION (Sticky) */}
-        <motion.div variants={fadeUp}>
+        <motion.div className="ap-quicknav-sticky" variants={fadeUp}>
           <AuthorQuickNav />
         </motion.div>
 
@@ -332,7 +345,7 @@ export default function AuthorDetailPage() {
         <motion.div id="affiliations" variants={fadeUp} className="ap-grid-two-col">
           {/* Left Column */}
           <div className="ap-grid-col">
-            <AuthorAffiliations affiliations={affiliations} />
+          <AuthorAffiliations affiliations={affiliations} />
             <AuthorResearchCenters centers={researchCenters} />
           </div>
 
@@ -345,7 +358,7 @@ export default function AuthorDetailPage() {
 
         {/* 6. RESEARCH IMPACT & TRAJECTORY */}
         <motion.div id="research" variants={fadeUp}>
-          <AuthorResearchImpact metrics={metrics} trend={impactTrend} />
+          <AuthorResearchImpact metrics={metrics} trend={impactTrend} onViewMostCited={showMostCitedPublications} />
         </motion.div>
 
         {/* 7. SCIENTIFIC PUBLICATIONS */}
@@ -354,20 +367,24 @@ export default function AuthorDetailPage() {
         </motion.div>
 
         {/* 8. TWO-COLUMN: Most Cited | Top Journals */}
-        <motion.div id="venues" variants={fadeUp} className="ap-grid-two-col">
+        <motion.div id="venues" variants={fadeUp} className={`ap-grid-two-col${journals.length === 0 ? " ap-grid-single-col" : ""}`}>
           <div className="ap-grid-col">
             <AuthorMostCited mostCited={mostCited} />
           </div>
-          <div className="ap-grid-col">
-            <AuthorJournals journals={journals} />
-          </div>
+          {journals.length > 0 && (
+            <div className="ap-grid-col">
+              <AuthorJournals journals={journals} />
+            </div>
+          )}
         </motion.div>
 
         {/* 9. TWO-COLUMN: Frequent Collaborators | Research Network */}
-        <motion.div id="collaborators" variants={fadeUp} className="ap-grid-two-col">
-          <div className="ap-grid-col">
-            <AuthorCollaborators collaborators={collaborators} />
-          </div>
+        <motion.div id="collaborators" variants={fadeUp} className={`ap-grid-two-col${collaborators.length === 0 ? " ap-grid-single-col" : ""}`}>
+          {collaborators.length > 0 && (
+            <div className="ap-grid-col">
+              <AuthorCollaborators collaborators={collaborators} />
+            </div>
+          )}
           <div className="ap-grid-col">
             <AuthorResearchNetwork network={network} />
           </div>
