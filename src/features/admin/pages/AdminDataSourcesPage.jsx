@@ -9,6 +9,13 @@ import { Card } from '../../../shared/ui/card';
 import { useScimagoImportStore } from '../../../app/store/scimagoImportStore';
 
 const statusPath = '/admin/integrations/openalex';
+const SCIMAGO_BACKFILL_COLLECTIONS = [
+  'ranking_metrics',
+  'journal_rankings',
+  'scimago_import_jobs',
+  'scimago_import_batches',
+];
+const SCIMAGO_ISSN_BACKFILL_COLLECTIONS = ['journals', 'journal_issn'];
 
 export default function AdminDataSourcesPage() {
   const [keyStatus, setKeyStatus] = useState(null);
@@ -18,6 +25,7 @@ export default function AdminDataSourcesPage() {
   const [clearingKey, setClearingKey] = useState(false);
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState(null);
+  const [backfill, setBackfill] = useState({ running: false, collection: null, copied: 0, message: null });
 
   const {
     isImporting,
@@ -90,6 +98,57 @@ export default function AdminDataSourcesPage() {
     if (!file) return;
     startImport(file, year);
     setFile(null);
+  };
+
+  const backfillComplete = backfill.message === 'SCImago data and ISSN lookup have been copied to D1.';
+
+  const migrateExistingScimagoData = async () => {
+    if (!window.confirm('Copy existing SCImago rankings and import progress to D1, then build the ISSN lookup from Firestore journals?')) return;
+
+    setBackfill({ running: true, collection: null, copied: 0, message: null });
+    let totalCopied = 0;
+    try {
+      for (const collection of SCIMAGO_BACKFILL_COLLECTIONS) {
+        let pageToken;
+        setBackfill(current => ({ ...current, collection }));
+        do {
+          const response = await api.post('/admin/imports/scimago/backfill', {
+            collection,
+            page_size: 400,
+            ...(pageToken ? { page_token: pageToken } : {}),
+          }, { timeout: 60_000 });
+          const result = response.data?.data || response.data;
+          totalCopied += Number(result?.copied || 0);
+          setBackfill(current => ({ ...current, copied: totalCopied }));
+          pageToken = result?.next_page_token || null;
+          if (pageToken && result?.done) throw new Error('The server returned an inconsistent backfill cursor.');
+        } while (pageToken);
+      }
+      for (const collection of SCIMAGO_ISSN_BACKFILL_COLLECTIONS) {
+        let pageToken;
+        setBackfill(current => ({ ...current, collection: `ISSN index: ${collection}` }));
+        do {
+          const response = await api.post('/admin/imports/scimago/issn-backfill', {
+            collection,
+            page_size: 400,
+            ...(pageToken ? { page_token: pageToken } : {}),
+          }, { timeout: 60_000 });
+          const result = response.data?.data || response.data;
+          totalCopied += Number(result?.copied || 0);
+          setBackfill(current => ({ ...current, copied: totalCopied }));
+          pageToken = result?.next_page_token || null;
+          if (pageToken && result?.done) throw new Error('The server returned an inconsistent ISSN backfill cursor.');
+        } while (pageToken);
+      }
+      setBackfill({ running: false, collection: null, copied: totalCopied, message: 'SCImago data and ISSN lookup have been copied to D1.' });
+    } catch (error) {
+      setBackfill({
+        running: false,
+        collection: null,
+        copied: totalCopied,
+        message: error.response?.data?.message || error.message || 'Could not copy SCImago data to D1.',
+      });
+    }
   };
 
   return (
@@ -168,6 +227,18 @@ export default function AdminDataSourcesPage() {
               </div>
             </div>
             <Alert variant="info" className="mb-4 text-xs">Choose the SCImago Journal Rank CSV export. The file should include journal title, ISSN, SJR, and SJR Best Quartile. A Year column is used when present; otherwise the selected year is applied.</Alert>
+
+            <div className="mb-4 rounded-lg border border-border bg-surface-muted/40 p-3 space-y-2">
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">Existing SCImago data</h3>
+                <p className="text-xs text-muted-foreground">Copy previous rankings and import progress from Firestore to Cloudflare D1.</p>
+              </div>
+              {backfill.message && <Alert variant={backfill.running ? 'info' : backfill.message.includes('copied') ? 'success' : 'destructive'} className="text-xs">{backfill.message}</Alert>}
+              {backfill.running && <p className="text-xs text-muted-foreground" aria-live="polite">Copying {backfill.collection} · {backfill.copied.toLocaleString()} records copied</p>}
+              <Button type="button" size="sm" variant="outline" disabled={backfill.running || isImporting || backfillComplete} isLoading={backfill.running} loadingText="Copying to D1…" onClick={migrateExistingScimagoData}>
+                {backfillComplete ? 'Copy complete' : 'Copy existing data to D1'}
+              </Button>
+            </div>
 
             {importMessage && (
               <Alert

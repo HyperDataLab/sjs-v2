@@ -10,7 +10,7 @@ const importPath = '/admin/imports/scimago';
 const IMPORT_SESSION_STORAGE_KEY = 'admin.scimagoImportSession';
 const MAX_IMPORT_BYTES = 50 * 1024 * 1024;
 const MAX_CHUNK_BYTES = 2 * 1024 * 1024;
-const MAX_CHUNK_ROWS = 250;
+const MAX_CHUNK_ROWS = 500;
 const MAX_CHUNK_ATTEMPTS = 5;
 const MAX_RETRY_DELAY_MS = 3000;
 
@@ -346,7 +346,7 @@ export const useScimagoImportStore = create((set, get) => ({
     set({ status: 'importing', isImporting: true });
     let completed = uploadedBatches.size;
     const totalBatches = batches.length;
-    const CONCURRENCY = 2;
+    const CONCURRENCY = 3;
 
     const pendingIndexes = [];
     for (let i = 0; i < totalBatches; i += 1) {
