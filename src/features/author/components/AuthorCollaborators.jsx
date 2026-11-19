@@ -1,11 +1,13 @@
 ﻿import Icon from "../../../shared/components/Icon";
 import AuthorAvatar from "./AuthorAvatar";
+import { Link, useParams } from "react-router-dom";
 
 /**
  * @file AuthorCollaborators.jsx
  * @description Frequent academic collaborators list.
  */
 export default function AuthorCollaborators({ collaborators = [] }) {
+  const { lang = "en" } = useParams();
   return (
     <div className="ap-section" id="collaborators">
       <div className="ap-section-header">
@@ -19,8 +21,15 @@ export default function AuthorCollaborators({ collaborators = [] }) {
       {collaborators.length === 0 ? (
         <p className="text-sm text-muted-foreground">Co-author details are not available for the loaded publications.</p>
       ) : <div className="ap-collab-grid">
-        {collaborators.map((c) => (
-          <div key={c.id} className="ap-collab-card">
+        {collaborators.map((c) => {
+          const Card = c.id ? Link : "div";
+          return (
+          <Card
+            key={c.id || c.name}
+            {...(c.id ? { to: `/${lang}/authors/${encodeURIComponent(c.id)}` } : {})}
+            className={`ap-collab-card${c.id ? " is-link" : ""}`}
+            aria-label={c.id ? `View ${c.name}'s researcher profile` : undefined}
+          >
             <div className="ap-collab-avatar">
               <AuthorAvatar name={c.name} size="md" bgColor={c.avatarColor} />
             </div>
@@ -42,8 +51,8 @@ export default function AuthorCollaborators({ collaborators = [] }) {
                 <span>joint publications</span>
               </div>
             </div>
-          </div>
-        ))}
+          </Card>
+        );})}
       </div>}
     </div>
   );

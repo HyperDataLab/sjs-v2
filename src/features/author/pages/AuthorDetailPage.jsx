@@ -122,6 +122,9 @@ export default function AuthorDetailPage() {
         institution: aff.institution,
         institutionId: aff.institution_id || aff.id || null,
         ror: aff.ror || null,
+        externalUrl: aff.ror
+          ? (String(aff.ror).startsWith('http') ? aff.ror : `https://ror.org/${aff.ror}`)
+          : (aff.institution_id || aff.id ? `https://openalex.org/I${String(aff.institution_id || aff.id).replace(/^https?:\/\/openalex\.org\/I?/i, '').replace(/^I/i, '')}` : null),
         department: aff.type || '',
         role: 'Researcher',
         location: aff.country_code || '',
@@ -134,6 +137,9 @@ export default function AuthorDetailPage() {
           institution: inst.display_name || 'Unknown',
           institutionId: inst.id || inst.institution_id || null,
           ror: inst.ror || null,
+          externalUrl: inst.ror
+            ? (String(inst.ror).startsWith('http') ? inst.ror : `https://ror.org/${inst.ror}`)
+            : (inst.id || inst.institution_id ? `https://openalex.org/I${String(inst.id || inst.institution_id).replace(/^https?:\/\/openalex\.org\/I?/i, '').replace(/^I/i, '')}` : null),
           department: inst.type || '',
           role: 'Researcher',
           location: inst.country_code || '',
@@ -211,8 +217,8 @@ export default function AuthorDetailPage() {
     }));
 
   // Build publications from authorArticles
-  const publications = (authorArticles || []).map((article, idx) => ({
-    id: article.article_id || article.id || idx,
+  const publications = (authorArticles || []).map((article) => ({
+    id: article.article_id || article.id || article.openalex_id || null,
     title: article.title || article.display_name || 'Untitled',
     journal: article.journal_name || article.primary_location?.source?.display_name || article.journal || '',
     year: article.publication_year || article.year || null,
@@ -228,10 +234,6 @@ export default function AuthorDetailPage() {
   }));
 
   const mostCited = [...publications].sort((a, b) => (b.citations || 0) - (a.citations || 0)).slice(0, 5);
-  const showMostCitedPublications = () => {
-    document.getElementById('publications')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    window.dispatchEvent(new CustomEvent('author-publications-sort', { detail: { sortBy: 'cited' } }));
-  };
 
   // Build venue and co-author tables from the loaded publication records.
   const venueStats = new Map();
@@ -292,26 +294,28 @@ export default function AuthorDetailPage() {
 
   // Build research network from affiliations + topics
   const networkNodes = [
-    ...(rawAffiliations.length > 0
-      ? rawAffiliations
-          .filter(a => a.institution && a.years?.length > 0)
-          .sort((a, b) => Math.max(...(b.years || [0])) - Math.max(...(a.years || [0])))
-          .slice(0, 4)
-          .map((aff, idx) => ({
+    ...(affiliations.length > 0
+      ? affiliations.slice(0, 4).map((aff, idx) => ({
             id: `inst-${idx}`,
+            name: aff.institution,
             label: aff.institution?.length > 20 ? aff.institution.slice(0, 18) + '…' : aff.institution,
             type: 'institution',
-            angle: idx * (360 / Math.min(rawAffiliations.length, 4) + 4),
+            externalUrl: aff.externalUrl,
+            angle: idx * (360 / Math.min(affiliations.length, 4) + 4),
           }))
       : []),
     ...rawTopics
       .slice(0, 4)
-      .map((t, idx) => ({
+      .map((t, idx) => {
+        const name = t.display_name || t.field || t.domain || 'Research area';
+        return ({
         id: `topic-${idx}`,
-        label: (t.display_name || '').length > 20 ? (t.display_name || '').slice(0, 18) + '…' : (t.display_name || ''),
+        name,
+        searchTerm: name,
+        label: name.length > 20 ? name.slice(0, 18) + '…' : name,
         type: 'topic',
         angle: 180 + idx * (360 / 8),
-      })),
+      });}),
   ];
 
   const network = {
@@ -358,7 +362,7 @@ export default function AuthorDetailPage() {
 
         {/* 6. RESEARCH IMPACT & TRAJECTORY */}
         <motion.div id="research" variants={fadeUp}>
-          <AuthorResearchImpact metrics={metrics} trend={impactTrend} onViewMostCited={showMostCitedPublications} />
+          <AuthorResearchImpact metrics={metrics} trend={impactTrend} />
         </motion.div>
 
         {/* 7. SCIENTIFIC PUBLICATIONS */}

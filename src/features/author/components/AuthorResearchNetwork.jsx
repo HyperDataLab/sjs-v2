@@ -1,10 +1,17 @@
 ﻿import Icon from "../../../shared/components/Icon";
 
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 /**
  * @file AuthorResearchNetwork.jsx
  * @description Lightweight, clean SVG-based academic collaboration & research network visualization.
  */
 export default function AuthorResearchNetwork({ network }) {
+  const [selectedNode, setSelectedNode] = useState(null);
+  const navigate = useNavigate();
+  const { lang = "en" } = useParams();
+
   if (!network || (!network.nodes?.length && !network.center)) return null;
 
   const { center, nodes = [] } = network;
@@ -67,7 +74,23 @@ export default function AuthorResearchNetwork({ network }) {
             const pos = getPos(node.angle);
             const color = nodeColors[node.type] || "var(--text-muted)";
             return (
-              <g key={node.id} className="ap-network-node-group">
+              <g
+                key={node.id}
+                className={`ap-network-node-group${selectedNode?.id === node.id ? " is-selected" : ""}`}
+                role="button"
+                tabIndex={0}
+                aria-label={`Show details for ${node.name || node.label}`}
+                aria-pressed={selectedNode?.id === node.id}
+                onClick={() => setSelectedNode(node)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelectedNode(node);
+                  }
+                }}
+              >
+                <title>{`${node.name || node.label} — ${node.type === "institution" ? "Affiliation" : "Research area"}. Select for details.`}</title>
+                <circle className="ap-network-hit-area" cx={pos.x} cy={pos.y} r="18" />
                 <circle cx={pos.x} cy={pos.y} r="10" fill={color} opacity="0.12" />
                 <circle cx={pos.x} cy={pos.y} r="6" fill={color} />
                 <text
@@ -111,6 +134,43 @@ export default function AuthorResearchNetwork({ network }) {
             {line2}
           </text>
         </svg>
+
+        {selectedNode ? (
+          <div className="ap-network-selection" aria-live="polite">
+            <div className="ap-network-selection-copy">
+              <span className="ap-network-selection-type">
+                {selectedNode.type === "institution" ? "Affiliation" : "Research area"}
+              </span>
+              <strong>{selectedNode.name || selectedNode.label}</strong>
+            </div>
+            <div className="ap-network-selection-actions">
+              {selectedNode.type === "institution" && selectedNode.externalUrl ? (
+                <a href={selectedNode.externalUrl} target="_blank" rel="noreferrer" className="ap-network-selection-action">
+                  Open organization record <Icon icon="lucide:external-link" width="12" />
+                </a>
+              ) : selectedNode.type === "topic" ? (
+                <button
+                  type="button"
+                  className="ap-network-selection-action"
+                  onClick={() => navigate(`/${lang}/catalog?search=${encodeURIComponent(selectedNode.searchTerm || selectedNode.name || selectedNode.label)}`)}
+                >
+                  Find related publications <Icon icon="lucide:arrow-right" width="12" />
+                </button>
+              ) : null}
+              <button
+                type="button"
+                className="ap-network-clear"
+                onClick={() => setSelectedNode(null)}
+                aria-label="Clear selected network node"
+                title="Clear selection"
+              >
+                <Icon icon="lucide:x" width="14" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="ap-network-hint">Select an institution or research area to explore its details.</p>
+        )}
 
         <div className="ap-network-legend">
           <span className="ap-network-legend-item">

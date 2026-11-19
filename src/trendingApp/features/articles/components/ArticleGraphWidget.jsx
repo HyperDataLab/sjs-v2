@@ -24,10 +24,7 @@ export default function ArticleGraphWidget({
   const fgRef = useRef(null);
   const graphBoxRef = useRef(null);
 
-  const [dims, setDims] = useState({
-    width: 960,
-    height: 760,
-  });
+  const [dims, setDims] = useState({ width: 0, height: 0 });
 
   const [hoverNode, setHoverNode] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
@@ -48,10 +45,9 @@ export default function ArticleGraphWidget({
     if (!el) return;
 
     const observer = new ResizeObserver(([entry]) => {
-      setDims({
-        width: Math.max(360, Math.floor(entry.contentRect.width)),
-        height: Math.max(420, Math.floor(entry.contentRect.height)),
-      });
+      const width = Math.floor(entry.contentRect.width);
+      const height = Math.floor(entry.contentRect.height);
+      if (width > 0 && height > 0) setDims({ width, height });
     });
 
     observer.observe(el);
@@ -89,7 +85,7 @@ export default function ArticleGraphWidget({
     );
 
     fgRef.current.d3ReheatSimulation?.();
-  }, [graph.nodes.length, graph.links.length]);
+  }, [graph.nodes.length, graph.links.length, dims.width, dims.height]);
 
   const updateHighlight = useCallback(
     (node) => {
@@ -260,8 +256,8 @@ export default function ArticleGraphWidget({
     <div
       style={{
         width: '100%',
-        height: '100vh',
-        minHeight: 520,
+        height: '100%',
+        minHeight: 0,
         background: ARTICLE_GRAPH_THEME.bg,
         overflow: 'hidden',
       }}
@@ -272,12 +268,12 @@ export default function ArticleGraphWidget({
           position: 'relative',
           width: '100%',
           height: '100%',
-          minHeight: 520,
+          minHeight: 0,
           overflow: 'hidden',
           background: ARTICLE_GRAPH_THEME.bg,
         }}
       >
-        <ForceGraph2D
+        {dims.width > 0 && dims.height > 0 ? <ForceGraph2D
           ref={fgRef}
           graphData={graph}
           width={dims.width}
@@ -331,7 +327,7 @@ export default function ArticleGraphWidget({
           onNodeHover={updateHighlight}
           onNodeClick={handleNodeClick}
           onBackgroundClick={() => setSelectedNode(null)}
-        />
+        /> : null}
 
         {loading ? (
           <OverlayCard>

@@ -29,7 +29,7 @@ export default function AuthorAffiliations({ affiliations }) {
 
       <div className="ap-affiliations-list">
         {visibleAffiliations.map((item) => (
-          <div key={item.id} className="ap-affiliation-item">
+          <div key={item.id} className={`ap-affiliation-item${item.externalUrl ? " is-link" : ""}`}>
             <div
               className="ap-affiliation-badge-logo"
               style={{
@@ -43,7 +43,13 @@ export default function AuthorAffiliations({ affiliations }) {
 
             <div className="ap-affiliation-content">
               <div className="ap-affiliation-main-row">
-                <h3 className="ap-affiliation-name">{item.institution}</h3>
+                <h3 className="ap-affiliation-name">
+                  {item.externalUrl ? (
+                    <a href={item.externalUrl} target="_blank" rel="noreferrer" aria-label={`Open ${item.institution} organization record`}>
+                      {item.institution}
+                    </a>
+                  ) : item.institution}
+                </h3>
                 {item.since && <span className="ap-affiliation-since">Since {item.since}</span>}
               </div>
 
