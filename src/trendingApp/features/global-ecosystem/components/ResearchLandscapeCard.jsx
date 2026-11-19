@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FiShare2 } from 'react-icons/fi';
 import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
 import { useDistribution } from '../hooks/useDistribution';
 import { mapFiltersToQueryParams } from '../services/globalEcosystem.service';
@@ -18,9 +17,8 @@ export default function ResearchLandscapeCard() {
     return (
       <Card className="dashboard-card bg-surface border-border shadow-card rounded-card overflow-hidden">
         <CardHeader className="px-4 py-3 border-b border-border">
-          <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
-            <FiShare2 className="size-4 text-primary" />
-            <span>{t('dashboard.researchLandscape', 'Research Landscape')}</span>
+          <CardTitle className="text-sm font-semibold text-foreground">
+            {t('dashboard.researchLandscape', 'Research Landscape')}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4">
@@ -53,9 +51,8 @@ export default function ResearchLandscapeCard() {
   return (
     <Card className="dashboard-card bg-surface border-border shadow-card rounded-card overflow-hidden">
       <CardHeader className="px-4 py-3 border-b border-border">
-        <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
-          <FiShare2 className="size-4 text-primary" />
-          <span>{t('dashboard.researchLandscape', 'Research Landscape')}</span>
+        <CardTitle className="text-sm font-semibold text-foreground">
+          {t('dashboard.researchLandscape', 'Research Landscape')}
         </CardTitle>
       </CardHeader>
       
