@@ -617,6 +617,6 @@ export default function GlobalHeatMapSection({
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
