@@ -1,9 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import ROUTES from '../../../app/routes/routePaths';
 import useProjects from '../hooks/useProjects';
+import { getProjectByIdApi } from '../api/project.api';
 import { Icon } from '@iconify/react';
 import { getSubjectAreasApi } from '../../catalog/api/catalogApi';
 import keywordApi from '../../keywords/api/keywordApi';
@@ -45,6 +46,11 @@ const FALLBACK_SUBJECT_AREAS = [
   { id: 10, subject_area_id: 10, display_name: "Multidisciplinary", name: "Multidisciplinary" }
 ];
 
+const createRequestId = () => {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return `project-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+};
+
 const CreateProjectPage = () => {
   const { t: _t } = useTranslation();
   const navigate = useNavigate();
@@ -66,6 +72,8 @@ const CreateProjectPage = () => {
   const [loadingCatalogs, setLoadingCatalogs] = useState(true);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [error, setError] = useState(null);
+  const submitInFlightRef = useRef(false);
+  const submissionRef = useRef(null);
 
   // Initial Data Fetch
   useEffect(() => {
@@ -133,31 +141,55 @@ const CreateProjectPage = () => {
   })) : [];
   const handleSubmit = async e => {
     e.preventDefault();
+    // A ref closes the gap before React renders the disabled submit button.
+    if (submitInFlightRef.current) return;
     if (!title.trim() || !subjectAreaId) {
       setError(t("project.vuiLongNhapTenDuAnVaChonLinhVu"));
       return;
     }
+    const payload = {
+      title: title.trim(),
+      subject_area_id: parseInt(subjectAreaId, 10),
+      subject_category_ids: [],
+      journal_ids: [],
+      keywords: [...keywords]
+    };
+    const signature = JSON.stringify(payload);
+    if (!submissionRef.current || submissionRef.current.signature !== signature) {
+      submissionRef.current = { signature, projectId: createRequestId() };
+    }
+    const projectId = submissionRef.current.projectId;
+    submitInFlightRef.current = true;
     setLoading(true);
     setError(null);
     try {
-      const res = await createProject({
-        title: title.trim(),
-        subject_area_id: parseInt(subjectAreaId, 10),
-        subject_category_ids: [],
-        journal_ids: [],
-        keywords: keywords
-      });
-
-      const projectId = res?.data?.project_id || res?.data?.id || res?.project_id;
-      if (projectId) {
-        navigate(`/projects/${projectId}`);
-      } else {
-        setError(res?.message || t("project.taoDuAnThatBai"));
-      }
+      const res = await createProject({ ...payload, project_id: projectId }, { timeout: 30000 });
+      const createdProjectId = res?.project_id || res?.id || res?.data?.project_id || res?.data?.id || projectId;
+      navigate(`/projects/${createdProjectId}`);
     } catch (err) {
       console.error('Error creating project:', err);
-      setError(err.response?.data?.message || err.message || t("project.daCoLoiXayRaKhiTaoDuAn"));
+      const status = err.response?.status;
+      const ambiguousResult = !err.response || status === 409 || status >= 500 ||
+        err.code === 'ECONNABORTED' || err.code === 'ETIMEDOUT';
+
+      // The Worker may have committed the write before a timeout or lost response.
+      // Resolve that case by the stable ID before asking the user to retry.
+      if (ambiguousResult) {
+        try {
+          await getProjectByIdApi(projectId, { timeout: 8000 });
+          navigate(`/projects/${projectId}`);
+          return;
+        } catch {
+          // Keep the same project_id so a retry cannot create another record.
+        }
+      }
+
+      const isTimeout = err.code === 'ECONNABORTED' || err.code === 'ETIMEDOUT';
+      setError(isTimeout
+        ? t("project.taoDuAnDangXuLyQuaLau", "The request timed out. Retry safely; this will not create another project.")
+        : err.response?.data?.message || err.message || t("project.daCoLoiXayRaKhiTaoDuAn"));
     } finally {
+      submitInFlightRef.current = false;
       setLoading(false);
     }
   };

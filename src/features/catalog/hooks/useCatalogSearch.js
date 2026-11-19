@@ -55,6 +55,10 @@ export function useCatalogSearch(currentUser) {
   const selectedQuartilesStr = selectedQuartiles.join(',');
 
   useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
+
+  useEffect(() => {
     hydrateFromQuery({
       keyword: search,
       page,

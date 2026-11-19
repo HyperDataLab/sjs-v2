@@ -17,6 +17,7 @@ import { API_BASE_URL } from './apiBase';
  */
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -40,6 +41,7 @@ api.interceptors.request.use(
 // Axios instance for public endpoints (does not send cookies or tokens)
 export const publicApi = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
