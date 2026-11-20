@@ -1,1 +1,0 @@
-This folder contains the built output assets for the worker "scientificjournalsystem-api" generated at 2026-11-20T13:46:03.376Z.
