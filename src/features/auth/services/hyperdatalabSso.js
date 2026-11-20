@@ -44,15 +44,6 @@ function safeReturnTo(value) {
   }
 }
 
-function decodeTokenClaims(token) {
-  try {
-    const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(atob(payload + '='.repeat((4 - payload.length % 4) % 4)));
-  } catch {
-    return {};
-  }
-}
-
 async function parseResponse(response, errorCode) {
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(errorCode);
@@ -72,7 +63,7 @@ export async function startHyperdatalabSso(returnTo = '/') {
     response_type: 'code',
     client_id: config.clientId,
     redirect_uri: config.callbackUrl.href,
-    scope: 'email profile',
+    scope: 'email profile hyperdatalab_profile',
     state,
     code_challenge: challenge,
     code_challenge_method: 'S256',
@@ -110,33 +101,23 @@ async function finishSso(callbackHref) {
   if (!ssoAccessToken) throw new Error('SSO_TOKEN_EXCHANGE_FAILED');
 
   try {
-    const bridgeResponse = await fetch(new URL('/api/v1/auth/sso/custom-token', config.workerUrl), {
+    const sessionResponse = await fetch(new URL('/api/v1/auth/sso/session', config.workerUrl), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ accessToken: ssoAccessToken }),
     });
-    const { customToken } = await parseResponse(bridgeResponse, 'SSO_FIREBASE_BRIDGE_FAILED');
-    if (!customToken) throw new Error('SSO_FIREBASE_BRIDGE_FAILED');
-
-    const apiKey = import.meta.env.VITE_FIREBASE_API_KEY?.trim();
-    if (!apiKey) throw new Error('SSO_CONFIGURATION_MISSING');
-    const firebaseResponse = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${encodeURIComponent(apiKey)}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: customToken, returnSecureToken: true }),
-    });
-    const identity = await parseResponse(firebaseResponse, 'SSO_FIREBASE_SIGN_IN_FAILED');
-    if (!identity.idToken || !identity.localId) throw new Error('SSO_FIREBASE_SIGN_IN_FAILED');
-
-    const claims = decodeTokenClaims(identity.idToken);
+    const sessionBody = await parseResponse(sessionResponse, 'SSO_SESSION_CREATE_FAILED');
+    const session = sessionBody.data || sessionBody;
+    if (!session.token || !session.user?.user_id) throw new Error('SSO_SESSION_CREATE_FAILED');
     const user = {
-      id: identity.localId,
-      uid: identity.localId,
-      email: identity.email || '',
-      displayName: identity.displayName || identity.email || '',
-      role: claims.role || 'STUDENT',
+      ...session.user,
+      id: session.user.user_id,
+      uid: session.user.user_id,
+      email: session.user.email || '',
+      displayName: session.user.display_name || [session.user.first_name, session.user.last_name].filter(Boolean).join(' ') || session.user.email || '',
+      role: session.user.role || 'STUDENT',
     };
-    useAuthStore.getState().loginSuccess(identity.idToken, user, false, null);
+    useAuthStore.getState().loginSuccess(session.token, user, false, session.refresh_token || null);
     useUserStore.getState().setEmail(user.email);
     useUserStore.getState().setUser?.(user);
   } finally {
