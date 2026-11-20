@@ -1,26 +1,23 @@
 import { useTranslation } from "react-i18next";
-/**
- * File source thuộc hệ thống FE ResearchPulse.
- *
- * File: features\catalog\pages\CatalogSearchPage.jsx
- */
-import { Container, Dropdown, Breadcrumb } from 'react-bootstrap';
+import { Dropdown } from '../../../shared/ui/dropdown-menu';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useCatalogSearch } from '../hooks/useCatalogSearch';
 import FilterPanel from '../components/FilterPanel';
 import JournalTable from '../components/JournalTable';
-import LoadingSkeleton from '../../../shared/components/LoadingSkeleton';
 import AuthRequiredModal from '../../../shared/components/AuthRequiredModal';
-import Header from '../../landing/components/Header';
 import useAuth from '../../auth/hooks/useAuth';
 import AdminPagination from '../../../shared/components/Pagination';
-import PrimaryButton from '../../../shared/components/Button/PrimaryButton';
+import { Card } from '../../../shared/ui/card';
+import { StatePanel } from '../../../shared/ui/state-panel';
+import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
+import { MotionPage, fadeUp } from '../../../shared/ui/motion';
+import { Skeleton } from '../../../shared/ui/skeleton';
 import '../components/CatalogSearch.css';
+
 export default function CatalogSearchPage() {
-  const {
-    t
-  } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const {
@@ -58,108 +55,140 @@ export default function CatalogSearchPage() {
     handleSortChange,
     handlePageChange,
     handleFollowJournal,
-    fetchJournals
+    fetchJournals,
   } = useCatalogSearch(user);
+
   const pageLimit = 10;
   const totalPages = Math.ceil(total / pageLimit) || 1;
-  return <div className="min-vh-100 text-main catalog-search-page">
-      {/* Navbar Header */}
-      <Header />
 
-      <Container className="catalog-shell">
-        {/* Breadcrumbs */}
-        <div aria-label="breadcrumb" className="catalog-breadcrumb">
-          <Breadcrumb className="mb-0 custom-breadcrumb d-flex align-items-center">
-            <Breadcrumb.Item onClick={() => navigate('/')} className="d-flex align-items-center" linkProps={{
-            style: {
-              cursor: 'pointer'
-            }
-          }}>{t("home")}</Breadcrumb.Item>
-            <Breadcrumb.Item active className="d-flex align-items-center">{t("search")}</Breadcrumb.Item>
+  return (
+    <PageContainer>
+      <MotionPage className="space-y-6">
+        {/* 1. Standard Page Header */}
+        <PageHeader
+          title={t("catalog.danhMucTimKiem", "Journal Catalog & Search")}
+          description={t("catalog.timKiemJournalLocTheoLinhVucXe", "Search international scientific journals, Scimago quartile rankings, and citation metrics.")}
+        />
 
-          </Breadcrumb>
-        </div>
+        {/* 2. Unified Container: Filter + Toolbar + Table + Pagination */}
+        <motion.div variants={fadeUp}>
+          <Card className="rounded-card border border-border bg-surface shadow-card">
+        {/* Filter Toolbar Panel */}
+        <FilterPanel
+          asCard={false}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          onSearchSubmit={handleSearchSubmit}
+          subjectAreas={subjectAreas}
+          subjectCategories={subjectCategories}
+          selectedAreas={selectedAreas}
+          selectedCategories={selectedCategories}
+          selectedAccess={selectedAccess}
+          selectedQuartiles={selectedQuartiles}
+          onAreaSelect={onAreaSelect}
+          onCategorySelect={onCategorySelect}
+          onAccessSelect={onAccessSelect}
+          onQuartileSelect={onQuartileSelect}
+          selectedYear={selectedYear}
+          selectedZone={selectedZone}
+          zones={zones}
+          onYearSelect={onYearSelect}
+          onZoneSelect={onZoneSelect}
+          isOaDiamond={isOaDiamond}
+          onOaDiamondToggle={handleOaDiamondToggle}
+          onClearAll={handleClearAll}
+          loading={loadingFilters}
+          sort={sort}
+          onSortChange={handleSortChange}
+        />
 
-        {/* Page Title & Subtitle */}
-        <section className="catalog-hero text-start">
-          <h1 className="catalog-title">{t("catalog.danhMucTimKiem")}</h1>
-          <p className="catalog-subtitle">{t("catalog.timKiemJournalLocTheoLinhVucXe")}</p>
-        </section>
-
-        {/* Catalog Main Layout */}
-        <div className="w-100">
-          {/* Toolbar Filter Panel */}
-          <FilterPanel searchInput={searchInput} setSearchInput={setSearchInput} onSearchSubmit={handleSearchSubmit} subjectAreas={subjectAreas} subjectCategories={subjectCategories} selectedAreas={selectedAreas} selectedCategories={selectedCategories} selectedAccess={selectedAccess} selectedQuartiles={selectedQuartiles} onAreaSelect={onAreaSelect} onCategorySelect={onCategorySelect} onAccessSelect={onAccessSelect} onQuartileSelect={onQuartileSelect} selectedYear={selectedYear} selectedZone={selectedZone} zones={zones} onYearSelect={onYearSelect} onZoneSelect={onZoneSelect} isOaDiamond={isOaDiamond} onOaDiamondToggle={handleOaDiamondToggle} onClearAll={handleClearAll} loading={loadingFilters} />
-
-          {/* Toolbar Panel */}
-          <div className="catalog-toolbar d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 text-start">
-            
-            {/* Summary Counter text */}
-            <div className="text-muted-custom catalog-count">
-              {loadingJournals ? (
-                <span>{t("catalog.dangTimKiemTapChi")}</span>
-              ) : (
-                <span>
-                  {t("catalog.timThay", "Found ")}
-                  <strong>{total}</strong> {t("catalog.tapChiCount", "journals")} · {t("pagination.page", "Page")} <span className="catalog-number">{page}/{totalPages}</span>
-                </span>
-              )}
-            </div>
-
-            {/* Sort Dropdown */}
-              <Dropdown align="end">
-                <Dropdown.Toggle variant="light" id="sort-dropdown" className="catalog-sort-toggle">
-                  <Icon icon="lucide:arrow-up-down" width="14" />
-                  <span>
-                    {sort === 'metric' && t("catalog.macDinh")}
-                    {sort === 'name' && t("catalog.tenAz")}
-                  </span>
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="catalog-dropdown-menu">
-                  <Dropdown.Item onClick={() => handleSortChange('metric')}>{t("catalog.macDinh")}</Dropdown.Item>
-                  <Dropdown.Item onClick={() => handleSortChange('name')}>{t("catalog.tenAz")}</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-
-          </div>
-
-          {/* Main Result Area */}
-          {loadingJournals ?
-        // 3 Skeleton list cards loading placeholder
-        <div>
-              {[1, 2, 3].map(s => <section key={s} className="catalog-surface p-4 mb-3 text-start">
-                  <LoadingSkeleton width="60%" height="1.4rem" className="mb-3" />
-                  <LoadingSkeleton width="45%" height="0.8rem" className="mb-3" />
-                  <div className="d-flex align-items-center gap-2 mb-3">
-                    <LoadingSkeleton width="50px" height="1.2rem" />
-                    <LoadingSkeleton width="100px" height="1.2rem" />
-                    <LoadingSkeleton width="120px" height="1.2rem" />
+        {/* Table Result Area */}
+        <div className="border-t border-border">
+          {loadingJournals ? (
+            <div className="p-4 space-y-4">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <div key={s} className="flex items-center justify-between gap-4 py-2 border-b border-border/40 last:border-0">
+                  <div className="space-y-1.5 flex-1">
+                    <Skeleton className="h-4 w-3/5 rounded-control" />
+                    <Skeleton className="h-3 w-1/4 rounded-control" />
                   </div>
-                </section>)}
-            </div> : error && journals.length === 0 ? <section className="catalog-surface catalog-state-card">
-              <Icon icon={error?.includes(t("catalog.dangNhap")) ? 'lucide:lock' : 'lucide:alert-triangle'} className="catalog-state-icon" width="44" />
-              <h2 className="catalog-state-title">
-                {error?.includes(t("catalog.dangNhap")) ? t("catalog.canDangNhapDeTimKiem") : t("catalog.khongTheTaiDuLieuTimKiem")}
-              </h2>
-              <p className="text-muted-custom mb-4">{error}</p>
-              {error?.includes(t("catalog.dangNhap")) ? <PrimaryButton onClick={() => window.location.href = '/login'} variant="outline">{t("signIn")}</PrimaryButton> : <PrimaryButton onClick={() => fetchJournals()} variant="outline">{t("article.thuLai")}</PrimaryButton>}
-            </section> : journals.length === 0 ?
-        // Empty State Card
-        <section className="catalog-surface catalog-state-card">
-              <Icon icon="lucide:folder-search" className="catalog-state-icon" width="44" />
-              <h2 className="catalog-state-title">{t("catalog.khongTimThayJournalPhuHop")}</h2>
-              <p className="text-muted-custom mb-4">{t("catalog.hayThuThayDoiTuKhoaTimKiemHoac")}</p>
-              <PrimaryButton onClick={handleClearAll} variant="outline">{t("article.xoaBoLoc")}</PrimaryButton>
-            </section> : <JournalTable journals={journals} followedJournals={followedJournals} onFollow={handleFollowJournal} />}
-
-          {/* Pagination Controls */}
-          {totalPages > 1 && !loadingJournals && <div className="mt-5">
-              <AdminPagination totalItems={total} currentPage={page} limit={pageLimit} onPageChange={handlePageChange} entityName="journals" />
-            </div>}
+                  <Skeleton className="h-6 w-12 rounded-control shrink-0" />
+                  <Skeleton className="h-6 w-16 rounded-control shrink-0" />
+                  <Skeleton className="h-6 w-20 rounded-control shrink-0" />
+                  <Skeleton className="h-7 w-24 rounded-control shrink-0" />
+                </div>
+              ))}
+            </div>
+          ) : error && journals.length === 0 ? (
+            <div className="p-6">
+              <StatePanel
+                variant="error"
+                icon={
+                  <Icon
+                    icon={error?.includes(t("catalog.dangNhap")) ? 'lucide:lock' : 'lucide:alert-triangle'}
+                    width="36"
+                    className="text-danger"
+                  />
+                }
+                title={
+                  error?.includes(t("catalog.dangNhap"))
+                    ? t("catalog.canDangNhapDeTimKiem", "Authentication Required")
+                    : t("catalog.khongTheTaiDuLieuTimKiem", "Failed to load journals")
+                }
+                description={error}
+                action={
+                  error?.includes(t("catalog.dangNhap")) ? {
+                    label: t("signIn", "Sign In"),
+                    onClick: () => navigate('/login')
+                  } : {
+                    label: t("article.thuLai", "Try Again"),
+                    onClick: () => fetchJournals()
+                  }
+                }
+              />
+            </div>
+          ) : journals.length === 0 ? (
+            <div className="p-6">
+              <StatePanel
+                variant="neutral"
+                icon={<Icon icon="lucide:folder-search" width="36" className="text-muted-foreground" />}
+                title={t("catalog.khongTimThayJournalPhuHop", "No journals matching your criteria")}
+                description={t("catalog.hayThuThayDoiTuKhoaTimKiemHoac", "Try adjusting your search keywords, field filters, or quartile selection.")}
+                action={{
+                  label: t("article.xoaBoLoc", "Clear all filters"),
+                  onClick: handleClearAll
+                }}
+              />
+            </div>
+          ) : (
+            <JournalTable
+              asCard={false}
+              journals={journals}
+              followedJournals={followedJournals}
+              onFollow={handleFollowJournal}
+            />
+          )}
         </div>
-      </Container>
+
+        {/* Pagination Controls Footer */}
+        {totalPages > 1 && !loadingJournals && (
+          <div className="border-t border-border px-4 py-3 bg-surface">
+            <AdminPagination
+              totalItems={total}
+              currentPage={page}
+              limit={pageLimit}
+              onPageChange={handlePageChange}
+              entityName="journals"
+              className="pt-0"
+            />
+          </div>
+        )}
+      </Card>
+      </motion.div>
 
       {/* Guest Authentication Interception Modal */}
       <AuthRequiredModal show={showAuthModal} onHide={() => setShowAuthModal(false)} />
-    </div>;
+    </MotionPage>
+  </PageContainer>
+  );
 }

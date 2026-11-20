@@ -1,42 +1,50 @@
 import { useTranslation } from "react-i18next";
-import { t } from "i18next";
 import { useEffect, useState } from 'react';
-import { Row, Col, Card, ProgressBar } from 'react-bootstrap';
 import Pagination from '../../../../shared/components/Pagination';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../../../shared/components/Icon';
-import PrimaryButton from '../../../../shared/components/Button/PrimaryButton';
+import { Button } from '../../../../shared/ui/button';
+import { Alert } from '../../../../shared/ui/alert';
+import { PageHeader } from '../../../../shared/ui/page-layout';
+import { Card } from '../../../../shared/ui/card';
 import UserTable from '../../components/account/UserTable';
 import UserFilterBar from '../../components/account/UserFilterBar';
 import { getAdminUsers } from '../../api/adminUsers.api';
 import ROUTES from '../../../../app/routes/routePaths';
+
 const ITEMS_PER_PAGE = 10;
-const getApiErrorMessage = error => {
+
+const getApiErrorMessage = (error, t) => {
   if (error.response?.status === 403) {
     return t("admin.backendTuChoiQuyenAdminTokenHi");
   }
   return error.response?.data?.message || t("admin.khongTheTaiDanhSachNguoiDung");
 };
-const extractUsers = payload => {
+
+const extractUsers = (payload) => {
   if (Array.isArray(payload)) return payload;
   if (Array.isArray(payload?.items)) return payload.items;
   if (Array.isArray(payload?.rows)) return payload.rows;
   if (Array.isArray(payload?.users)) return payload.users;
   return [];
 };
+
 const extractTotal = (payload, fallback) => {
   return Number(payload?.total || payload?.totalItems || payload?.pagination?.total || payload?.meta?.total || fallback);
 };
+
 const ROLE_LABELS = {
   RESEARCHER: 'Researcher',
   LECTURER: 'Lecturer',
   STUDENT: 'Student',
-  ADMINISTRATOR: 'Administrator'
+  ADMINISTRATOR: 'Administrator',
 };
+
 const toRoleLabel = (role = 'RESEARCHER') => ROLE_LABELS[role] || role;
 const toTitleCaseEnum = (value = '') => {
-  return String(value).toLowerCase().split('_').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+  return String(value).toLowerCase().split('_').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
 };
+
 const normalizeUser = (user = {}) => {
   const firstName = user.first_name || user.firstName || '';
   const lastName = user.last_name || user.lastName || '';
@@ -48,207 +56,213 @@ const normalizeUser = (user = {}) => {
     role: user.role || 'RESEARCHER',
     roleLabel: toRoleLabel(user.role || 'RESEARCHER'),
     status: toTitleCaseEnum(user.status || 'INACTIVE'),
-    avatar: user.avatar || user.avatar_url || ''
+    avatar: user.avatar || user.avatar_url || '',
   };
 };
 
 /**
  * UserDirectoryPage Component
- * Renders the administrator's account directory page with real admin users API data.
+ * Admin user directory page with API integration, filters, search, and pagination.
  */
 export default function UserDirectoryPage() {
-  const { t: _t } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // Search and filter states
-  const [search, setSearch] = useState('');
-  const [selectedRole, setSelectedRole] = useState('all');
-  const [selectedStatus, setSelectedStatus] = useState('all');
-
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [totalItems, setTotalItems] = useState(0);
+
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [selectedRole, setSelectedRole] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+
   useEffect(() => {
-    let isMounted = true;
-    const fetchUsers = async () => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setCurrentPage(1);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    const fetchUsersData = async () => {
+      setLoading(true);
+      setError('');
       try {
-        setLoading(true);
-        setError('');
-        const response = await getAdminUsers({
+        const params = {
           page: currentPage,
           limit: ITEMS_PER_PAGE,
-          search: search || undefined,
-          role: selectedRole === 'all' ? undefined : selectedRole,
-          status: selectedStatus === 'all' ? undefined : selectedStatus.toUpperCase(),
-          sortBy: 'email',
-          sortOrder: 'asc'
-        });
-        const payload = response.data?.data;
+        };
+
+        if (debouncedSearch.trim()) {
+          params.q = debouncedSearch.trim();
+        }
+        if (selectedRole !== 'all') {
+          params.role = selectedRole.toUpperCase();
+        }
+        if (selectedStatus !== 'all') {
+          params.status = selectedStatus.toUpperCase();
+        }
+
+        const response = await getAdminUsers(params);
+        if (ignore) return;
+
+        const payload = response.data?.data || response.data || {};
         const rawUsers = extractUsers(payload);
-        if (!isMounted) return;
-        setUsers(rawUsers.map(normalizeUser));
-        setTotalItems(extractTotal(response.data, rawUsers.length));
-      } catch (apiError) {
-        if (!isMounted) return;
+        const normalized = rawUsers.map(normalizeUser);
+        const total = extractTotal(payload, normalized.length);
+
+        setUsers(normalized);
+        setTotalItems(total);
+      } catch (err) {
+        if (ignore) return;
         setUsers([]);
         setTotalItems(0);
-        setError(getApiErrorMessage(apiError));
+        setError(getApiErrorMessage(err, t));
       } finally {
-        if (isMounted) setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     };
-    fetchUsers();
-    return () => {
-      isMounted = false;
-    };
-  }, [currentPage, search, selectedRole, selectedStatus]);
 
-  /**
-   * Pagination is API-driven, so changing page triggers a fresh request.
-   */
-  const handlePageChange = pageNumber => {
-    setCurrentPage(pageNumber);
+    fetchUsersData();
+
+    return () => {
+      ignore = true;
+    };
+  }, [currentPage, debouncedSearch, selectedRole, selectedStatus, t]);
+
+  const handleSearchChange = (value) => {
+    setSearch(value);
   };
-  const handleFilterChange = setter => value => {
-    setter(value);
+
+  const handleRoleChange = (role) => {
+    setSelectedRole(role);
     setCurrentPage(1);
   };
-  const handleUnavailableDelete = () => {
-    alert(t("admin.beHienChuaCoApiXoaUserCanBoSun"));
+
+  const handleStatusChange = (status) => {
+    setSelectedStatus(status);
+    setCurrentPage(1);
   };
-  return <div className="container-fluid py-2">
-      {/* Page Breadcrumbs */}
-      <nav aria-label="breadcrumb" className="mb-3">
-        <ol className="breadcrumb text-muted-custom small mb-0">
-          <li className="breadcrumb-item">Management</li>
-          <li className="breadcrumb-item active" aria-current="page">User Directory</li>
-        </ol>
-      </nav>
 
-      {/* Main Header title & actions section */}
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3 mb-4">
-        <div>
-          <h1 className="font-display fw-bold text-main mb-1" style={{
-          fontSize: '1.8rem'
-        }}>User Directory</h1>
-          <p className="text-muted-custom small mb-0" style={{
-          maxWidth: '680px'
-        }}>
-            Manage platform contributors, their access levels, and account status within the Trending System ecosystem.
-          </p>
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const activeUsersCount = users.filter((u) => u.status === 'Active').length;
+  const activePercentage = users.length > 0 ? Math.round((activeUsersCount / users.length) * 100) : 0;
+
+  return (
+    <div className="flex flex-col gap-4 text-left">
+      <PageHeader
+        breadcrumbs={[
+          { label: 'Platform Directory' },
+          { label: 'User Accounts' }
+        ]}
+        title="User Accounts"
+        description="Oversee researcher, lecturer, student, and administrator accounts across the trending platform."
+        actions={
+          <Button
+            type="button"
+            onClick={() => navigate(ROUTES.ADMIN_USER_CREATE)}
+            className="flex items-center gap-1.5"
+          >
+            <Icon icon="lucide:user-plus" width="16" aria-hidden="true" />
+            <span>New User Account</span>
+          </Button>
+        }
+      />
+
+      {error ? (
+        <Alert variant="destructive" className="mb-3 items-center">
+          <Icon icon="lucide:alert-circle" width="18" className="shrink-0" />
+          <div className="flex-1 text-xs">{error}</div>
+        </Alert>
+      ) : null}
+
+      {/* Unified User Section: Integrated Filter Bar + Table Content + Pagination in ONE Card */}
+      <Card className="rounded-card border border-border bg-surface shadow-card">
+        <UserFilterBar
+          search={search}
+          onSearchChange={handleSearchChange}
+          selectedRole={selectedRole}
+          onRoleChange={handleRoleChange}
+          selectedStatus={selectedStatus}
+          onStatusChange={handleStatusChange}
+          totalCount={totalItems}
+          asCard={false}
+        />
+
+        <div className="border-t border-border">
+          <UserTable users={users} loading={loading} asCard={false} />
         </div>
-        
-        {/* Submit New Account button (leads to Page 17) - Sử dụng hằng số định tuyến */}
-        <PrimaryButton onClick={() => navigate(ROUTES.ADMIN_USERS_CREATE)} icon="lucide:plus-circle" className="px-4 py-2" style={{
-        fontSize: '0.88rem'
-      }}>
-          <span>Submit New Account</span>
-        </PrimaryButton>
-      </div>
 
-      <Row className="g-4">
-        {/* Left column: User filter bar and User Table */}
-        <Col xs={12} lg={8.5} className="col-lg-8">
-          <Card className="p-4 rounded-4 border bg-white shadow-sm">
-            {/* Filter controls */}
-            <UserFilterBar search={search} onSearchChange={handleFilterChange(setSearch)} selectedRole={selectedRole} onRoleChange={handleFilterChange(setSelectedRole)} selectedStatus={selectedStatus} onStatusChange={handleFilterChange(setSelectedStatus)} totalCount={totalItems} />
+        {totalItems > 0 && (
+          <div className="border-t border-border px-4 py-3 bg-surface">
+            <Pagination
+              totalItems={totalItems}
+              currentPage={currentPage}
+              limit={ITEMS_PER_PAGE}
+              onPageChange={handlePageChange}
+              entityName="users"
+              className="pt-0"
+            />
+          </div>
+        )}
+      </Card>
 
-            {loading ? <div className="text-center py-5 text-muted-custom small">{t("admin.dangTaiDanhSachNguoiDung")}</div> : error ? <div className="text-center py-5 border rounded-3 bg-white">
-                <Icon icon="lucide:shield-alert" width="48" className="text-danger mb-2 opacity-75" />
-                <h6 className="text-main fw-bold">{t("admin.khongTheTaiNguoiDung")}</h6>
-                <p className="text-muted-custom small mb-0">{error}</p>
-              </div> : <UserTable users={users} onEdit={id => navigate(ROUTES.ADMIN_USERS_EDIT.replace(':id', id))} onDelete={handleUnavailableDelete} />}
-
-            {/* Pagination Controls */}
-            {!loading && !error && totalItems > 0 && <div className="px-3 pb-3 pt-2">
-                <Pagination totalItems={totalItems} currentPage={currentPage} limit={ITEMS_PER_PAGE} onPageChange={handlePageChange} entityName="users" />
-              </div>}
-          </Card>
-        </Col>
-
-        {/* Right column: Access Control and Pending Requests widgets */}
-        <Col xs={12} lg={3.5} className="col-lg-4 d-flex flex-column gap-4">
-          {/* Access Control Information box */}
-          <Card className="p-4 rounded-4 border-0 text-white" style={{
-          background: 'linear-gradient(135deg, #0071BC 0%, #005A96 100%)',
-          boxShadow: '0 4px 20px rgba(234, 88, 12, 0.15)'
-        }}>
-            <div className="d-flex align-items-center gap-2 mb-2.5">
-              <Icon icon="lucide:shield-check" width="22" className="text-white" />
-              <h5 className="fw-bold mb-0" style={{
-              fontSize: '1.05rem',
-              letterSpacing: '-0.01em'
-            }}>Access Control</h5>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+        <Card className="admin-card p-4 flex flex-col justify-between h-full bg-surface border border-border shadow-2xs">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-muted-foreground text-xs font-semibold">Account State Ratio</span>
+              <span className="px-2 py-0.5 rounded text-xs font-semibold bg-muted text-foreground border border-border">{activePercentage}% Active</span>
             </div>
-            <p className="mb-4 text-white-50 small lh-sm">
-              Review system permissions and security logs for auditing purposes. Maintain strict compliance across all journal volumes.
+            <h4 className="font-display font-bold text-foreground mb-1 text-base">User Activity Distribution</h4>
+            <p className="text-muted-foreground text-xs mb-3">
+              Ratio of active accounts versus invited or inactive participants currently loaded in the directory.
             </p>
-            <a href="#security" onClick={e => {
-            e.preventDefault();
-            alert('Redirecting to Security Logs Overview...');
-          }} className="text-white fw-semibold small text-decoration-none d-flex align-items-center gap-1.5 hover-white-glow">
-              <span>Security Overview</span>
-              <Icon icon="lucide:arrow-right" width="16" />
-            </a>
-          </Card>
-
-          {/* Pending Requests Sidebar Widget */}
-          <Card className="p-4 rounded-4 border bg-white shadow-sm">
-            <div className="d-flex align-items-center justify-content-between mb-3.5">
-              <div className="d-flex align-items-center gap-2">
-                <h6 className="fw-bold text-main mb-0" style={{
-                fontSize: '0.925rem'
-              }}>PENDING REQUESTS</h6>
-              </div>
+          </div>
+          <div>
+            <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden mb-2">
+              <div
+                className="bg-primary h-full transition-all duration-300"
+                style={{ width: `${activePercentage}%` }}
+              />
             </div>
-
-            <div className="text-center py-4 text-muted-custom small">
-              <Icon icon="lucide:check-circle-2" width="32" className="admin-accent-text mb-2 opacity-50" />
-              <p className="mb-1">{t("admin.chuaCoApiPendingRoleRequests")}</p>
-              <p className="mb-0">{t("admin.daXoaDuLieuMockKhoiKhuVucNay")}</p>
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Active: {activeUsersCount}</span>
+              <span>Loaded: {users.length}</span>
             </div>
-          </Card>
+          </div>
+        </Card>
 
-          {/* Platform Health indicators widget */}
-          <Card className="p-4 rounded-4 border bg-white shadow-sm">
-            <h6 className="fw-bold text-main mb-3 text-uppercase tracking-wider" style={{
-            fontSize: '0.78rem'
-          }}>
-              Platform Health
-            </h6>
-            
-            {/* Storage indicator */}
-            <div className="mb-3.5">
-              <div className="d-flex justify-content-between small text-muted-custom mb-1.5" style={{
-              fontSize: '0.825rem'
-            }}>
-                <span>Storage Capacity</span>
-                <strong className="text-main fw-semibold">N/A</strong>
-              </div>
-              <ProgressBar now={0} variant="warning" style={{
-              height: '5px'
-            }} />
+        <Card className="admin-card p-4 flex flex-col justify-between h-full bg-surface border border-border shadow-2xs">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-muted-foreground text-xs font-semibold">Access Governance</span>
+              <span className="px-2 py-0.5 rounded text-xs font-semibold bg-muted text-foreground border border-border">Security Policy</span>
             </div>
-
-            {/* Active Authors indicator */}
-            <div>
-              <div className="d-flex justify-content-between small text-muted-custom mb-1.5" style={{
-              fontSize: '0.825rem'
-            }}>
-                <span>Active Authors</span>
-                <strong className="text-main fw-semibold">N/A</strong>
-              </div>
-              <ProgressBar now={0} style={{
-              height: '5px',
-              backgroundColor: '#e2e8f0',
-              '--bs-progress-bar-bg': 'var(--btn-dark)'
-            }} />
-            </div>
-          </Card>
-        </Col>
-      </Row>
-    </div>;
+            <h4 className="font-display font-bold text-foreground mb-1 text-base">Role Privileges</h4>
+            <p className="text-muted-foreground text-xs mb-0">
+              Role assignments determine workspace abilities, API export limits, and project management scope.
+            </p>
+          </div>
+          <div className="flex gap-2 flex-wrap mt-3">
+            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-muted text-foreground border border-border">Researcher</span>
+            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-muted text-foreground border border-border">Lecturer</span>
+            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-muted text-foreground border border-border">Student</span>
+            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-muted text-foreground border border-border">Administrator</span>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
 }

@@ -5,21 +5,22 @@
  * Modal thông báo đẹp mắt khi phiên đăng nhập hết hạn (do không tick Remember-me hoặc token hết hiệu lực).
  */
 import React, { useEffect } from 'react';
-import { Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 import { useAuthStore } from '../../app/store/authStore';
 import { useUserStore } from '../../app/store/userStore';
 import { logoutSession } from '../../features/auth/services/authService';
-import PrimaryButton from './Button/PrimaryButton';
+import { API_BASE_URL } from '../services/apiBase';
+import { Modal } from '../ui/modal';
+import { Button } from '../ui/button';
 
 export default function SessionExpiredModal() {
   const navigate = useNavigate();
   const show = useAuthStore((state) => state.sessionExpiredModalVisible);
   const token = useAuthStore((state) => state.token);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const remember = useAuthStore((state) => state.remember);
   const setSessionExpiredModalVisible = useAuthStore((state) => state.setSessionExpiredModalVisible);
   const logout = useAuthStore((state) => state.logout);
   const clearEmail = useUserStore((state) => state.clearEmail);
@@ -33,19 +34,46 @@ export default function SessionExpiredModal() {
       const decoded = jwtDecode(token);
       if (decoded.exp) {
         const expiresInMs = decoded.exp * 1000 - Date.now();
-        if (expiresInMs <= 0) {
-          // Token đã hết hạn ngay lúc này
-          if (!remember) {
+
+        const trySilentRefresh = async () => {
+          try {
+            const refreshToken = useAuthStore.getState().refreshToken;
+            const refreshHeaders = {};
+            if (refreshToken) {
+              refreshHeaders['x-refresh-token'] = refreshToken;
+            }
+
+            const res = await axios.get(`${API_BASE_URL}/auth/refresh`, {
+              withCredentials: true,
+              headers: refreshHeaders,
+            });
+
+            if (res.status === 200 && res.data?.success !== false) {
+              const newToken = res.data?.data?.token || res.data?.token;
+              const newRefreshToken = res.data?.data?.refresh_token || res.data?.refresh_token || refreshToken;
+
+              if (newToken) {
+                const currentRemember = useAuthStore.getState().remember;
+                useAuthStore.getState().loginSuccess(newToken, null, currentRemember, newRefreshToken);
+                return;
+              }
+            }
+            throw new Error('Refresh failed');
+          } catch {
+            // Chỉ hiện modal khi refresh thực sự thất bại hoặc hết hạn hoàn toàn
             setSessionExpiredModalVisible(true);
           }
+        };
+
+        if (expiresInMs <= 0) {
+          // Token đã hết hạn ngay lúc này -> Thử refresh trước
+          trySilentRefresh();
         } else {
-          // Đặt timer kích hoạt modal đúng lúc token hết hạn
+          // Thử refresh tự động khi token sắp hết hạn (trước 1 phút)
+          const refreshDelay = Math.max(expiresInMs - 60000, 1000);
           timeoutId = setTimeout(() => {
-            const currentRemember = useAuthStore.getState().remember;
-            if (!currentRemember) {
-              setSessionExpiredModalVisible(true);
-            }
-          }, expiresInMs);
+            trySilentRefresh();
+          }, refreshDelay);
         }
       }
     } catch {
@@ -55,7 +83,7 @@ export default function SessionExpiredModal() {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [token, isAuthenticated, remember, setSessionExpiredModalVisible]);
+  }, [token, isAuthenticated, setSessionExpiredModalVisible]);
 
   const handleConfirm = async () => {
     // Đóng modal trước
@@ -78,86 +106,48 @@ export default function SessionExpiredModal() {
   return (
     <Modal
       show={show}
-      onHide={() => {}} // Chặn tắt modal khi bấm ESC hoặc ra ngoài
-      centered
-      backdrop="static"
-      keyboard={false}
-      contentClassName="border-0 shadow-lg text-center"
-      style={{
-        backdropFilter: 'blur(8px)',
-        backgroundColor: 'rgba(15, 23, 42, 0.45)',
-      }}
+      onHide={() => {}}
+      size="md"
+      className="text-center p-6 sm:p-8"
     >
-      <div
-        className="p-4 p-md-5 rounded-4"
-        style={{
-          backgroundColor: 'var(--bg-card, #ffffff)',
-          color: 'var(--text-main, #0f172a)',
-          border: '1px solid rgba(226, 232, 240, 0.8)',
-        }}
-      >
-        {/* Glowing Icon Wrapper */}
-        <div className="d-flex justify-content-center mb-3">
-          <div
-            className="d-flex align-items-center justify-content-center rounded-circle"
-            style={{
-              width: '72px',
-              height: '72px',
-              backgroundColor: 'rgba(245, 158, 11, 0.12)',
-              boxShadow: '0 0 25px rgba(245, 158, 11, 0.25)',
-              border: '2px solid rgba(245, 158, 11, 0.2)',
-            }}
-          >
-            <Icon
-              icon="lucide:clock-alert"
-              width="36"
-              height="36"
-              style={{ color: '#d97706' }}
-            />
-          </div>
-        </div>
-
-        {/* Title */}
-        <h4
-          className="font-display fw-bold mb-2"
+      {/* Glowing Icon Wrapper */}
+      <div className="flex justify-center mb-4">
+        <div
+          className="flex items-center justify-center rounded-full size-16"
           style={{
-            fontSize: '1.35rem',
-            letterSpacing: '-0.02em',
-            color: 'var(--text-main, #0f172a)',
+            backgroundColor: 'rgba(245, 158, 11, 0.12)',
+            boxShadow: '0 0 25px rgba(245, 158, 11, 0.25)',
+            border: '2px solid rgba(245, 158, 11, 0.2)',
           }}
         >
-          Phiên đăng nhập đã hết hạn
-        </h4>
-
-        {/* Message */}
-        <p
-          className="mb-4 text-muted"
-          style={{
-            fontSize: '0.925rem',
-            lineHeight: '1.6',
-            maxWidth: '360px',
-            margin: '0 auto',
-            color: 'var(--text-muted, #64748b)',
-          }}
-        >
-          Phiên làm việc của bạn đã kết thúc vì bạn không chọn ghi nhớ đăng nhập (hoặc phiên làm việc đã quá hạn bảo mật). Vui lòng đăng nhập lại để tiếp tục làm việc.
-        </p>
-
-        {/* Action Button */}
-        <div className="d-flex justify-content-center">
-          <PrimaryButton
-            onClick={handleConfirm}
-            icon="lucide:log-in"
-            className="w-100 py-2 px-4 fw-semibold shadow-sm d-flex align-items-center justify-content-center gap-2"
-            style={{
-              fontSize: '1rem',
-              borderRadius: '10px',
-              maxWidth: '280px',
-            }}
-          >
-            Đăng nhập lại (OK)
-          </PrimaryButton>
+          <Icon
+            icon="lucide:clock-alert"
+            width="32"
+            height="32"
+            style={{ color: '#d97706' }}
+          />
         </div>
+      </div>
+
+      {/* Title */}
+      <h3 className="text-base sm:text-lg font-bold tracking-tight text-foreground mb-2">
+        Phiên đăng nhập đã hết hạn
+      </h3>
+
+      {/* Message */}
+      <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto mb-6">
+        Phiên làm việc của bạn đã kết thúc vì bạn không chọn ghi nhớ đăng nhập (hoặc phiên làm việc đã quá hạn bảo mật). Vui lòng đăng nhập lại để tiếp tục làm việc.
+      </p>
+
+      {/* Action Button */}
+      <div className="flex justify-center">
+        <Button
+          onClick={handleConfirm}
+          className="w-full max-w-[260px] flex items-center justify-center gap-2 py-2.5 font-semibold"
+        >
+          <Icon icon="lucide:log-in" width="16" height="16" />
+          <span>Đăng nhập lại (OK)</span>
+        </Button>
       </div>
     </Modal>
   );

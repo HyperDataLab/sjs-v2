@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
  * Modal hiển thị so sánh gói Free vs VIP khi user bấm "Kích hoạt gói"
  */
 import { useState } from 'react';
-import { Modal, Spinner } from 'react-bootstrap';
+import { Modal } from '../../../shared/ui/modal';
+import { Spinner } from '../../../shared/ui/button';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../../../app/routes/routePaths';
@@ -179,7 +180,7 @@ const UpgradePlanModal = ({
         </Modal.Header>
         <Modal.Body>
           <p style={{
-          fontSize: '1rem',
+          fontSize: '16px',
           color: 'var(--text-main)',
           marginBottom: 0
         }}>{t("project.banCoChacChanMuonKichHoatGoiVi")}<br />{t("project.banSeBiTru")}{" "}<strong>25 Coin</strong>{" "}{t("project.tuVi")}</p>

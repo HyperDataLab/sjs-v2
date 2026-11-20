@@ -17,6 +17,7 @@ import { API_BASE_URL } from './apiBase';
  */
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -40,6 +41,7 @@ api.interceptors.request.use(
 // Axios instance for public endpoints (does not send cookies or tokens)
 export const publicApi = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -80,17 +82,11 @@ api.interceptors.response.use(
     if (error.response.status === 401 && !isAuthEndpoint) {
       const { remember, refreshToken, isAuthenticated, setSessionExpiredModalVisible } = useAuthStore.getState();
 
-      // Nếu người dùng KHÔNG tick chọn ghi nhớ đăng nhập (remember === false)
-      // Khi access token hết hạn -> coi như phiên đăng nhập kết thúc -> hiện thông báo yêu cầu đăng nhập lại
-      if (!remember) {
-        if (isAuthenticated) {
-          setSessionExpiredModalVisible(true);
-        }
+      if (!isAuthenticated) {
         return Promise.reject(error);
       }
 
-      // Nếu người dùng CÓ tick ghi nhớ đăng nhập (remember === true)
-      // Tiến hành refresh token tự động
+      // Nếu request này đã thử retry rồi mà vẫn gặp 401 -> Token refresh thất bại hoặc hết hạn hoàn toàn
       if (originalRequest._retry) {
         setSessionExpiredModalVisible(true);
         return Promise.reject(error);
@@ -113,16 +109,14 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshHeaders = {};
-        if (refreshToken) {
-          refreshHeaders['x-refresh-token'] = refreshToken;
-        }
-
         const res = await axios.get(
           `${API_BASE_URL}/auth/refresh`,
           {
             withCredentials: true,
-            headers: refreshHeaders,
+            // The Worker refreshes from its HTTP-only cookie. Sending the token
+            // in a custom header triggers a CORS preflight that production/local
+            // Worker CORS policies intentionally do not allow.
+            timeout: 10000,
           }
         );
 
@@ -132,7 +126,7 @@ api.interceptors.response.use(
 
           if (newToken) {
             const { loginSuccess } = useAuthStore.getState();
-            loginSuccess(newToken, null, true, newRefreshToken);
+            loginSuccess(newToken, null, remember, newRefreshToken);
 
             processQueue(null, newToken);
             originalRequest.headers['Authorization'] = `Bearer ${newToken}`;

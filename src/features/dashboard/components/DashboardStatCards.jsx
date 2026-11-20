@@ -1,11 +1,6 @@
 import { useTranslation } from "react-i18next";
-/**
- * File source thuộc hệ thống FE ResearchPulse.
- *
- * File: features\dashboard\components\DashboardStatCards.jsx
- */
-import { Row, Col } from 'react-bootstrap';
 import StatCard from './StatCard';
+import { MotionGrid, MotionItem } from '../../../shared/ui/motion';
 
 /**
  * DashboardStatCards — renders 4 stat cards in a responsive grid.
@@ -15,41 +10,38 @@ export default function DashboardStatCards({
   stats,
   loading
 }) {
-  const {
-    t
-  } = useTranslation();
-  const cards = [{
-    icon: 'lucide:folder-open',
-    accentColor: 'var(--text-main)',
-    value: stats?.projectCount,
-    label: t("dashboard.projectsDangTheoDoi"),
-    growth: null,
-    growthLabel: ''
-  }, {
-    icon: 'lucide:hash',
-    accentColor: 'var(--text-main)',
-    value: stats?.keywordCount,
-    label: t("dashboard.keywordsDangWatch"),
-    growth: null,
-    growthLabel: ''
-  }, {
-    icon: 'lucide:file-text',
-    accentColor: 'var(--text-main)',
-    value: stats?.articleCount,
-    label: t("dashboard.baiBaoTrongProjects"),
-    growth: null,
-    growthLabel: ''
-  }, {
-    icon: 'lucide:book-open',
-    accentColor: 'var(--text-main)',
-    value: stats?.journalCount,
-    label: t("dashboard.journalsTheoDoi"),
-    growth: null,
-    growthLabel: ''
-  }];
-  return <Row className="g-3 mb-4">
-      {cards.map((card, idx) => <Col xs={6} lg={3} key={idx}>
-          <StatCard {...card} loading={loading} />
-        </Col>)}
-    </Row>;
+  const { t } = useTranslation();
+
+  const cards = [
+    {
+      id: 'projects',
+      value: stats?.projectCount,
+      label: t("dashboard.projectsDangTheoDoi"),
+    },
+    {
+      id: 'keywords',
+      value: stats?.keywordCount,
+      label: t("dashboard.keywordsDangWatch"),
+    },
+    {
+      id: 'articles',
+      value: stats?.articleCount,
+      label: t("dashboard.baiBaoTrongProjects"),
+    },
+    {
+      id: 'journals',
+      value: stats?.journalCount,
+      label: t("dashboard.journalsTheoDoi"),
+    },
+  ];
+
+  return (
+    <MotionGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card) => (
+        <MotionItem key={card.id}>
+          <StatCard label={card.label} value={card.value} loading={loading} />
+        </MotionItem>
+      ))}
+    </MotionGrid>
+  );
 }

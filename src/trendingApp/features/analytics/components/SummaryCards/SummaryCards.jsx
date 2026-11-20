@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '../../../../shared/components/common/Card';
-import { MdTrendingUp, MdFlashOn } from 'react-icons/md';
+import { MdFlashOn } from 'react-icons/md';
 import styles from '../../styles/Analytics.module.css';
 
 /**
@@ -39,13 +39,14 @@ export const SummaryCards = ({ summary = {} }) => {
       <Card className={styles.summaryCard}>
         <div className={styles.summaryCardHeader}>
           <span>{t('analytics.avgIfScore', 'Average IF Score')}</span>
-          <MdTrendingUp size={20} color="var(--color-primary-orange, #0071BC)" />
         </div>
-        <div className={styles.summaryCardValue}>{averageImpactFactor.toFixed(2)}</div>
+        <div className={styles.summaryCardValue}>
+          {averageImpactFactor != null && Number.isFinite(Number(averageImpactFactor)) ? Number(averageImpactFactor).toFixed(2) : '—'}
+        </div>
         <div className={styles.summaryCardSubtext}>
-          {t('analytics.changeFromLastPeriod', { 
-            change: percentageChange, 
-            defaultValue: `${percentageChange} from last period` 
+          {percentageChange == null ? t('analytics.changeUnavailable', 'SJR change data unavailable') : t('analytics.changeFromLastPeriod', {
+            change: percentageChange,
+            defaultValue: `${percentageChange} from last period`
           })}
         </div>
       </Card>

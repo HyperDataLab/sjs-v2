@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
-import { Table, Badge } from 'react-bootstrap';
+import { Table } from '../../../shared/ui/table';
+import { Badge } from '../../../shared/ui/badge';
 import { Icon } from '@iconify/react';
 import { StateCard } from '../../../shared/components/Card';
 
@@ -20,7 +21,7 @@ export default function IssueTable({
   return <div className="table-responsive rounded-3 shadow-sm border overflow-hidden">
       <Table hover className="align-middle mb-0 text-start bg-card">
         <thead className="border-bottom" style={{
-        fontSize: '0.75rem',
+        fontSize: '13px',
         letterSpacing: '0.05em'
       }}>
           <tr>

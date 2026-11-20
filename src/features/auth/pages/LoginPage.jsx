@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link, useParams } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import AuthLayout from '../../../app/layouts/AuthLayout';
 import AuthBanner from '../components/AuthBanner';
@@ -9,12 +9,16 @@ import SocialAuthButton from '../components/SocialAuthButton';
 import { toast } from '../../../shared/utils/toast';
 import ROUTES from '../../../app/routes/routePaths';
 import { startHyperdatalabSso } from '../services/hyperdatalabSso';
+import { Alert } from '../../../shared/ui/alert';
+import { useAuthStore } from '../../../app/store/authStore';
+import { getAuthenticatedHomePath, getDefaultLang } from '../../../app/routes/languageRouting';
 const DASHBOARD_PAGE = ROUTES.DASHBOARD;
 export default function LoginPage() {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { lang } = useParams();
   const {
     login,
   } = useAuth();
@@ -38,7 +42,11 @@ export default function LoginPage() {
     setError(null);
     try {
       await login(payload.email, payload.password, payload.remember_login);
-      navigate(from, {
+      const signedInUser = useAuthStore.getState().user;
+      const destination = signedInUser?.role === 'ADMINISTRATOR'
+        ? getAuthenticatedHomePath(signedInUser, lang || getDefaultLang())
+        : from;
+      navigate(destination, {
         replace: true
       });
     } catch (err) {
@@ -67,52 +75,36 @@ export default function LoginPage() {
       setSsoLoading(false);
     }
   };
-  return <AuthLayout banner={<AuthBanner />}>
-      <div className="mb-4">
-        <h2 className="font-display fw-bold mb-1" style={{
-        fontSize: '1.85rem',
-        color: 'var(--text-main)'
-      }}>{t("signIn")}</h2>
-        <p className="text-muted-custom text-sm mb-0" style={{
-        color: 'var(--text-muted) !important'
-      }}>{t("auth.chaoMungTroLaiVuiLongNhapThong")}</p>
+  return (
+    <AuthLayout banner={<AuthBanner />}>
+      <div className="mb-6 space-y-1">
+        <h2 className="font-display font-semibold text-base text-foreground m-0">{t("signIn")}</h2>
+        <p className="text-sm text-muted-foreground m-0">{t("auth.chaoMungTroLaiVuiLongNhapThong")}</p>
       </div>
 
       {/* Single sign-on entry point. */}
-      <div className="mb-4">
+      <div className="mb-6">
         <SocialAuthButton onClick={handleLoginWithSso} disabled={isLoading || ssoLoading} label={t('auth.dangNhapBangSso')} />
       </div>
 
-      {error && <div role="alert" className="text-danger small mb-3">{error}</div>}
+      {error && <Alert variant="destructive" className="mb-4 py-3">{error}</Alert>}
 
       {/* Đường phân cách giữa SSO và form email/password. */}
-      <div className="d-flex align-items-center justify-content-center mb-4 text-xs font-semibold select-none text-muted-custom" style={{
-      color: 'var(--text-muted) !important'
-    }}>
-        <div className="w-100" style={{
-        height: '1px',
-        background: 'var(--border)'
-      }} />
-        <span className="px-3 text-nowrap" style={{
-        letterSpacing: '0.05em'
-      }}>{t("auth.hoac")}</span>
-        <div className="w-100" style={{
-        height: '1px',
-        background: 'var(--border)'
-      }} />
+      <div className="flex items-center justify-center my-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground select-none">
+        <div className="flex-1 h-px bg-border" />
+        <span className="px-3">{t("auth.hoac")}</span>
+        <div className="flex-1 h-px bg-border" />
       </div>
 
       <LoginForm onSubmit={handleLoginSubmit} isLoading={isLoading} apiError={error} />
 
       {/* Điều hướng sang trang đăng ký nếu người dùng chưa có tài khoản. */}
-      <div className="text-center mt-4 text-sm font-medium">
-        <span className="text-muted-custom" style={{
-        color: '#94a3b8 !important'
-      }}>{t("auth.chuaCoTaiKhoan")}</span>{' '}
-        <Link to={ROUTES.REGISTER} className="text-decoration-none transition-all" style={{
-        color: 'var(--primary)',
-        fontWeight: 600
-      }}>{t("signUp")}</Link>
+      <div className="text-center mt-6 text-sm">
+        <span className="text-muted-foreground">{t("auth.chuaCoTaiKhoan")}</span>{' '}
+        <Link to={ROUTES.REGISTER} className="text-primary font-semibold hover:underline">
+          {t("signUp")}
+        </Link>
       </div>
-    </AuthLayout>;
+    </AuthLayout>
+  );
 }

@@ -1,22 +1,22 @@
 :root {
   /* Colors */
-  --color-primary-orange: #0071BC; /* Trending System brand blue */
-  --color-primary-orange-hover: #005A96;
-  --color-primary-orange-light: #E6F3FA;
+  --color-primary-orange: var(--ds-primary); /* Legacy analytics token -> shared brand */
+  --color-primary-orange-hover: var(--ds-primary-hover);
+  --color-primary-orange-light: var(--ds-primary-subtle);
   
-  --color-neutral-50: #F9FAFB;
-  --color-neutral-100: #F3F4F6;
-  --color-neutral-200: #E5E7EB;
-  --color-neutral-300: #D1D5DB;
-  --color-neutral-400: #9CA3AF;
-  --color-neutral-500: #6B7280;
-  --color-neutral-600: #4B5563;
-  --color-neutral-700: #374151;
-  --color-neutral-800: #1F2937;
-  --color-neutral-900: #111827;
+  --color-neutral-50: var(--ds-background);
+  --color-neutral-100: var(--ds-surface-muted);
+  --color-neutral-200: var(--ds-border);
+  --color-neutral-300: var(--ds-neutral-300);
+  --color-neutral-400: var(--ds-subtle-foreground);
+  --color-neutral-500: var(--ds-subtle-foreground);
+  --color-neutral-600: var(--ds-muted-foreground);
+  --color-neutral-700: var(--ds-neutral-700);
+  --color-neutral-800: var(--ds-foreground);
+  --color-neutral-900: var(--ds-foreground);
   
-  --color-surface: #FFFFFF;
-  --color-background: var(--color-neutral-50);
+  --color-surface: var(--ds-surface);
+  --color-background: var(--ds-background);
   
   /* Chart Colors */
   --color-chart-1: #3B82F6; /* Blue */
@@ -26,24 +26,24 @@
   --color-chart-5: #EC4899; /* Pink */
   
   /* Typography */
-  --font-family-base: 'Source Serif 4', serif;
+  --font-family-base: var(--ds-font-sans);
   
-  --font-size-page-title: 28px;
-  --font-size-section-title: 18px;
+  --font-size-page-title: 18px;
+  --font-size-section-title: 15px;
   --font-size-card-title: 12px;
-  --font-size-kpi-value: 40px;
+  --font-size-kpi-value: 24px;
   --font-size-body: 14px;
   --font-size-metadata: 12px;
-  --font-size-tab: 16px;
-  --font-size-ranking: 14px;
-  --font-size-legend: 11px;
+  --font-size-tab: 13px;
+  --font-size-ranking: 13px;
+  --font-size-legend: 12px;
   
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  --letter-spacing-card-title: 0.08em;
+  --letter-spacing-card-title: 0.05em;
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
@@ -52,19 +52,19 @@
   --spacing-2xl: 48px;
   
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-sm: var(--ds-shadow-card, 0 1px 3px rgba(16, 24, 40, 0.08));
+  --shadow-base: var(--ds-shadow-card, 0 1px 3px rgba(16, 24, 40, 0.08));
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
   
   /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-sm: var(--ds-radius-control, 8px);
+  --radius-md: var(--ds-radius-card, 12px);
+  --radius-lg: var(--ds-radius-panel, 16px);
+  --radius-xl: 20px;
   
   /* Borders */
-  --border-light: 1px solid var(--color-neutral-200);
+  --border-light: 1px solid var(--ds-border, #e4e7ec);
   
   /* Breakpoints */
   --breakpoint-sm: 375px;
@@ -73,7 +73,7 @@
   --breakpoint-xl: 1440px;
 }
 
-body {
+.trending-analytics-shell {
   font-family: var(--font-family-base);
   color: var(--color-neutral-800);
   background-color: var(--color-background);

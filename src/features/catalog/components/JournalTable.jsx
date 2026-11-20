@@ -1,79 +1,160 @@
 import { useTranslation } from "react-i18next";
-import { t } from "i18next";
-/**
- * File source thuộc hệ thống FE ResearchPulse.
- *
- * File: features\catalog\components\JournalTable.jsx
- */
-import { Table } from 'react-bootstrap';
+import { Table } from '../../../shared/ui/table';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Badge } from '../../../shared/ui/badge';
+import { Button } from '../../../shared/ui/button';
+
 export default function JournalTable({
   journals = [],
   followedJournals = {},
-  onFollow
+  onFollow,
+  asCard = true
 }) {
-  const { t: _t } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const renderAccessBadge = journal => <span className="catalog-badge catalog-access-badge">
-      {journal.is_open_access ? 'Open Access' : 'Subscription'}
-    </span>;
-  const getQuartileBadgeClass = (quartile = '') => {
-    if (quartile === 'Q1') return 'catalog-badge catalog-badge--q1';
-    if (quartile === 'Q2') return 'catalog-badge catalog-badge--q2';
-    return 'catalog-badge';
+
+  const renderAccessBadge = (journal) => {
+    if (journal.is_open_access) {
+      return (
+        <Badge variant="success" className="gap-1.5 px-2.5 py-0.5 text-[11px] font-semibold">
+          <span className="size-1.5 rounded-full bg-success" />
+          Open Access
+        </Badge>
+      );
+    }
+    return (
+      <Badge variant="outline" className="px-2.5 py-0.5 text-[11px] font-medium">
+        Subscription
+      </Badge>
+    );
   };
-  return <section className="catalog-surface catalog-table-card">
-      <div className="table-responsive">
-        <Table hover className="catalog-table align-middle mb-0 text-start">
+
+  const renderQuartileBadge = (quartile = '') => {
+    if (!quartile) return <span className="text-muted-foreground text-xs">—</span>;
+    const q = String(quartile).trim().toUpperCase();
+    if (q === 'Q1') {
+      return (
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-success-subtle text-success border border-success/20 shadow-2xs">
+          Q1
+        </span>
+      );
+    }
+    if (q === 'Q2') {
+      return (
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-primary-subtle text-primary border border-primary/20 shadow-2xs">
+          Q2
+        </span>
+      );
+    }
+    if (q === 'Q3') {
+      return (
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-warning-subtle text-warning border border-warning/20 shadow-2xs">
+          Q3
+        </span>
+      );
+    }
+    if (q === 'Q4') {
+      return (
+        <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-extrabold bg-surface-muted text-muted-foreground border border-border shadow-2xs">
+          Q4
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center justify-center min-w-8 px-2 py-0.5 rounded-md text-xs font-bold bg-surface-muted text-muted-foreground border border-border">
+        {quartile}
+      </span>
+    );
+  };
+
+  const tableContent = (
+    <div className="table-responsive">
+      <Table hover className="catalog-table align-middle mb-0 text-start w-full">
           <thead>
-            <tr>
-              <th className="px-4 py-3">Journal</th>
-              <th className="px-3 py-3">ISSN</th>
-              <th className="px-3 py-3">Publisher</th>
-              <th className="px-3 py-3">Country</th>
-              <th className="px-3 py-3">Quartile</th>
-              <th className="px-3 py-3">Metric</th>
-              <th className="px-3 py-3">Year</th>
-              <th className="px-3 py-3">Access</th>
-              <th className="px-4 py-3 text-end">Action</th>
+            <tr className="border-b border-border bg-surface-muted/60 text-[12px] text-muted-foreground font-semibold normal-case">
+              <th className="px-4 py-3 text-start text-[12px] font-semibold normal-case">Journal & ISSN</th>
+              <th className="px-3 py-3 text-start text-[12px] font-semibold normal-case">Publisher & Region</th>
+              <th className="px-3 py-3 text-center text-[12px] font-semibold normal-case">Quartile</th>
+              <th className="px-3 py-3 text-center text-[12px] font-semibold normal-case">SJR Metric</th>
+              <th className="px-4 py-3 text-center text-[12px] font-semibold normal-case">Access</th>
             </tr>
           </thead>
-          <tbody>
-            {journals.map(journal => {
-            const id = journal.id || journal.journal_id;
-            const isFollowed = !!followedJournals[id];
-            return <tr key={id} onClick={() => navigate(`/journals/${id}`)}>
-                  <td className="px-4 py-3">
-                    <div className="catalog-journal-name">{journal.display_name}</div>
-                  </td>
-                  <td className="px-3 py-3 text-muted-custom catalog-mono">{journal.issn || '—'}</td>
-                  <td className="px-3 py-3 text-main">{journal.publisher || '—'}</td>
-                  <td className="px-3 py-3 text-main">{journal.country || '—'}</td>
-                  <td className="px-3 py-3">
-                    {journal.quartile ? <span className={getQuartileBadgeClass(journal.quartile)}>
-                        {journal.quartile}
-                      </span> : '—'}
-                  </td>
-                  <td className="px-3 py-3 fw-semibold text-main catalog-mono">{journal.metric_value ?? '—'}</td>
-                  <td className="px-3 py-3 text-main">{journal.metric_year || '—'}</td>
-                  <td className="px-3 py-3">{renderAccessBadge(journal)}</td>
-                  <td className="px-4 py-3 text-end">
-                    <div className="d-inline-flex align-items-center">
-                      <button type="button" onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onFollow(id);
-                  }} className={`catalog-follow-btn ${isFollowed ? 'is-followed' : ''}`}>
-                        <Icon icon={isFollowed ? 'lucide:check' : 'lucide:plus'} width="13" />
-                        <span>{isFollowed ? t("catalog.daTheoDoi") : t("catalog.theoDoi")}</span>
-                      </button>
+          <tbody className="divide-y divide-border/60">
+            {journals.map((journal) => {
+              const id = journal.id || journal.journal_id;
+              return (
+                <motion.tr
+                  key={id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.15 }}
+                  onClick={() => navigate(`/journals/${id}`)}
+                  className="cursor-pointer transition-colors hover:bg-primary-subtle/20 group"
+                >
+                  {/* Journal Name & ISSN */}
+                  <td className="px-4 py-3.5 max-w-sm">
+                    <div className="font-bold text-foreground group-hover:text-primary transition-colors text-sm line-clamp-2 leading-snug">
+                      {journal.display_name}
                     </div>
+                    {journal.issn ? (
+                      <div className="text-[11px] font-mono text-muted-foreground mt-1 flex items-center gap-1.5">
+                        <span className="uppercase text-[10px] font-semibold text-muted-foreground/80">ISSN:</span>
+                        <span className="font-medium text-foreground/80">{journal.issn}</span>
+                      </div>
+                    ) : null}
                   </td>
-                </tr>;
-          })}
+
+                  {/* Publisher & Country */}
+                  <td className="px-3 py-3.5">
+                    <div className="text-xs font-medium text-foreground truncate max-w-[220px]" title={journal.publisher}>
+                      {journal.publisher || '—'}
+                    </div>
+                    {journal.country ? (
+                      <div className="text-[11px] text-muted-foreground mt-1 flex items-center gap-1">
+                        <Icon icon="lucide:globe" width="12" className="text-muted-foreground shrink-0" />
+                        <span className="truncate max-w-[180px]">{journal.country}</span>
+                      </div>
+                    ) : null}
+                  </td>
+
+                  {/* Quartile Badge */}
+                  <td className="px-3 py-3.5 text-center whitespace-nowrap">
+                    {renderQuartileBadge(journal.quartile)}
+                  </td>
+
+                  {/* Metric Value & Year */}
+                  <td className="px-3 py-3.5 text-center whitespace-nowrap">
+                    <div className="font-mono text-xs font-bold text-foreground">
+                      {journal.metric_value ? Number(journal.metric_value).toFixed(2) : '—'}
+                    </div>
+                    {journal.metric_year ? (
+                      <div className="text-[10px] text-muted-foreground">
+                        {journal.metric_year}
+                      </div>
+                    ) : null}
+                  </td>
+
+                  {/* Access Type Badge */}
+                  <td className="px-4 py-3.5 text-center whitespace-nowrap">
+                    {renderAccessBadge(journal)}
+                  </td>
+                </motion.tr>
+              );
+            })}
           </tbody>
         </Table>
       </div>
-    </section>;
+    );
+
+  if (!asCard) {
+    return tableContent;
+  }
+
+  return (
+    <section className="catalog-table-card rounded-card border border-border bg-surface shadow-card overflow-hidden">
+      {tableContent}
+    </section>
+  );
 }

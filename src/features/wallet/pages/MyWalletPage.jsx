@@ -116,12 +116,6 @@ export default function MyWalletPage() {
   };
   const getTxStatus = tx => tx?.status || tx?.transaction_status || tx?.payment_status || 'success';
   return <div className="my-wallet-page">
-      <div className="my-wallet-breadcrumb">
-        <span>Dashboard</span>
-        <Icon icon="lucide:chevron-right" width={12} />
-        <span>My Wallet</span>
-      </div>
-
       <div className="my-wallet-hero">
         <h1 className="my-wallet-title">{t("wallet.tongQuanTaiChinh")}</h1>
         <p className="my-wallet-subtitle">{t("wallet.theoDoiSoDuKiemTraLichSuBienDo")}</p>
@@ -236,12 +230,7 @@ export default function MyWalletPage() {
             marginBottom: 8
           }}>
               <Icon icon="lucide:shield-check" width={18} />{t("wallet.baoMatDaLop")}</div>
-            <p style={{
-            fontSize: 12,
-            color: 'var(--text-muted)',
-            lineHeight: 1.5,
-            margin: 0
-          }}>{t("wallet.researchpulseMaHoaMoiThongTinV")}</p>
+            <p className="text-xs text-text-muted leading-relaxed m-0">{t("wallet.researchpulseMaHoaMoiThongTinV")}</p>
           </div>
         </div>
       </div>

@@ -1,90 +1,151 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
-import Icon from '../../shared/components/Icon';
+import { Link, NavLink, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { Icon } from '@iconify/react';
 import Logo from '../../shared/components/Logo';
 import useAuth from '../../features/auth/hooks/useAuth';
-import ROUTES from '../routes/routePaths';
 
 /**
  * AdminSidebar Component
- * Render thanh điều hướng sidebar bên trái của trang Admin theo mẫu thiết kế.
+ * Mirrors the exact structure, dimensions, styling, and design tokens of DashboardShell's sidebar.
  */
-export default function AdminSidebar() {
+export default function AdminSidebar({
+  showLogo = true,
+  onNavigate,
+  collapsed = false,
+  onToggleCollapse,
+  isMobile = false,
+}) {
+  const { lang = 'en' } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const pathname = location.pathname;
-  const auth = useAuth() ?? { logout: () => {} };
+  const { logout } = useAuth();
+  const base = `/${lang}`;
+  const isCollapsed = collapsed && !isMobile;
 
-  // Danh sách các mục menu trên sidebar - Sử dụng ROUTES thay vì hardcode
   const menuItems = [
-    { label: 'Dashboard', path: ROUTES.ADMIN_DASHBOARD, icon: 'lucide:layout-dashboard' },
-    { label: 'Journals', path: ROUTES.ADMIN_JOURNALS, icon: 'lucide:book-open' },
-    { label: 'Articles', path: ROUTES.ADMIN_ARTICLES, icon: 'lucide:file-text' },
-    { label: 'Volumes', path: ROUTES.ADMIN_REPOSITORY, icon: 'lucide:layers' },
-    { label: 'Data Sources', path: ROUTES.ADMIN_DATA_SOURCES, icon: 'lucide:database' },
-    { label: 'Account', path: ROUTES.ADMIN_USERS, icon: 'lucide:user' },
+    { label: 'Dashboard', path: 'admin/dashboard', icon: 'lucide:layout-dashboard' },
+    { label: 'Journals', path: 'admin/journals', icon: 'lucide:book-open' },
+    { label: 'Articles', path: 'admin/articles', icon: 'lucide:file-text' },
+    { label: 'Volumes', path: 'admin/journals/repository', icon: 'lucide:layers' },
+    { label: 'Data Sources', path: 'admin/data-sources', icon: 'lucide:database' },
+    { label: 'Account', path: 'admin/users', icon: 'lucide:users' },
   ];
 
-  /**
-   * Kiểm tra xem mục menu hiện tại có đang active (được chọn) hay không.
-   */
-  const isActive = (itemPath) => {
-    if (itemPath === ROUTES.ADMIN_JOURNALS) {
-      // Journals chỉ active khi ở /admin/journals hoặc các subpath mà không phải repository
-      return pathname === ROUTES.ADMIN_JOURNALS || (pathname.startsWith(ROUTES.ADMIN_JOURNALS) && !pathname.startsWith(ROUTES.ADMIN_REPOSITORY));
+  const isItemActive = (itemPath) => {
+    const fullPath = `${base}/${itemPath}`;
+    if (itemPath === 'admin/journals') {
+      return (
+        location.pathname === fullPath ||
+        (location.pathname.startsWith(fullPath) && !location.pathname.startsWith(`${base}/admin/journals/repository`))
+      );
     }
-    if (itemPath === ROUTES.ADMIN_DASHBOARD) {
-      return pathname === ROUTES.ADMIN_DASHBOARD;
+    if (itemPath === 'admin/dashboard') {
+      return location.pathname === fullPath || location.pathname === `${base}/admin`;
     }
-    return pathname.startsWith(itemPath);
+    return location.pathname.startsWith(fullPath);
   };
 
   return (
-    <aside className="admin-sidebar" aria-label="Admin navigation">
-      <div>
-        {/* Brand Logo header */}
-        <div className="admin-sidebar__brand-wrap">
-          <Logo onClick={() => navigate('/')} />
-        </div>
-
-        {/* Navigation Link Items */}
-        <Nav className="admin-sidebar__menu">
-          {menuItems.map((item, idx) => {
-            const active = isActive(item.path);
-            return (
-              <Nav.Link
-                key={idx}
-                onClick={() => navigate(item.path)}
-                className={`admin-sidebar__item sidebar-link ${active ? 'admin-sidebar__item--active' : ''}`}
+    <aside className="app-sidebar flex min-h-full flex-col border-r border-border bg-surface" aria-label="Admin primary navigation">
+      {showLogo && (
+        <div className={`h-14 min-h-14 flex items-center border-b border-border box-border ${isCollapsed ? 'justify-center px-2' : 'justify-between px-3.5'}`}>
+          {isCollapsed ? (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="group relative size-9 rounded-control flex items-center justify-center hover:bg-surface-muted transition-colors cursor-pointer border-0 bg-transparent"
+              title="Expand sidebar"
+              aria-label="Expand sidebar"
+            >
+              <div className="group-hover:hidden">
+                <Logo size={26} fontSize="0.95rem" showText={false} />
+              </div>
+              <div className="hidden group-hover:flex text-muted-foreground group-hover:text-foreground">
+                <Icon icon="lucide:panel-left-open" width={18} />
+              </div>
+            </button>
+          ) : (
+            <>
+              <Link
+                to={`${base}/admin/dashboard`}
+                className="flex items-center no-underline text-inherit overflow-hidden"
+                onClick={() => onNavigate?.()}
               >
-                <Icon icon={item.icon} width="18" className="admin-sidebar__item-icon" />
-                <span>{item.label}</span>
-              </Nav.Link>
+                <Logo size={26} fontSize="0.95rem" showText={true} />
+              </Link>
+              <button
+                type="button"
+                onClick={onToggleCollapse}
+                className="size-7 rounded-control flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-muted transition-colors cursor-pointer border-0 bg-transparent shrink-0"
+                title="Collapse sidebar"
+                aria-label="Collapse sidebar"
+              >
+                <Icon icon="lucide:panel-left-close" width={17} />
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+      <div className={`flex flex-1 flex-col ${isCollapsed ? 'p-2' : 'p-3'}`}>
+        <nav className="flex flex-col gap-0.5" aria-label="Admin Navigation Links">
+          {menuItems.map((item) => {
+            const active = isItemActive(item.path);
+            return (
+              <NavLink
+                key={item.path}
+                to={`${base}/${item.path}`}
+                onClick={() => onNavigate?.()}
+                title={isCollapsed ? item.label : undefined}
+                className={`group flex h-9 min-h-[36px] w-full items-center rounded-control transition-colors ${
+                  isCollapsed ? 'justify-center px-0' : 'gap-2.5 px-2.5 py-1.5'
+                } text-left text-xs ${
+                  active
+                    ? 'bg-primary-subtle font-semibold !text-primary'
+                    : 'font-medium !text-muted-foreground hover:bg-surface-muted hover:!text-foreground'
+                }`}
+              >
+                <Icon icon={item.icon} width={16} className="shrink-0" aria-hidden="true" />
+                {!isCollapsed && <span className="truncate">{item.label}</span>}
+              </NavLink>
             );
           })}
-        </Nav>
+        </nav>
+
+        {/* Bottom utility links: Switch to User Portal + Sign out */}
+        <div className="mt-auto flex flex-col gap-0.5 border-t border-border pt-2">
+          {/* Switch to User Portal */}
+          <button
+            type="button"
+            className={`flex h-9 min-h-[36px] w-full items-center rounded-control border-0 bg-transparent text-left text-xs font-semibold text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground cursor-pointer ${
+              isCollapsed ? 'justify-center px-0' : 'gap-2.5 px-2.5 py-1.5'
+            }`}
+            onClick={() => {
+              onNavigate?.();
+              navigate(`${base}/dashboard`);
+            }}
+            title={isCollapsed ? 'User Portal' : 'Switch to User Workspace'}
+          >
+            <Icon icon="lucide:arrow-left" width={16} className="shrink-0" aria-hidden="true" />
+            {!isCollapsed && <span className="truncate">User Portal</span>}
+          </button>
+
+          {/* Sign Out */}
+          <button
+            type="button"
+            className={`flex h-9 min-h-[36px] w-full items-center rounded-control border-0 bg-transparent text-left text-xs font-semibold text-muted-foreground transition-colors hover:bg-danger-subtle hover:text-danger cursor-pointer ${
+              isCollapsed ? 'justify-center px-0' : 'gap-2.5 px-2.5 py-1.5'
+            }`}
+            onClick={() => {
+              onNavigate?.();
+              logout();
+            }}
+            title={isCollapsed ? 'Sign out' : undefined}
+          >
+            <Icon icon="lucide:log-out" width={16} className="shrink-0" aria-hidden="true" />
+            {!isCollapsed && <span className="truncate">Sign out</span>}
+          </button>
+        </div>
       </div>
-
-      {/* Footer-aligned items inside the sidebar */}
-      <Nav className="admin-sidebar__footer">
-        {/* Support Link */}
-        <Nav.Link
-          onClick={() => navigate(ROUTES.DASHBOARD)}
-          className="admin-sidebar__item"
-        >
-          <Icon icon="lucide:help-circle" width="18" className="admin-sidebar__item-icon" />
-          <span>Support</span>
-        </Nav.Link>
-
-        {/* Sign Out Button */}
-        <Nav.Link
-          onClick={() => auth.logout()}
-          className="admin-sidebar__item admin-sidebar__item--danger"
-        >
-          <Icon icon="lucide:log-out" width="18" className="admin-sidebar__item-icon" />
-          <span>Sign Out</span>
-        </Nav.Link>
-      </Nav>
     </aside>
   );
 }

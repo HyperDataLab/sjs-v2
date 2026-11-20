@@ -109,12 +109,6 @@ export default function WalletCheckoutPage() {
   return <div className="wallet-checkout-page">
       <Header />
       <div className="wallet-checkout-inner">
-        <div className="wallet-checkout-breadcrumb">
-          <button type="button" onClick={() => navigate(ROUTES.WALLET_TOP_UP)}>{t("wallet.napCoin")}</button>
-          <Icon icon="lucide:chevron-right" width={14} />
-          <span>{t("wallet.xacNhanThanhToan")}</span>
-        </div>
-
         <div className="wallet-checkout-hero">
           <div>
             <h1 className="wallet-checkout-title">{t("wallet.xacNhanThanhToan")}</h1>
@@ -246,11 +240,7 @@ export default function WalletCheckoutPage() {
                   <div className="checkout-summary-total__label">{t("keywords.tongCong")}</div>
                   <div className="checkout-summary-total__value">{formatVND(totals.grandTotal)}</div>
                 </div>
-                <div style={{
-              color: '#16a34a',
-              fontSize: 12,
-              fontWeight: 800
-            }}>
+                <div className="text-xs font-extrabold text-success">
                   +{formatCoin(totals.bonus)} bonus
                 </div>
               </div>

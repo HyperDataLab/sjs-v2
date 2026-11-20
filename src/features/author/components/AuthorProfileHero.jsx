@@ -42,11 +42,6 @@ export default function AuthorProfileHero({ author, metrics }) {
 
         {/* Center: Identity details */}
         <div className="ap-hero-center">
-          <div className="ap-hero-eyebrow">
-            <Icon icon="lucide:award" width="13" />
-            <span>Academic Researcher Profile</span>
-          </div>
-
           <h1 className="ap-hero-name">{author.full_name}</h1>
           <div className="ap-hero-position">{author.position}</div>
 
@@ -158,7 +153,7 @@ export default function AuthorProfileHero({ author, metrics }) {
             <div className="ap-hero-actions">
               <button
                 type="button"
-                className="ap-btn ap-btn-primary w-100"
+                className="ap-btn ap-btn-primary w-full"
                 onClick={() => document.getElementById("publications")?.scrollIntoView({ behavior: "smooth" })}
               >
                 <Icon icon="lucide:book-open" width="13" />
@@ -170,7 +165,7 @@ export default function AuthorProfileHero({ author, metrics }) {
                   href={`https://orcid.org/${author.orcid}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="ap-btn ap-btn-outline w-100"
+                  className="ap-btn ap-btn-outline w-full"
                 >
                   <Icon icon="lucide:external-link" width="12" />
                   <span>External ORCID Record</span>
