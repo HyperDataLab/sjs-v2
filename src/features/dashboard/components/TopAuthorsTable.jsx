@@ -89,14 +89,15 @@ export default function TopAuthorsTable({ authors = [], loading, error, onAuthor
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[620px] border-collapse text-left text-xs">
+            <table className="w-full min-w-[700px] border-collapse text-left text-xs">
               <thead className="bg-surface-muted/60 text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border">
                 <tr>
                   <th scope="col" className="px-4 py-2.5 w-12 text-center">#</th>
                   <th scope="col" className="px-4 py-2.5 w-[38%]">{t('typeAuthor', 'Author')}</th>
                   <th scope="col" className="px-4 py-2.5 w-[34%] hidden sm:table-cell">{t('author.linhVuc', 'Research Field')}</th>
                   <th scope="col" className="px-4 py-2.5 w-[14%] text-right">{t('articles', 'Articles')}</th>
-                  <th scope="col" className="px-5 py-2.5 w-[14%] text-right">Citations</th>
+                  <th scope="col" className="px-4 py-2.5 w-[14%] text-right">{t('citations', 'Citations')}</th>
+                  <th scope="col" className="px-4 py-2.5 w-[10%] text-right">{t('author.hIndex', 'H-index')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
@@ -105,6 +106,7 @@ export default function TopAuthorsTable({ authors = [], loading, error, onAuthor
                   const field = author.subject_area ?? author.primary_subject_area ?? author.field ?? author.area ?? '—';
                   const articles = author.article_count ?? author.papers ?? author.works_count ?? 0;
                   const citations = author.citation_count ?? author.citations ?? author.cited_by_count ?? 0;
+                  const hIndex = author.h_index ?? author.hindex ?? 0;
                   const initials = name
                     .split(' ')
                     .filter(Boolean)
@@ -146,8 +148,11 @@ export default function TopAuthorsTable({ authors = [], loading, error, onAuthor
                       <td className="px-4 py-3 text-right font-mono text-foreground font-medium tabular-nums text-xs">
                         {formatCount(articles)}
                       </td>
-                      <td className="px-5 py-3 text-right font-mono font-semibold text-primary tabular-nums text-xs">
+                      <td className="px-4 py-3 text-right font-mono font-semibold text-primary tabular-nums text-xs">
                         {formatCount(citations)}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono font-medium text-foreground tabular-nums text-xs">
+                        {formatCount(hIndex)}
                       </td>
                     </tr>
                   );
