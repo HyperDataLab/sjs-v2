@@ -19,7 +19,7 @@ import useAuth from '../../auth/hooks/useAuth';
 import { getArticleDetailApi, bookmarkArticleApi, getArticlesListApi } from '../api/articleApi';
 
 // Subcomponents
-import ArticleDetailSkeleton from '../components/ArticleDetailSkeleton';
+import ArticleDetailSkeleton, { ArticlePaneSkeleton } from '../components/ArticleDetailSkeleton';
 import ArticleDetailEmpty from '../components/ArticleDetailEmpty';
 import ArticleDetailError from '../components/ArticleDetailError';
 import AuthRequiredModal from '../../../shared/components/AuthRequiredModal';
@@ -175,9 +175,11 @@ const ArticleDetailPane = ({
     }
   };
   if (isLoading) {
-    return <div className="p-4">
-        <ArticleDetailSkeleton />
-      </div>;
+    return (
+      <div className="p-4">
+        <ArticlePaneSkeleton />
+      </div>
+    );
   }
   if (error) {
     if (error.type === '404') {
