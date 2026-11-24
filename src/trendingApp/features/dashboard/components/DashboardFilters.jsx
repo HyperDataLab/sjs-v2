@@ -177,20 +177,20 @@ export default function DashboardFilters() {
         </Button>
       </div>
 
-      <div className="dashboard-filter-chips flex flex-wrap items-center gap-2 pt-3 border-t border-border mt-3">
-        <Badge variant="secondary" className="px-2.5 py-1 text-xs font-normal bg-surface-muted border border-border">
+      <div className="dashboard-filter-chips flex flex-wrap items-center gap-1.5 pt-2 border-t border-border mt-2">
+        <Badge variant="secondary" className="px-2 py-0.5 text-[11px] font-normal bg-surface-muted border border-border">
           <span className="text-muted-foreground mr-1">{t('dashboard.filters.timeframe', 'Timeframe')}:</span>
           <span className="font-semibold text-foreground">{t(`dashboard.filters.${filters.timeframe}`, filters.timeframe)}</span>
         </Badge>
-        <Badge variant="secondary" className="px-2.5 py-1 text-xs font-normal bg-surface-muted border border-border">
+        <Badge variant="secondary" className="px-2 py-0.5 text-[11px] font-normal bg-surface-muted border border-border">
           <span className="text-muted-foreground mr-1">{t('dashboard.filters.subjectArea', 'Subject Area')}:</span>
           <span className="font-semibold text-foreground">{filters.subject_area || 'All Areas'}</span>
         </Badge>
-        <Badge variant="secondary" className="px-2.5 py-1 text-xs font-normal bg-surface-muted border border-border">
+        <Badge variant="secondary" className="px-2 py-0.5 text-[11px] font-normal bg-surface-muted border border-border">
           <span className="text-muted-foreground mr-1">{t('dashboard.filters.subjectCategory', 'Subject Category')}:</span>
           <span className="font-semibold text-foreground">{t(`dashboard.filters.${filters.subject_category}`, filters.subject_category || 'All Categories')}</span>
         </Badge>
-        <Badge variant="secondary" className="px-2.5 py-1 text-xs font-normal bg-surface-muted border border-border">
+        <Badge variant="secondary" className="px-2 py-0.5 text-[11px] font-normal bg-surface-muted border border-border">
           <span className="text-muted-foreground mr-1">{t('dashboard.filters.zone', 'Zone')}:</span>
           <span className="font-semibold text-foreground">{filters.zone || 'Global Distribution'}</span>
         </Badge>
