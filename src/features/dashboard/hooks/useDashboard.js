@@ -19,6 +19,12 @@ const normalizeTopAuthor = (author) => ({
   citation_count: author.citation_count ?? author.citations ?? author.cited_by_count ?? 0,
 });
 
+const ORGANIZATION_LIKE_AUTHOR_NAME = /\b(universit(?:y|ies)|college|institute|institution|museum|laborator(?:y|ies)|lab|research center|research centre|biodiversity center|biodiversity centre|botanic garden|botanical garden|academy|hospital|society|foundation|observatory|department|ministry|organization|organisation|association|library|herbarium|bureau|commission|corporation|consortium|council|agency|cluster)\b/i;
+
+const isOrganizationLikeAuthor = (author) => ORGANIZATION_LIKE_AUTHOR_NAME.test(
+  String(author.display_name ?? author.full_name ?? author.author_name ?? author.name ?? '')
+);
+
 /**
  * useDashboard — central data hook for the Dashboard/Tổng quan page.
  * Fetches projects, analytics, trending keywords and top authors in parallel using Tanstack Query.
@@ -122,11 +128,11 @@ export default function useDashboard(currentUser, trendRange = '5') {
     error: authorsQueryError,
     refetch: refetchAuthors
   } = useQuery({
-    queryKey: ['dashboard', 'topAuthors'],
+    queryKey: ['dashboard', 'topAuthors', 'people-only-v2'],
     queryFn: async () => {
-      const res = await getTopAuthorsApi(5);
+      const res = await getTopAuthorsApi(100);
       const data = res.data?.data ?? res.data ?? [];
-      const topAuthorsList = Array.isArray(data) ? data.slice(0, 5) : [];
+      const topAuthorsList = Array.isArray(data) ? data : [];
 
       return topAuthorsList.map((author) => {
         const normalized = normalizeTopAuthor(author);
@@ -141,7 +147,9 @@ export default function useDashboard(currentUser, trendRange = '5') {
     staleTime: 10 * 60 * 1000,
   });
 
-  const topAuthors = topAuthorsData || [];
+  const topAuthors = (topAuthorsData || [])
+    .filter((author) => !isOrganizationLikeAuthor(author))
+    .slice(0, 5);
   const errorAuthors = authorsQueryError ? authorsQueryError.response?.data?.message || authorsQueryError.message || 'Không thể tải top authors.' : null;
 
   // ── derived stat card data ───────────────────────────────────────────────

@@ -5,7 +5,7 @@
  * @description Selected Awards & Honors academic timeline.
  */
 export default function AuthorAwards({ awards = [] }) {
-  if (!awards || awards.length === 0) return null;
+  const items = Array.isArray(awards) ? awards : [];
 
   return (
     <div className="ap-section" id="awards">
@@ -14,11 +14,13 @@ export default function AuthorAwards({ awards = [] }) {
           <Icon icon="lucide:trophy" width="16" className="ap-section-icon" />
           <h2 className="ap-section-title">Selected Awards & Honors</h2>
         </div>
-        <span className="ap-section-badge">{awards.length} major distinctions</span>
+        <span className="ap-section-badge">{items.length} major distinctions</span>
       </div>
 
-      <div className="ap-awards-timeline">
-        {awards.map((item) => (
+      {items.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Award information is not available for this author.</p>
+      ) : <div className="ap-awards-timeline">
+        {items.map((item) => (
           <div key={item.id} className="ap-award-item">
             <div className="ap-award-year-col">
               <span className="ap-award-year-badge">{item.year}</span>
@@ -41,7 +43,7 @@ export default function AuthorAwards({ awards = [] }) {
             </div>
           </div>
         ))}
-      </div>
+      </div>}
     </div>
   );
 }
