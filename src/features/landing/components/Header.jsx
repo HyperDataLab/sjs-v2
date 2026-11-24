@@ -85,6 +85,10 @@ export default function Header() {
     navigateWithLang(ROUTES.LOGIN);
   };
 
+  const handleAuthRegister = () => {
+    navigateWithLang(ROUTES.REGISTER);
+  };
+
   const navItems = [
     {
       label: t("author.tongQuan"),
@@ -292,6 +296,15 @@ export default function Header() {
                   >
                     {t("signIn")}
                   </Button>
+                  {import.meta.env.DEV && (
+                    <Button
+                      size="sm"
+                      className="btn-primary-glow border-0 text-white text-xs rounded-full px-3 h-8"
+                      onClick={handleAuthRegister}
+                    >
+                      {t("signUp")}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
@@ -491,6 +504,17 @@ export default function Header() {
                   >
                     {t("signIn")}
                   </Button>
+                  {import.meta.env.DEV && (
+                    <Button
+                      className="btn-primary-glow w-full rounded-full py-2.5 text-xs font-bold border-0 text-white h-9"
+                      onClick={() => {
+                        setShowMobileMenu(false);
+                        handleAuthRegister();
+                      }}
+                    >
+                      {t("signUp")}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>

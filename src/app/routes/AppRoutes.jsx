@@ -9,6 +9,10 @@ import DashboardPage from '../../features/dashboard/pages/DashboardPage';
 
 import LoginPage from '../../features/auth/pages/LoginPage';
 import SsoCallbackPage from '../../features/auth/pages/SsoCallbackPage';
+import RegisterPage from '../../features/auth/pages/RegisterPage';
+import VerifyEmailPage from '../../features/auth/pages/VerifyEmailPage';
+import ForgotPasswordPage from '../../features/auth/pages/ForgotPasswordPage';
+import ResetPasswordPage from '../../features/auth/pages/ResetPasswordPage';
 import ProfilePage from '../../features/profile/pages/ProfilePage';
 import ROUTES from './routePaths';
 
@@ -63,6 +67,8 @@ import KeywordsNetworksPage from '../../trendingApp/features/volume/pages/Keywor
 import { AnalyticsDashboard } from '../../trendingApp/features/analytics/pages/AnalyticsDashboard';
 import CuratedArticlesPage from '../../trendingApp/features/analytics/pages/CuratedArticlesPage';
 
+const isDevelopment = import.meta.env.DEV;
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -76,7 +82,7 @@ export default function AppRoutes() {
 
         <Route element={<PublicRoute />}>
           <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<Navigate to="../login" replace />} />
+          <Route path="register" element={isDevelopment ? <RegisterPage /> : <Navigate to="../login" replace />} />
         </Route>
 
         {/* Routes sử dụng layout chung */}
@@ -158,10 +164,10 @@ export default function AppRoutes() {
           <Route path="topics/:topicId" element={<TopicDetailPage />} />
         </Route>
 
-        {/* Password-based account flows are retired; sign in through HyperDataLab SSO. */}
-        <Route path="verify-email" element={<Navigate to="login" replace />} />
-        <Route path="forgot-password" element={<Navigate to="login" replace />} />
-        <Route path="reset-password" element={<Navigate to="login" replace />} />
+        {/* Password-based account flows are available only in local development. */}
+        <Route path="verify-email" element={isDevelopment ? <VerifyEmailPage /> : <Navigate to="login" replace />} />
+        <Route path="forgot-password" element={isDevelopment ? <ForgotPasswordPage /> : <Navigate to="login" replace />} />
+        <Route path="reset-password" element={isDevelopment ? <ResetPasswordPage /> : <Navigate to="login" replace />} />
 
         <Route path="topics/:topicId" element={<TopicDetailPage />} />
 
