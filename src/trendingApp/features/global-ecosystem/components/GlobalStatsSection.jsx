@@ -13,23 +13,23 @@ const KPIStatCard = ({ title, value, trend, trendValue }) => {
   const isNegative = trend === 'down';
 
   return (
-    <Card className="p-4 sm:p-5 bg-surface border-border shadow-card rounded-card flex flex-col justify-between hover:border-primary/40 transition-all duration-200">
+    <Card className="p-3 sm:p-3.5 bg-surface border-border shadow-card rounded-card flex flex-col justify-between hover:border-primary/40 transition-all duration-200">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</span>
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{title}</span>
       </div>
 
-      <div className="mt-3 flex items-baseline justify-between gap-2">
-        <div className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{value}</div>
+      <div className="mt-1.5 flex items-baseline justify-between gap-2">
+        <div className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">{value}</div>
         <Badge
           variant={isPositive ? 'success' : isNegative ? 'destructive' : 'secondary'}
-          className="gap-1 font-medium px-2 py-0.5 text-xs"
+          className="gap-1 font-medium px-1.5 py-0.5 text-[11px]"
         >
           <span>{isPositive ? '↗' : isNegative ? '↘' : '—'}</span>
           <span>{trendValue}</span>
         </Badge>
       </div>
 
-      <div className="mt-3 h-7 w-full opacity-75">
+      <div className="mt-1.5 h-4 w-full opacity-75">
         <svg viewBox="0 0 100 30" className="w-full h-full" preserveAspectRatio="none">
           {isPositive && <path d="M0,25 Q25,5 50,20 T100,5" fill="none" stroke="currentColor" className="text-emerald-500" strokeWidth="2.5" strokeLinecap="round" />}
           {isNegative && <path d="M0,5 Q25,25 50,10 T100,25" fill="none" stroke="currentColor" className="text-rose-500" strokeWidth="2.5" strokeLinecap="round" />}
