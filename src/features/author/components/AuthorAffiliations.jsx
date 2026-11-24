@@ -8,14 +8,14 @@ import Icon from "../../../shared/components/Icon";
 export default function AuthorAffiliations({ affiliations }) {
   const [currentPage, setCurrentPage] = useState(1);
 
-  if (!affiliations || affiliations.length === 0) return null;
+  const items = Array.isArray(affiliations) ? affiliations : [];
 
   const pageSize = 4;
-  const pageCount = Math.ceil(affiliations.length / pageSize);
+  const pageCount = Math.ceil(items.length / pageSize);
   const safePage = Math.min(currentPage, pageCount);
-  const visibleAffiliations = affiliations.slice((safePage - 1) * pageSize, safePage * pageSize);
+  const visibleAffiliations = items.slice((safePage - 1) * pageSize, safePage * pageSize);
   const firstVisible = (safePage - 1) * pageSize + 1;
-  const lastVisible = Math.min(safePage * pageSize, affiliations.length);
+  const lastVisible = Math.min(safePage * pageSize, items.length);
 
   return (
     <div className="ap-section ap-affiliations-section" id="affiliations">
@@ -24,10 +24,12 @@ export default function AuthorAffiliations({ affiliations }) {
           <Icon icon="lucide:building-2" width="16" className="ap-section-icon" />
           <h2 className="ap-section-title">Current Affiliations</h2>
         </div>
-        <span className="ap-section-badge">{affiliations.length} institutions</span>
+        <span className="ap-section-badge">{items.length} institutions</span>
       </div>
 
-      <div className="ap-affiliations-list">
+      {items.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Affiliation details are not available for this author.</p>
+      ) : <div className="ap-affiliations-list">
         {visibleAffiliations.map((item) => (
           <div key={item.id} className={`ap-affiliation-item${item.externalUrl ? " is-link" : ""}`}>
             <div
@@ -69,9 +71,9 @@ export default function AuthorAffiliations({ affiliations }) {
             </div>
           </div>
         ))}
-      </div>
+      </div>}
 
-      {pageCount > 1 && (
+      {items.length > 0 && pageCount > 1 && (
         <div className="ap-affiliations-pagination" aria-label="Affiliations pagination">
           <span className="ap-affiliations-page-summary">
             {firstVisible}–{lastVisible} of {affiliations.length}

@@ -5,7 +5,7 @@
  * @description Academic Education & Career Timeline.
  */
 export default function AuthorEducation({ education = [] }) {
-  if (!education || education.length === 0) return null;
+  const items = Array.isArray(education) ? education : [];
 
   return (
     <div className="ap-section">
@@ -14,11 +14,13 @@ export default function AuthorEducation({ education = [] }) {
           <Icon icon="lucide:graduation-cap" width="16" className="ap-section-icon" />
           <h2 className="ap-section-title">Education & Career Milestones</h2>
         </div>
-        <span className="ap-section-badge">{education.length} milestones</span>
+        <span className="ap-section-badge">{items.length} milestones</span>
       </div>
 
-      <div className="ap-edu-timeline">
-        {education.map((item, idx) => (
+      {items.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Education and career information is not available for this author.</p>
+      ) : <div className="ap-edu-timeline">
+        {items.map((item, idx) => (
           <div key={item.id || idx} className="ap-edu-row">
             <div className="ap-edu-year-col">
               <span className="ap-edu-year">{item.year}</span>
@@ -47,7 +49,7 @@ export default function AuthorEducation({ education = [] }) {
             </div>
           </div>
         ))}
-      </div>
+      </div>}
     </div>
   );
 }

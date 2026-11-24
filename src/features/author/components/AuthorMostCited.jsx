@@ -5,7 +5,7 @@
  * @description Top 5 most cited landmark publications.
  */
 export default function AuthorMostCited({ mostCited = [] }) {
-  if (!mostCited || mostCited.length === 0) return null;
+  const items = Array.isArray(mostCited) ? mostCited : [];
 
   return (
     <div className="ap-section" id="venues">
@@ -18,7 +18,9 @@ export default function AuthorMostCited({ mostCited = [] }) {
       </div>
 
       <div className="ap-cited-items">
-        {mostCited.map((item, idx) => (
+        {items.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Publication citation details are not available for this author.</p>
+        ) : items.map((item, idx) => (
           <div key={item.id} className="ap-cited-card">
             <div className={`ap-cited-rank-box rank-${idx + 1}`}>
               <span className="ap-cited-rank-num">#{idx + 1}</span>

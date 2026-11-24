@@ -112,51 +112,77 @@ export default function AuthorDetailPage() {
   const rawAffiliations = currentAuthor?.affiliations || [];
   const lastKnownInsts = currentAuthor?.last_known_institutions || [];
 
-  const affiliations = rawAffiliations.length > 0
-    ? rawAffiliations
-      .filter(aff => aff.institution && aff.years?.length > 0)
-      .sort((a, b) => Math.max(...(b.years || [0])) - Math.max(...(a.years || [0])))
-      .slice(0, 10)
-      .map((aff, idx) => ({
-        id: aff.id || idx,
-        institution: aff.institution,
-        institutionId: aff.institution_id || aff.id || null,
-        ror: aff.ror || null,
-        externalUrl: aff.ror
-          ? (String(aff.ror).startsWith('http') ? aff.ror : `https://ror.org/${aff.ror}`)
-          : (aff.institution_id || aff.id ? `https://openalex.org/I${String(aff.institution_id || aff.id).replace(/^https?:\/\/openalex\.org\/I?/i, '').replace(/^I/i, '')}` : null),
-        department: aff.type || '',
-        role: 'Researcher',
-        location: aff.country_code || '',
-        since: aff.years?.length > 0 ? Math.min(...aff.years) : '',
-        logoInitials: (aff.institution || '').slice(0, 2).toUpperCase(),
-      }))
-    : lastKnownInsts.length > 0
-      ? lastKnownInsts.map((inst, idx) => ({
-          id: inst.id || idx,
-          institution: inst.display_name || 'Unknown',
-          institutionId: inst.id || inst.institution_id || null,
-          ror: inst.ror || null,
-          externalUrl: inst.ror
-            ? (String(inst.ror).startsWith('http') ? inst.ror : `https://ror.org/${inst.ror}`)
-            : (inst.id || inst.institution_id ? `https://openalex.org/I${String(inst.id || inst.institution_id).replace(/^https?:\/\/openalex\.org\/I?/i, '').replace(/^I/i, '')}` : null),
-          department: inst.type || '',
-          role: 'Researcher',
-          location: inst.country_code || '',
-          since: '',
-          logoInitials: (inst.display_name || 'UN').slice(0, 2).toUpperCase(),
-        }))
-      : institution && institution !== 'No institution listed'
-        ? [{
-            id: 1,
-            institution: institution,
-            department: currentAuthor?.institution_2 || currentAuthor?.department || '',
-            role: 'Researcher',
-            location: '',
-            since: '',
-            logoInitials: institution.slice(0, 2).toUpperCase(),
-          }]
+  const toInstitutionUrl = (ror, institutionId) => {
+    if (ror) return String(ror).startsWith('http') ? ror : `https://ror.org/${ror}`;
+    if (!institutionId) return null;
+    const normalizedId = String(institutionId)
+      .replace(/^https?:\/\/openalex\.org\/I?/i, '')
+      .replace(/^I/i, '');
+    return normalizedId ? `https://openalex.org/I${normalizedId}` : null;
+  };
+
+  // OpenAlex can return affiliation records with an empty `years` array. Keep
+  // those institutions; use last_known_institutions only when no usable
+  // affiliation names were supplied. Filtering by years here hid the entire
+  // Affiliations tab for authors whose records omit year ranges.
+  const normalizedAffiliations = (Array.isArray(rawAffiliations) ? rawAffiliations : [])
+    .map((aff, idx) => {
+      const inst = aff?.institution;
+      const name = typeof inst === 'string' ? inst : inst?.display_name || aff?.display_name || '';
+      const years = Array.isArray(aff?.years)
+        ? aff.years.map(Number).filter(Number.isFinite)
         : [];
+      const institutionId = aff?.institution_id || aff?.id || inst?.id || null;
+      return {
+        id: institutionId || idx,
+        institution: name.trim(),
+        institutionId,
+        ror: aff?.ror || inst?.ror || null,
+        externalUrl: toInstitutionUrl(aff?.ror || inst?.ror, institutionId),
+        department: aff?.type || inst?.type || '',
+        role: 'Researcher',
+        location: aff?.country_code || inst?.country_code || '',
+        since: years.length ? Math.min(...years) : '',
+        logoInitials: name.trim().slice(0, 2).toUpperCase(),
+        latestYear: years.length ? Math.max(...years) : 0,
+      };
+    })
+    .filter((aff) => aff.institution);
+
+  const fallbackInstitutions = (Array.isArray(lastKnownInsts) ? lastKnownInsts : [])
+    .map((inst, idx) => {
+      const name = inst?.display_name || inst?.institution || '';
+      const institutionId = inst?.id || inst?.institution_id || null;
+      return {
+        id: institutionId || idx,
+        institution: name.trim(),
+        institutionId,
+        ror: inst?.ror || null,
+        externalUrl: toInstitutionUrl(inst?.ror, institutionId),
+        department: inst?.type || '',
+        role: 'Researcher',
+        location: inst?.country_code || '',
+        since: '',
+        logoInitials: name.trim().slice(0, 2).toUpperCase(),
+        latestYear: 0,
+      };
+    })
+    .filter((aff) => aff.institution);
+
+  const affiliations = (normalizedAffiliations.length ? normalizedAffiliations : fallbackInstitutions)
+    .sort((a, b) => b.latestYear - a.latestYear)
+    .slice(0, 10);
+  if (affiliations.length === 0 && institution && institution !== 'No institution listed') {
+    affiliations.push({
+      id: 1,
+      institution,
+      department: currentAuthor?.institution_2 || currentAuthor?.department || '',
+      role: 'Researcher',
+      location: '',
+      since: '',
+      logoInitials: institution.slice(0, 2).toUpperCase(),
+    });
+  }
 
   const researchCenters = [];
 
@@ -371,15 +397,13 @@ export default function AuthorDetailPage() {
         </motion.div>
 
         {/* 8. TWO-COLUMN: Most Cited | Top Journals */}
-        <motion.div id="venues" variants={fadeUp} className={`ap-grid-two-col${journals.length === 0 ? " ap-grid-single-col" : ""}`}>
+        <motion.div id="venues" variants={fadeUp} className="ap-grid-two-col">
           <div className="ap-grid-col">
             <AuthorMostCited mostCited={mostCited} />
           </div>
-          {journals.length > 0 && (
-            <div className="ap-grid-col">
-              <AuthorJournals journals={journals} />
-            </div>
-          )}
+          <div className="ap-grid-col">
+            <AuthorJournals journals={journals} />
+          </div>
         </motion.div>
 
         {/* 9. TWO-COLUMN: Frequent Collaborators | Research Network */}

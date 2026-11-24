@@ -6,7 +6,7 @@ import AuthorAvatar from "./AuthorAvatar";
  * @description Researchers working in related scientific domains with shared research overlap.
  */
 export default function AuthorRelatedResearchers({ researchers = [] }) {
-  if (!researchers || researchers.length === 0) return null;
+  const items = Array.isArray(researchers) ? researchers : [];
 
   return (
     <div className="ap-section" id="related">
@@ -19,7 +19,9 @@ export default function AuthorRelatedResearchers({ researchers = [] }) {
       </div>
 
       <div className="ap-related-grid">
-        {researchers.map((r) => (
+        {items.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Related researcher data is not available for this author.</p>
+        ) : items.map((r) => (
           <div key={r.id} className="ap-related-card">
             <div className="ap-related-avatar-box">
               <AuthorAvatar name={r.name} size="md" bgColor={r.avatarColor} />
