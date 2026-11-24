@@ -12,7 +12,7 @@ export default function JournalTabs({ activeTab, onTabChange }) {
   ];
 
   return (
-    <div className="flex items-center gap-2 border-b border-border mb-6 overflow-x-auto pb-px" role="tablist">
+    <div className="flex items-center gap-2 border-b border-border overflow-x-auto pb-px" role="tablist">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.key;
         return (

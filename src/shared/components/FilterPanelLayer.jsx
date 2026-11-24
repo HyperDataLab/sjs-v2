@@ -39,7 +39,11 @@ export default function FilterPanelLayer({
 
   useEffect(() => {
     const handlePointerDown = (event) => {
-      if (panelRef.current?.contains(event.target) || anchorRef?.current?.contains(event.target)) return;
+      if (
+        panelRef.current?.contains(event.target) ||
+        anchorRef?.current?.contains(event.target) ||
+        event.target.closest?.('[data-filter-panel-portal]')
+      ) return;
       onClose?.();
     };
     const handleKeyDown = (event) => {

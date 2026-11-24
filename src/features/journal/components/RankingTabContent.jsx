@@ -114,7 +114,7 @@ export default function RankingTabContent({
   }
 
   return (
-    <Row className="gy-4 align-items-stretch">
+    <Row className="gy-3 align-items-stretch">
       {/* Left Column: Publication Activity Area Chart */}
       <Col lg={7} className="d-flex flex-column">
         <section className="journal-surface p-4 h-100 d-flex flex-column rounded-card border border-border bg-surface">

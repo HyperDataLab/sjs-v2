@@ -25,7 +25,7 @@ export default function JournalHero({
   const navigate = useNavigate();
   if (loading || !journal) {
     return (
-      <section className="journal-surface journal-hero-card mb-4 rounded-card border border-border bg-surface p-6" aria-label="Đang tải thông tin tạp chí">
+      <section className="journal-surface journal-hero-card rounded-card border border-border bg-surface p-4" aria-label="Đang tải thông tin tạp chí">
         <Row className="gy-4 journal-hero-content">
           <Col lg={8}>
             <div className="flex gap-2 mb-3">
@@ -40,10 +40,10 @@ export default function JournalHero({
               ))}
             </div>
           </Col>
-          <Col lg={4} className="text-lg-end">
-            <Skeleton className="h-16 w-36 rounded mb-2 ms-lg-auto" />
-            <Skeleton className="h-5 w-40 rounded mb-3 ms-lg-auto" />
-            <div className="flex gap-2 justify-content-lg-end flex-wrap">
+          <Col lg={4} className="flex flex-col items-end">
+            <Skeleton className="h-16 w-36 rounded mb-2 ms-auto" />
+            <Skeleton className="h-5 w-40 rounded mb-3 ms-auto" />
+            <div className="flex gap-2 justify-end flex-wrap">
               <Skeleton className="h-9 w-28 rounded" />
               <Skeleton className="h-9 w-32 rounded" />
             </div>
@@ -72,17 +72,17 @@ export default function JournalHero({
   const journalTitle = display_name || title || name || '';
   const displayQuartile = quartile || latest_metrics?.quartile || 'Q1';
   const displayMetricValue = metric_value ?? latest_metrics?.sjr ?? latest_metrics?.value ?? summary_stats?.h_index ?? null;
-  const displayMetricName = metric_name || (summary_stats?.h_index != null ? 'OpenAlex H-index' : 'SJR Score');
+  const displayMetricName = metric_name && metric_name !== 'OpenAlex H-index' ? metric_name : 'SJR Score';
   const displayMetricYear = metric_year || latest_metrics?.year || null;
 
   const handleCategoryClick = categoryName => {
     if (!categoryName) return;
     navigate(`/keywords?keyword=${encodeURIComponent(categoryName)}`);
   };
-  return <section className="journal-surface journal-hero-card mb-4" aria-labelledby="journal-detail-title">
-      <Row className="gy-4 align-items-start journal-hero-content">
+  return <section className="journal-surface journal-hero-card" aria-labelledby="journal-detail-title">
+      <Row className="gy-3 align-items-center journal-hero-content">
         <Col lg={8} md={7}>
-          <div className="journal-meta-line flex items-center gap-2 mb-2 flex-wrap">
+          <div className="journal-meta-line flex items-center gap-2 mb-1.5 flex-wrap">
             {displayQuartile && (
               <Badge variant="success" className="text-xs font-bold px-2 py-0.5">
                 {displayQuartile}
@@ -115,15 +115,15 @@ export default function JournalHero({
             </div>}
         </Col>
 
-        <Col lg={4} md={5} className="text-md-end text-start mt-lg-2">
-          {displayMetricValue !== null && displayMetricValue !== undefined ? <div className="journal-metric-panel ms-md-auto mb-3">
+        <Col lg={4} md={5} className="flex flex-col items-end justify-center text-right">
+          {displayMetricValue !== null && displayMetricValue !== undefined ? <div className="journal-metric-panel ms-auto mb-1">
               <div className="journal-metric-value">
                 {displayMetricValue}
               </div>
               <div className="journal-metric-label">
                 {displayMetricName}{displayMetricYear ? ` ${displayMetricYear}` : ''}
               </div>
-            </div> : <div className="journal-metric-panel ms-md-auto mb-3">
+            </div> : <div className="journal-metric-panel ms-auto mb-3">
               <span className="text-muted-custom">{t("journal.chuaCoDuLieuRanking")}</span>
             </div>}
 

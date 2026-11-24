@@ -24,6 +24,7 @@ function ArticleSearchableSelect({
   searchValue = '',
   onSearchChange,
   emptyLabel = 'No options',
+  showClearOption = true,
   onSelect,
   onClear,
 }) {
@@ -60,89 +61,90 @@ function ArticleSearchableSelect({
       </label>
 
       <div className="relative">
-        <button
-          type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
-          className={`w-full h-9 px-3 text-xs rounded-control border text-left flex items-center justify-between gap-2 transition-colors cursor-pointer select-none ${
-            selectedLabel
-              ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-              : 'border-border bg-surface text-foreground hover:bg-surface-muted/40 hover:border-foreground/30'
-          }`}
-        >
-          <span className="truncate">{selectedLabel || placeholder}</span>
-          <div className="flex items-center gap-1 shrink-0 text-muted-foreground">
-            {selectedLabel && (
-              <span
-                role="button"
-                tabIndex={0}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClear?.();
-                }}
-                className="hover:text-foreground p-0.5 rounded cursor-pointer"
-                title="Clear"
-              >
-                <Icon icon="lucide:x" width={12} />
-              </span>
+        {isOpen && searchable ? (
+          <div className="relative">
+            {searching ? (
+              <Icon
+                icon="lucide:loader-2"
+                className="absolute left-3 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground"
+                width={14}
+              />
+            ) : (
+              <Icon
+                icon="lucide:search"
+                width={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+              />
             )}
-            <Icon
-              icon="lucide:chevron-down"
-              width={13}
-              className={`transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`}
+            <input
+              type="search"
+              value={searchValue}
+              onChange={(event) => onSearchChange?.(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') event.preventDefault();
+              }}
+              placeholder={t("article.searchValues", "Search values...")}
+              autoFocus
+              className="w-full h-9 pl-9 pr-9 text-xs rounded-control border border-primary bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/20"
             />
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-none border-0 bg-transparent p-1 text-muted-foreground hover:text-foreground"
+              aria-label={t("close", "Close options")}
+            >
+              <Icon icon="lucide:chevron-up" width={14} />
+            </button>
           </div>
-        </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            className={`w-full h-9 px-3 text-xs rounded-control border text-left flex items-center justify-between gap-2 transition-colors cursor-pointer select-none ${
+              selectedLabel
+                ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
+                : 'border-border bg-surface text-foreground hover:bg-surface-muted/40 hover:border-foreground/30'
+            }`}
+          >
+            <span className="truncate">{selectedLabel || placeholder}</span>
+            <div className="flex items-center gap-1 shrink-0 text-muted-foreground">
+              {selectedLabel && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onClear?.();
+                  }}
+                  className="hover:text-foreground p-0.5 rounded cursor-pointer"
+                  title="Clear"
+                >
+                  <Icon icon="lucide:x" width={12} />
+                </span>
+              )}
+              <Icon icon="lucide:chevron-down" width={13} />
+            </div>
+          </button>
+        )}
 
         {isOpen && (
-          <div className="article-searchable-select-menu absolute left-0 top-full mt-1 w-full min-w-[240px] max-w-[360px] bg-surface border border-border rounded-lg shadow-popover z-50 p-2 animate-in fade-in-0 duration-100">
-            {searchable && (
-              <div className="relative mb-2">
-                {searching ? (
-                  <Icon
-                    icon="lucide:loader-2"
-                    className="absolute left-2.5 top-1/2 -translate-y-1/2 animate-spin text-muted-foreground"
-                    width={13}
-                  />
-                ) : (
-                  <Icon
-                    icon="lucide:search"
-                    width={13}
-                    className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                  />
-                )}
-                <input
-                  type="search"
-                  value={searchValue}
-                  onChange={(e) => onSearchChange?.(e.target.value)}
-                  placeholder={t("article.searchValues", "Filter options...")}
-                  autoFocus
-                  className="w-full h-8 pl-7 pr-2 text-xs rounded-control border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
-                />
-              </div>
-            )}
-
-            <div className="max-h-48 overflow-y-auto space-y-0.5">
-              <button
+          <div className="article-searchable-select-menu absolute left-0 top-full mt-0 w-full bg-surface border border-border rounded-none shadow-md z-50 animate-in fade-in-0 duration-100">
+            <div className="max-h-48 overflow-y-auto">
+              {showClearOption && <button
                 type="button"
                 onClick={() => {
                   onClear?.();
+                  onSearchChange?.('');
                   setIsOpen(false);
                 }}
-                className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-control text-xs text-left cursor-pointer border-0 transition-colors ${
+                className={`w-full flex items-center gap-2 px-3 py-2 rounded-none text-xs text-left cursor-pointer border-0 transition-colors ${
                   !selectedLabel
-                    ? 'bg-primary-subtle text-primary font-bold'
-                    : 'text-foreground hover:bg-surface-muted bg-transparent'
+                    ? 'bg-[#777] text-white font-semibold'
+                    : 'text-foreground bg-transparent hover:bg-surface-muted'
                 }`}
               >
-                <span
-                  className={`size-3.5 rounded border flex items-center justify-center shrink-0 ${
-                    !selectedLabel ? 'border-primary bg-primary text-white' : 'border-border'
-                  }`}
-                >
-                  {!selectedLabel && <Icon icon="lucide:check" width={10} />}
-                </span>
-                <span className="truncate font-medium">{placeholder}</span>
-              </button>
+                <span className="truncate">{placeholder}</span>
+              </button>}
 
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((opt) => {
@@ -158,24 +160,18 @@ function ArticleSearchableSelect({
                         } else {
                           onSelect?.(opt.value);
                         }
+                        onSearchChange?.('');
                         setIsOpen(false);
                       }}
-                      className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-control text-xs text-left cursor-pointer border-0 transition-colors ${
+                      className={`w-full flex items-center gap-2 px-3 py-2 rounded-none text-xs text-left cursor-pointer border-0 transition-colors ${
                         isSelected
-                          ? 'bg-primary-subtle text-primary font-bold'
-                          : 'text-foreground hover:bg-surface-muted bg-transparent'
+                          ? 'bg-[#777] text-white font-semibold'
+                          : 'text-foreground bg-transparent hover:bg-surface-muted'
                       }`}
                     >
-                      <span
-                        className={`size-3.5 rounded border flex items-center justify-center shrink-0 ${
-                          isSelected ? 'border-primary bg-primary text-white' : 'border-border'
-                        }`}
-                      >
-                        {isSelected && <Icon icon="lucide:check" width={10} />}
-                      </span>
                       <span className="truncate flex-1">{opt.label}</span>
                       {opt.count !== undefined && (
-                        <span className="text-[10px] text-muted-foreground tabular-nums">
+                        <span className={`text-[10px] tabular-nums ${isSelected ? 'text-white/80' : 'text-muted-foreground'}`}>
                           ({opt.count})
                         </span>
                       )}
@@ -696,6 +692,7 @@ export default function ArticleFilterBar({
                     options={SORT_OPTIONS}
                     placeholder={SORT_OPTIONS[0].label}
                     searchable={false}
+                    showClearOption={false}
                     onSelect={handleSortChange}
                     onClear={() => handleSortChange('created_at-desc')}
                   />

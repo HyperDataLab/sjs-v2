@@ -9,6 +9,7 @@ import { useJournalManagement } from '../../journal/hooks/useJournalManagement';
 import Pagination from '../../../shared/components/Pagination';
 import SwitchJournalModal from '../components/modals/SwitchJournalModal';
 import { PageHeader } from '../../../shared/ui/page-layout';
+import FilterPanelLayer from '../../../shared/components/FilterPanelLayer';
 
 /**
  * VolumeArchivePage - Màn hình Lưu trữ các Tập (Volume Archive) của Tạp chí đang chọn (Figma Screen Page 10).
@@ -33,28 +34,6 @@ export default function VolumeArchivePage() {
   const [showSwitchModal, setShowSwitchModal] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterDropdownRef = useRef(null);
-
-  // Close filter dropdown on outside click or Escape
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
-        setIsFilterOpen(false);
-      }
-    }
-    function handleEscape(event) {
-      if (event.key === 'Escape') {
-        setIsFilterOpen(false);
-      }
-    }
-    if (isFilterOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscape);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isFilterOpen]);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -177,17 +156,8 @@ export default function VolumeArchivePage() {
 
               {/* Floating Dropdown */}
               {isFilterOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[0.5px] sm:bg-transparent"
-                    onClick={() => setIsFilterOpen(false)}
-                    aria-hidden="true"
-                  />
-
-                  <div
-                    className="absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-[340px] bg-surface border border-border rounded-xl shadow-2xl z-50 flex flex-col animate-in fade-in-0 zoom-in-95 duration-150"
-                    style={{ zIndex: 60 }}
-                  >
+                <FilterPanelLayer anchorRef={filterDropdownRef} onClose={() => setIsFilterOpen(false)} width={400}>
+                  <div className="shared-filter-panel w-full flex flex-col bg-surface border border-border rounded-xl shadow-2xl animate-in fade-in-0 zoom-in-95 duration-150">
                     <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-surface-muted/30">
                       <div className="flex items-center gap-2">
                         <div className="size-7 rounded-lg bg-primary-subtle text-primary flex items-center justify-center">
@@ -262,7 +232,7 @@ export default function VolumeArchivePage() {
                       </Button>
                     </div>
                   </div>
-                </>
+                </FilterPanelLayer>
               )}
             </div>
           </div>

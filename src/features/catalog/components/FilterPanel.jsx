@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { Card } from '../../../shared/ui/card';
 import { Button } from '../../../shared/ui/button';
 import FilterPanelLayer from '../../../shared/components/FilterPanelLayer';
+import SearchableFilterSelect from '../../../shared/components/SearchableFilterSelect';
 
 export default function FilterPanel({
   searchInput = '',
@@ -263,26 +264,19 @@ export default function FilterPanel({
                       <Icon icon="lucide:book-open" width={13} className="text-muted-foreground/80" />
                       <span>{t("catalog.subjectArea", "Subject area")}</span>
                     </label>
-                    <div className="relative">
-                      <select
-                        value={selectedAreas[0] || 'all'}
-                        onChange={(e) => onAreaSelect(e.target.value)}
-                        disabled={loading}
-                        className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border bg-surface transition-colors cursor-pointer appearance-none ${
-                          selectedAreas[0] && selectedAreas[0] !== 'all'
-                            ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                            : 'border-border text-foreground hover:bg-surface-muted/40'
-                        }`}
-                      >
-                        <option value="all">{t("catalog.allSubjectAreas", "All Subject Areas")}</option>
-                        {subjectAreas.map((area) => (
-                          <option key={area.subject_area_id} value={String(area.subject_area_id)}>
-                            {cleanLabel(area.display_name)}
-                          </option>
-                        ))}
-                      </select>
-                      <Icon icon="lucide:chevron-down" width={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                    </div>
+                    <SearchableFilterSelect
+                      value={selectedAreas[0] || 'all'}
+                      onChange={onAreaSelect}
+                      disabled={loading}
+                      placeholder={t("catalog.allSubjectAreas", "All Subject Areas")}
+                      options={[
+                        { value: 'all', label: t("catalog.allSubjectAreas", "All Subject Areas") },
+                        ...subjectAreas.map((area) => ({
+                          value: String(area.subject_area_id),
+                          label: cleanLabel(area.display_name),
+                        })),
+                      ]}
+                    />
                   </div>
 
                   {/* 2. Subject Category */}
@@ -291,32 +285,21 @@ export default function FilterPanel({
                       <Icon icon="lucide:layers" width={13} className="text-muted-foreground/80" />
                       <span>{t("catalog.subjectCategory", "Subject category")}</span>
                     </label>
-                    <div className="relative">
-                      <select
-                        value={selectedCategories[0] || 'all'}
-                        onChange={(e) => onCategorySelect(e.target.value)}
-                        disabled={loading || !hasSelectedArea}
-                        className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border bg-surface transition-colors cursor-pointer appearance-none ${
-                          !hasSelectedArea
-                            ? 'opacity-50 cursor-not-allowed bg-surface-muted/50 text-muted-foreground'
-                            : selectedCategories[0] && selectedCategories[0] !== 'all'
-                              ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                              : 'border-border text-foreground hover:bg-surface-muted/40'
-                        }`}
-                      >
-                        <option value="all">
-                          {hasSelectedArea
-                            ? t("catalog.allCategories", "All Categories")
-                            : t("catalog.chonSubjectAreaTruoc", "Select Subject Area first")}
-                        </option>
-                        {visibleCategories.map((cat) => (
-                          <option key={cat.subject_category_id} value={String(cat.subject_category_id)}>
-                            {cleanLabel(cat.display_name)}
-                          </option>
-                        ))}
-                      </select>
-                      <Icon icon="lucide:chevron-down" width={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                    </div>
+                    <SearchableFilterSelect
+                      value={selectedCategories[0] || 'all'}
+                      onChange={onCategorySelect}
+                      disabled={loading || !hasSelectedArea}
+                      placeholder={hasSelectedArea
+                        ? t("catalog.allCategories", "All Categories")
+                        : t("catalog.chonSubjectAreaTruoc", "Select Subject Area first")}
+                      options={[
+                        { value: 'all', label: t("catalog.allCategories", "All Categories") },
+                        ...visibleCategories.map((cat) => ({
+                          value: String(cat.subject_category_id),
+                          label: cleanLabel(cat.display_name),
+                        })),
+                      ]}
+                    />
                   </div>
 
                   {/* 3. Zone / Country */}
@@ -325,26 +308,16 @@ export default function FilterPanel({
                       <Icon icon="lucide:globe" width={13} className="text-muted-foreground/80" />
                       <span>{t("catalog.zoneCountry", "Zone / Country")}</span>
                     </label>
-                    <div className="relative">
-                      <select
-                        value={selectedZone || 'all'}
-                        onChange={(e) => onZoneSelect(e.target.value)}
-                        disabled={loading}
-                        className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border bg-surface transition-colors cursor-pointer appearance-none ${
-                          selectedZone && selectedZone !== 'all'
-                            ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                            : 'border-border text-foreground hover:bg-surface-muted/40'
-                        }`}
-                      >
-                        <option value="all">{t("catalog.allZones", "All Zones / Countries")}</option>
-                        {zones.map((zone) => (
-                          <option key={zone.zone_id} value={String(zone.zone_id)}>
-                            {zone.name}
-                          </option>
-                        ))}
-                      </select>
-                      <Icon icon="lucide:chevron-down" width={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                    </div>
+                    <SearchableFilterSelect
+                      value={selectedZone || 'all'}
+                      onChange={onZoneSelect}
+                      disabled={loading}
+                      placeholder={t("catalog.allZones", "All Zones / Countries")}
+                      options={[
+                        { value: 'all', label: t("catalog.allZones", "All Zones / Countries") },
+                        ...zones.map((zone) => ({ value: String(zone.zone_id), label: zone.name })),
+                      ]}
+                    />
                   </div>
 
                   {/* 4. Publication Year */}
@@ -353,26 +326,16 @@ export default function FilterPanel({
                       <Icon icon="lucide:calendar" width={13} className="text-muted-foreground/80" />
                       <span>{t("catalog.rankingYear", "Ranking Year")}</span>
                     </label>
-                    <div className="relative">
-                      <select
-                        value={selectedYear || 'all'}
-                        onChange={(e) => onYearSelect(e.target.value)}
-                        disabled={loading}
-                        className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border bg-surface transition-colors cursor-pointer appearance-none ${
-                          selectedYear && selectedYear !== 'all'
-                            ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                            : 'border-border text-foreground hover:bg-surface-muted/40'
-                        }`}
-                      >
-                        <option value="all">{t("catalog.allYears", "All Years")}</option>
-                        {yearOptions.map((year) => (
-                          <option key={year} value={String(year)}>
-                            {year}
-                          </option>
-                        ))}
-                      </select>
-                      <Icon icon="lucide:chevron-down" width={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                    </div>
+                    <SearchableFilterSelect
+                      value={selectedYear || 'all'}
+                      onChange={onYearSelect}
+                      disabled={loading}
+                      placeholder={t("catalog.allYears", "All Years")}
+                      options={[
+                        { value: 'all', label: t("catalog.allYears", "All Years") },
+                        ...yearOptions.map((year) => ({ value: String(year), label: String(year) })),
+                      ]}
+                    />
                   </div>
 
                   {/* 5. Quartile Selection Buttons */}
@@ -447,21 +410,16 @@ export default function FilterPanel({
                         <Icon icon="lucide:arrow-up-down" width={13} className="text-muted-foreground/80" />
                         <span>{t("catalog.sapXep", "Sort By")}</span>
                       </label>
-                      <div className="relative">
-                        <select
-                          value={sort || 'metric'}
-                          onChange={(e) => onSortChange(e.target.value)}
-                          className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border bg-surface transition-colors cursor-pointer appearance-none ${
-                            sort && sort !== 'metric'
-                              ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                              : 'border-border text-foreground hover:bg-surface-muted/40'
-                          }`}
-                        >
-                          <option value="metric">{t("catalog.macDinh", "SJR Metric (Default)")}</option>
-                          <option value="name">{t("catalog.tenAz", "Journal Name (A-Z)")}</option>
-                        </select>
-                        <Icon icon="lucide:chevron-down" width={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                      </div>
+                      <SearchableFilterSelect
+                        value={sort || 'metric'}
+                        onChange={onSortChange}
+                        active={sort !== 'metric'}
+                        placeholder={t("catalog.macDinh", "SJR Metric (Default)")}
+                        options={[
+                          { value: 'metric', label: t("catalog.macDinh", "SJR Metric (Default)") },
+                          { value: 'name', label: t("catalog.tenAz", "Journal Name (A-Z)") },
+                        ]}
+                      />
                     </div>
                   )}
                 </div>
