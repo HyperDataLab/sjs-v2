@@ -99,6 +99,16 @@ export function getArticleGraphUrlParams() {
 
 export function getDisplayLabel(properties, fallbackId) {
   const year = properties?.publication_year || properties?.year;
+  const title = properties?.title || properties?.display_name || properties?.name;
+
+  // Article graph nodes may also carry first-author/display labels. Show the
+  // paper title so the graph reads as related articles, not an author network.
+  if (title) {
+    if (year && !String(title).includes(String(year))) {
+      return `${title}, ${year}`;
+    }
+    return String(title);
+  }
 
   const author =
     properties?.display_label ||
@@ -114,8 +124,6 @@ export function getDisplayLabel(properties, fallbackId) {
   }
 
   if (author) return String(author);
-
-  if (properties?.title) return String(properties.title);
 
   return String(properties?.id ?? fallbackId);
 }
@@ -374,9 +382,23 @@ export function buildGraphData(apiResponse) {
     );
   });
 
+  const connectedNodeIds = new Set();
+  for (const link of links) {
+    connectedNodeIds.add(String(link.source));
+    connectedNodeIds.add(String(link.target));
+  }
+
+  const visibleNodes = nodes.filter((node) =>
+    connectedNodeIds.has(String(node.id)) || node.properties?.is_origin
+  );
+  const renderableNodeIds = new Set(visibleNodes.map((node) => String(node.id)));
+  const visibleLinks = links.filter((link) =>
+    renderableNodeIds.has(String(link.source)) && renderableNodeIds.has(String(link.target))
+  );
+
   return {
-    nodes,
-    links,
+    nodes: visibleNodes,
+    links: visibleLinks,
   };
 }
 

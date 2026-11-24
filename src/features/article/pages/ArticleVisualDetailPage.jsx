@@ -523,10 +523,76 @@ export default function ArticleVisualDetailPage() {
   }, [targetArticle, connectedPaperItems, id]);
 
   const activeGraphData = useMemo(() => {
-    if (apiGraphData?.nodes?.length > 0) {
-      return apiGraphData;
+    if (!apiGraphData?.nodes?.length) return localGraphData;
+
+    const articleIdentity = (node) => {
+      const properties = node?.properties || {};
+      const doi = String(properties.doi || node?.doi || '').trim().toLowerCase();
+      if (doi) return `doi:${doi.replace(/^https?:\/\/(dx\.)?doi\.org\//, '')}`;
+
+      const title = String(properties.title || properties.display_name || node?.title || '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, ' ');
+      return title ? `title:${title}` : '';
+    };
+
+    const nodesById = new Map();
+    const idByIdentity = new Map();
+    for (const node of apiGraphData.nodes) {
+      const id = String(node?.id ?? node?.properties?.id ?? '');
+      if (!id) continue;
+      nodesById.set(id, node);
+      const identity = articleIdentity(node);
+      if (identity && !idByIdentity.has(identity)) idByIdentity.set(identity, id);
     }
-    return localGraphData;
+
+    const localIdToGraphId = new Map();
+    for (const node of localGraphData.nodes) {
+      const localId = String(node?.id ?? node?.properties?.id ?? '');
+      if (!localId) continue;
+
+      const identity = articleIdentity(node);
+      const graphId = nodesById.has(localId)
+        ? localId
+        : (identity && idByIdentity.get(identity)) || localId;
+      localIdToGraphId.set(localId, graphId);
+
+      if (!nodesById.has(graphId)) {
+        const properties = { ...(node.properties || {}), id: graphId };
+        nodesById.set(graphId, { ...node, id: graphId, properties });
+        if (identity) idByIdentity.set(identity, graphId);
+      } else {
+        const existing = nodesById.get(graphId);
+        const properties = existing.properties || {};
+        const relatedArticleIds = new Set(properties.related_article_ids || []);
+        if (graphId !== localId) relatedArticleIds.add(localId);
+        nodesById.set(graphId, {
+          ...existing,
+          properties: {
+            ...properties,
+            is_origin: properties.is_origin || node.properties?.is_origin || false,
+            related_article_ids: [...relatedArticleIds],
+          },
+        });
+      }
+    }
+
+    const relationships = [...(apiGraphData.relationships || [])];
+    const relationshipKeys = new Set(relationships.map((relationship) =>
+      `${relationship?.start}|${relationship?.type}|${relationship?.end}`
+    ));
+
+    for (const relationship of localGraphData.relationships || []) {
+      const start = localIdToGraphId.get(String(relationship.start)) || String(relationship.start);
+      const end = localIdToGraphId.get(String(relationship.end)) || String(relationship.end);
+      const key = `${start}|${relationship.type}|${end}`;
+      if (relationshipKeys.has(key)) continue;
+      relationships.push({ ...relationship, start, end });
+      relationshipKeys.add(key);
+    }
+
+    return { ...apiGraphData, nodes: [...nodesById.values()], relationships };
   }, [apiGraphData, localGraphData]);
   const visibleGraphData = useMemo(
     () => buildGraphData(activeGraphData),

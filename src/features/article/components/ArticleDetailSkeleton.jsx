@@ -6,7 +6,90 @@
 import { Skeleton } from '../../../shared/ui/skeleton';
 import { Card } from '../../../shared/ui/card';
 
-export default function ArticleDetailSkeleton() {
+/**
+ * Skeleton for the sidebar/drawer pane in Article Visual page
+ */
+export function ArticlePaneSkeleton() {
+  return (
+    <div className="space-y-4 p-1 w-full max-w-full overflow-hidden">
+      {/* Journal Title */}
+      <Skeleton className="h-4 w-32 rounded mb-1" />
+
+      {/* Article Title */}
+      <div className="space-y-2 mb-3">
+        <Skeleton className="h-6 w-11/12 rounded" />
+        <Skeleton className="h-6 w-3/4 rounded" />
+      </div>
+
+      {/* Authors List */}
+      <div className="flex items-center gap-2 mb-3">
+        <Skeleton className="h-4 w-24 rounded" />
+        <Skeleton className="h-4 w-28 rounded" />
+        <Skeleton className="h-4 w-20 rounded" />
+      </div>
+
+      {/* Metadata Items */}
+      <div className="space-y-2.5 mb-4 py-1">
+        <Skeleton className="h-4 w-36 rounded" />
+        <Skeleton className="h-4 w-48 rounded" />
+        <Skeleton className="h-4 w-40 rounded" />
+        <Skeleton className="h-4 w-32 rounded" />
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <Skeleton className="h-8 w-28 rounded-md" />
+        <Skeleton className="h-8 w-24 rounded-md" />
+        <Skeleton className="h-8 w-20 rounded-md" />
+      </div>
+
+      {/* Open In Links */}
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
+        <Skeleton className="h-7 w-16 rounded-md" />
+        <Skeleton className="h-7 w-28 rounded-md" />
+        <Skeleton className="h-7 w-20 rounded-md" />
+      </div>
+
+      <div className="h-px bg-border/60 my-4" />
+
+      {/* Abstract Section */}
+      <div className="space-y-2.5 mb-4">
+        <Skeleton className="h-5 w-24 rounded mb-1.5" />
+        <Skeleton className="h-3.5 w-full rounded" />
+        <Skeleton className="h-3.5 w-full rounded" />
+        <Skeleton className="h-3.5 w-11/12 rounded" />
+        <Skeleton className="h-3.5 w-4/5 rounded" />
+      </div>
+
+      {/* Keywords Section */}
+      <div className="space-y-2.5 mb-4 pt-1">
+        <Skeleton className="h-5 w-20 rounded mb-1.5" />
+        <div className="flex flex-wrap gap-1.5">
+          <Skeleton className="h-6 w-16 rounded-full" />
+          <Skeleton className="h-6 w-24 rounded-full" />
+          <Skeleton className="h-6 w-20 rounded-full" />
+          <Skeleton className="h-6 w-28 rounded-full" />
+        </div>
+      </div>
+
+      {/* References Section */}
+      <div className="space-y-2 pt-1">
+        <Skeleton className="h-5 w-28 rounded mb-1.5" />
+        <Skeleton className="h-9 w-full rounded-md" />
+        <Skeleton className="h-9 w-full rounded-md" />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Full page skeleton for ArticleDetailPage, or sidebar pane skeleton when variant="pane"
+ */
+export default function ArticleDetailSkeleton({ variant = 'page' }) {
+  if (variant === 'pane' || variant === 'sidebar') {
+    return <ArticlePaneSkeleton />;
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Left Main Column */}
