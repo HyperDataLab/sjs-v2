@@ -1,5 +1,5 @@
 .ca-page {
-  padding: 24px;
+  padding: 0;
   background-color: var(--color-background);
   min-height: 100%;
 }
@@ -8,7 +8,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
 }
 
 .ca-title-group h1 {
@@ -58,12 +58,12 @@
 .ca-layout {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
 }
 
 .ca-row {
   display: grid;
-  gap: 24px;
+  gap: 14px;
 }
 
 .ca-row-half {
@@ -84,7 +84,7 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  padding: 24px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -99,7 +99,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .ca-card-title {

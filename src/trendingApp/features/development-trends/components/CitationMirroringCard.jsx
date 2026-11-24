@@ -69,7 +69,9 @@ export default function CitationMirroringCard() {
       <div className="analytics-card-body">
         {chartData.length === 0 ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-neutral-500)', fontSize: 'var(--font-size-body)' }}>
-            {t('dashboard.noDataForFilters', 'No data matches the current filters.')}
+            {data?.available === false
+              ? t('dashboard.citationBreakdownUnavailable', 'OpenAlex does not provide a project-level self-citation breakdown, so this chart is unavailable.')
+              : t('dashboard.noDataForFilters', 'No data matches the current filters.')}
           </div>
         ) : (
           <div className="citation-mirroring-wrapper" aria-label="Citation Mirroring Dual Line Chart">
