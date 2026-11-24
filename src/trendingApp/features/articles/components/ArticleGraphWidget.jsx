@@ -18,6 +18,7 @@ export default function ArticleGraphWidget({
   data,
   loading = false,
   error = '',
+  selectedNodeId,
   onNodeClick,
 }) {
   const { t } = useTranslation();
@@ -35,6 +36,22 @@ export default function ArticleGraphWidget({
     if (!data) return { nodes: [], links: [] };
     return buildGraphData(data);
   }, [data]);
+
+  useEffect(() => {
+    if (selectedNodeId == null) {
+      setSelectedNode(null);
+      return;
+    }
+
+    const wantedId = String(selectedNodeId);
+    const matchingNode = graph.nodes.find((node) => {
+      const properties = node.properties || {};
+      return [node.id, properties.id, properties.article_id, properties.openalex_id]
+        .some((candidate) => candidate != null && String(candidate) === wantedId);
+    });
+
+    setSelectedNode(matchingNode || null);
+  }, [graph.nodes, selectedNodeId]);
 
   const { minYear, maxYear } = useMemo(() => {
     return getYearRange(graph.nodes);

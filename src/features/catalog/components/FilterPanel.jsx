@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Icon } from '@iconify/react';
 import { Card } from '../../../shared/ui/card';
 import { Button } from '../../../shared/ui/button';
+import FilterPanelLayer from '../../../shared/components/FilterPanelLayer';
 
 export default function FilterPanel({
   searchInput = '',
@@ -39,28 +40,6 @@ export default function FilterPanel({
   const accessValue = selectedAccess[0] || 'all';
   const currentYear = new Date().getFullYear();
   const yearOptions = Array.from({ length: currentYear - 2014 }, (_, i) => currentYear - i);
-
-  // Close filter dropdown on click outside or Escape
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
-        setIsFilterOpen(false);
-      }
-    }
-    function handleEscape(event) {
-      if (event.key === 'Escape') {
-        setIsFilterOpen(false);
-      }
-    }
-    if (isFilterOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscape);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isFilterOpen]);
 
   const cleanLabel = (value = '') => {
     const parts = String(value).split(';').map(part => part.trim()).filter(Boolean);
@@ -231,18 +210,8 @@ export default function FilterPanel({
 
           {/* Floating Dropdown Panel: Bảng các filter (hoàn toàn tự do, không bị bó hẹp trong card) */}
           {isFilterOpen && (
-            <>
-              {/* Click interceptor backdrop on mobile/tablet */}
-              <div
-                className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[0.5px] sm:bg-transparent"
-                onClick={() => setIsFilterOpen(false)}
-                aria-hidden="true"
-              />
-
-              <div
-                className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-[560px] md:w-[640px] max-w-[95vw] bg-surface border border-border rounded-xl shadow-2xl z-50 flex flex-col animate-in fade-in-0 zoom-in-95 duration-150"
-                style={{ zIndex: 60 }}
-              >
+            <FilterPanelLayer anchorRef={filterDropdownRef} onClose={() => setIsFilterOpen(false)} width={640}>
+              <div className="shared-filter-panel w-full max-w-[95vw] flex flex-col bg-surface border border-border rounded-xl shadow-2xl animate-in fade-in-0 zoom-in-95 duration-150">
                 {/* Filter Panel Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-surface-muted/30">
                   <div className="flex items-center gap-2">
@@ -530,7 +499,7 @@ export default function FilterPanel({
                   </div>
                 </div>
               </div>
-            </>
+            </FilterPanelLayer>
           )}
         </div>
 
@@ -591,3 +560,4 @@ export default function FilterPanel({
     </Card>
   );
 }
+

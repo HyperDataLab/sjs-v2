@@ -130,7 +130,7 @@ export default function RankingTabContent({
                   onClick={() => setTimeRange('10Y')}
                   className={`px-2.5 py-1 rounded font-medium transition-colors ${
                     timeRange === '10Y'
-                      ? 'bg-primary text-primary-foreground shadow-2xs font-semibold'
+                      ? 'bg-primary text-white shadow-2xs font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -141,7 +141,7 @@ export default function RankingTabContent({
                   onClick={() => setTimeRange('20Y')}
                   className={`px-2.5 py-1 rounded font-medium transition-colors ${
                     timeRange === '20Y'
-                      ? 'bg-primary text-primary-foreground shadow-2xs font-semibold'
+                      ? 'bg-primary text-white shadow-2xs font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -152,7 +152,7 @@ export default function RankingTabContent({
                   onClick={() => setTimeRange('ALL')}
                   className={`px-2.5 py-1 rounded font-medium transition-colors ${
                     timeRange === 'ALL'
-                      ? 'bg-primary text-primary-foreground shadow-2xs font-semibold'
+                      ? 'bg-primary text-white shadow-2xs font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >

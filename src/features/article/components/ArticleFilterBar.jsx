@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from "react-i18next";
 import { Icon } from '@iconify/react';
+import FilterPanelLayer from '../../../shared/components/FilterPanelLayer';
 import { Card } from '../../../shared/ui/card';
 import { Button } from '../../../shared/ui/button';
 import { Badge } from '../../../shared/ui/badge';
@@ -243,28 +244,6 @@ export default function ArticleFilterBar({
   // Selected item custom labels
   const [selectedJournalName, setSelectedJournalName] = useState('');
   const [selectedTopicName, setSelectedTopicName] = useState('');
-
-  // Close filter dropdown on click outside or Escape
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
-        setIsFilterOpen(false);
-      }
-    }
-    function handleEscape(event) {
-      if (event.key === 'Escape') {
-        setIsFilterOpen(false);
-      }
-    }
-    if (isFilterOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscape);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isFilterOpen]);
 
   // 1. Fetch metadata bộ lọc ban đầu
   useEffect(() => {
@@ -594,18 +573,8 @@ export default function ArticleFilterBar({
 
           {/* Dropdown Panel: Bảng các filter (hoàn toàn tự do, không bị bó hẹp trong card) */}
           {isFilterOpen && (
-            <>
-              {/* Click interceptor backdrop on mobile/tablet */}
-              <div
-                className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[0.5px] sm:bg-transparent"
-                onClick={() => setIsFilterOpen(false)}
-                aria-hidden="true"
-              />
-
-              <div
-                className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-[580px] md:w-[680px] max-w-[95vw] bg-surface border border-border rounded-xl shadow-2xl z-50 flex flex-col animate-in fade-in-0 zoom-in-95 duration-150"
-                style={{ zIndex: 60 }}
-              >
+            <FilterPanelLayer anchorRef={filterDropdownRef} onClose={() => setIsFilterOpen(false)} width={680}>
+              <div className="shared-filter-panel w-full max-w-[95vw] flex flex-col bg-surface border border-border rounded-xl shadow-2xl animate-in fade-in-0 zoom-in-95 duration-150">
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-surface-muted/30">
                 <div className="flex items-center gap-2">
@@ -686,76 +655,50 @@ export default function ArticleFilterBar({
                 />
 
                 {/* 3. Năm xuất bản (Publication Year) */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                    <Icon icon="lucide:calendar" width={13} className="text-muted-foreground/80" />
-                    <span>{t("article.nam", "Publication Year")}</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={filters.selectedYear || 'all'}
-                      onChange={(e) => handleSelectChange('year')(e.target.value)}
-                      className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border bg-surface transition-colors cursor-pointer appearance-none ${
-                        filters.selectedYear && filters.selectedYear !== 'all'
-                          ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                          : 'border-border text-foreground hover:bg-surface-muted/40'
-                      }`}
-                    >
-                      <option value="all">{t("article.allYears", "All Years")}</option>
-                      {yearOptions.map((y) => (
-                        <option key={y.value} value={y.value}>{y.label}</option>
-                      ))}
-                    </select>
-                    <Icon icon="lucide:chevron-down" width={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                  </div>
-                </div>
+                <ArticleSearchableSelect
+                  label={t("article.nam", "Publication Year")}
+                  icon="lucide:calendar"
+                  value={filters.selectedYear || 'all'}
+                  selectedLabel={filters.selectedYear && filters.selectedYear !== 'all'
+                    ? yearOptions.find((year) => String(year.value) === String(filters.selectedYear))?.label || String(filters.selectedYear)
+                    : ''}
+                  options={yearOptions}
+                  placeholder={t("article.allYears", "All Years")}
+                  searchable={false}
+                  onSelect={handleSelectChange('year')}
+                  onClear={() => handleSelectChange('year')('all')}
+                />
 
                 {/* 4. Trạng thái truy cập (Access Type) */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                    <Icon icon="lucide:unlock" width={13} className="text-muted-foreground/80" />
-                    <span>{t("article.trangThaiTruyCap", "Access Type")}</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={filters.selectedAccess || 'all'}
-                      onChange={(e) => handleSelectChange('access')(e.target.value)}
-                      className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border bg-surface transition-colors cursor-pointer appearance-none ${
-                        filters.selectedAccess && filters.selectedAccess !== 'all'
-                          ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                          : 'border-border text-foreground hover:bg-surface-muted/40'
-                      }`}
-                    >
-                      {ACCESS_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                    <Icon icon="lucide:chevron-down" width={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                  </div>
-                </div>
+                <ArticleSearchableSelect
+                  label={t("article.trangThaiTruyCap", "Access Type")}
+                  icon="lucide:unlock"
+                  value={filters.selectedAccess || 'all'}
+                  selectedLabel={filters.selectedAccess && filters.selectedAccess !== 'all'
+                    ? ACCESS_OPTIONS.find((option) => option.value === filters.selectedAccess)?.label || ''
+                    : ''}
+                  options={ACCESS_OPTIONS.filter((option) => option.value !== 'all')}
+                  placeholder={t("article.tatCa", "All Articles")}
+                  searchable={false}
+                  onSelect={handleSelectChange('access')}
+                  onClear={() => handleSelectChange('access')('all')}
+                />
 
                 {/* 5. Sắp xếp (Sort By) */}
-                <div className="space-y-1.5 sm:col-span-2">
-                  <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
-                    <Icon icon="lucide:arrow-up-down" width={13} className="text-muted-foreground/80" />
-                    <span>{t("article.sapXep", "Sort By")}</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={currentSortValue}
-                      onChange={(e) => handleSortChange(e.target.value)}
-                      className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border bg-surface transition-colors cursor-pointer appearance-none ${
-                        currentSortValue !== 'created_at-desc'
-                          ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                          : 'border-border text-foreground hover:bg-surface-muted/40'
-                      }`}
-                    >
-                      {SORT_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                    <Icon icon="lucide:chevron-down" width={13} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                  </div>
+                <div className="sm:col-span-2">
+                  <ArticleSearchableSelect
+                    label={t("article.sapXep", "Sort By")}
+                    icon="lucide:arrow-up-down"
+                    value={currentSortValue}
+                    selectedLabel={currentSortValue !== 'created_at-desc'
+                      ? SORT_OPTIONS.find((option) => option.value === currentSortValue)?.label || currentSortValue
+                      : ''}
+                    options={SORT_OPTIONS}
+                    placeholder={SORT_OPTIONS[0].label}
+                    searchable={false}
+                    onSelect={handleSortChange}
+                    onClear={() => handleSortChange('created_at-desc')}
+                  />
                 </div>
               </div>
 
@@ -791,8 +734,8 @@ export default function ArticleFilterBar({
                   </Button>
                 </div>
               </div>
-            </div>
-          </>
+              </div>
+            </FilterPanelLayer>
         )}
         </div>
 
@@ -855,3 +798,4 @@ export default function ArticleFilterBar({
     </Card>
   );
 }
+

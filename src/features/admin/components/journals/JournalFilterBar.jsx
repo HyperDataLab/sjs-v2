@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { getSubjectAreasApi } from '../../../journal/api/journalApi';
 import { Button } from '../../../../shared/ui/button';
 import { Badge } from '../../../../shared/ui/badge';
+import FilterPanelLayer from '../../../../shared/components/FilterPanelLayer';
 
 /**
  * Component JournalFilterBar - Thanh công cụ lọc, tìm kiếm và chuyển đổi giao diện hiển thị đồng bộ hệ thống.
@@ -49,28 +50,6 @@ export default function JournalFilterBar({
       ignore = true;
     };
   }, []);
-
-  // Close filter dropdown on outside click or Escape
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
-        setIsFilterOpen(false);
-      }
-    }
-    function handleEscape(event) {
-      if (event.key === 'Escape') {
-        setIsFilterOpen(false);
-      }
-    }
-    if (isFilterOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEscape);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isFilterOpen]);
 
   // Count active filters
   const activeCount = (statusFilter !== 'All' ? 1 : 0) + (subjectFilter !== 'All' ? 1 : 0);
@@ -145,17 +124,8 @@ export default function JournalFilterBar({
 
             {/* Floating Dropdown Panel */}
             {isFilterOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[0.5px] sm:bg-transparent"
-                  onClick={() => setIsFilterOpen(false)}
-                  aria-hidden="true"
-                />
-
-                <div
-                  className="absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-[380px] bg-surface border border-border rounded-xl shadow-2xl z-50 flex flex-col animate-in fade-in-0 zoom-in-95 duration-150"
-                  style={{ zIndex: 60 }}
-                >
+              <FilterPanelLayer anchorRef={filterDropdownRef} onClose={() => setIsFilterOpen(false)} width={440}>
+                <div className="shared-filter-panel w-full flex flex-col bg-surface border border-border rounded-xl shadow-2xl animate-in fade-in-0 zoom-in-95 duration-150">
                   {/* Header */}
                   <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-surface-muted/30">
                     <div className="flex items-center gap-2">
@@ -241,7 +211,7 @@ export default function JournalFilterBar({
                     </Button>
                   </div>
                 </div>
-              </>
+              </FilterPanelLayer>
             )}
           </div>
         </div>
@@ -336,3 +306,4 @@ export default function JournalFilterBar({
 
   return content;
 }
+

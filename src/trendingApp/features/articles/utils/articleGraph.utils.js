@@ -141,14 +141,26 @@ export function isArticleNode(node) {
   const labels = Array.isArray(node?.labels)
     ? node.labels.map((x) => String(x).toLowerCase())
     : [];
+  const properties = node?.properties || {};
+  const nodeTypes = [node?.type, node?.node_type, properties.type, properties.node_type]
+    .filter(Boolean)
+    .map((type) => String(type).toLowerCase());
+  const articleTypes = new Set(['article', 'paper', 'work']);
 
-  const props = node?.properties || {};
+  // Graph API nodes carry explicit entity labels. Never infer an Article from a
+  // generic display_name/name because journals, topics, and authors have them too.
+  if (labels.length > 0) return labels.some((label) => articleTypes.has(label));
+  if (nodeTypes.length > 0) return nodeTypes.some((type) => articleTypes.has(type));
 
-  if (labels.includes('article')) return true;
+  return Boolean(
+    properties.article_id ||
+    properties.work_id ||
+    (properties.title && (properties.doi || properties.publication_year || properties.year))
+  );
+}
 
-  if (props.title || props.publication_year || props.year) return true;
-
-  return false;
+function isKeywordRelationship(relationship) {
+  return String(relationship?.type || '').toLowerCase().includes('keyword');
 }
 
 export function hasRenderableArticleInfo(node) {
@@ -205,6 +217,8 @@ export function buildGraphData(apiResponse) {
   const articleMap = new Map();
 
   for (const n of nodesIn) {
+    if (!isArticleNode(n)) continue;
+
     const sourceProperties = n?.properties || {};
     const title = sourceProperties.title || sourceProperties.display_name || sourceProperties.name || n?.label;
     const properties = title
@@ -217,7 +231,6 @@ export function buildGraphData(apiResponse) {
 
     allNodeMap.set(id, n);
 
-    if (!isArticleNode(normalizedNode)) continue;
     if (!hasRenderableArticleInfo(normalizedNode)) continue;
 
     const label = getDisplayLabel(properties, n?.label || id);
@@ -245,6 +258,8 @@ export function buildGraphData(apiResponse) {
   const doiToArticles = new Map();
 
   for (const r of relsIn) {
+    if (isKeywordRelationship(r)) continue;
+
     const source = String(r?.start);
     const target = String(r?.end);
 
