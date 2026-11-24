@@ -414,10 +414,34 @@
   border-radius: 16px;
 }
 
+/* In the catalog page, the toolbar and result table are one shared card. */
+.catalog-search-filter-content {
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+}
+
+.catalog-embedded-table-clip {
+  overflow: hidden;
+  border-bottom-left-radius: 11px;
+  border-bottom-right-radius: 11px;
+}
+
+.catalog-embedded-table-clip.has-pagination {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.catalog-results-pagination {
+  border-bottom-left-radius: 11px;
+  border-bottom-right-radius: 11px;
+}
+
 .catalog-table {
   --bs-table-bg: var(--bg-card);
   --bs-table-hover-bg: #f5f6f7;
   color: var(--text-main) !important;
+  border-collapse: separate !important;
+  border-spacing: 0;
 }
 
 .catalog-table thead th {
@@ -429,6 +453,20 @@
   letter-spacing: normal !important;
   text-transform: none !important;
   white-space: nowrap;
+}
+
+.catalog-table thead th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.catalog-table thead th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.catalog-table-embedded thead th:first-child,
+.catalog-table-embedded thead th:last-child {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .catalog-table tbody td {

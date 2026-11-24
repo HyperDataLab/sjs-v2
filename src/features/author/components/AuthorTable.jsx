@@ -19,6 +19,7 @@ export default function AuthorTable({
   onSortChange = null,
   pagination = null,
   asCard = true,
+  hasPagination = false,
 }) {
   const { t } = useTranslation();
 
@@ -51,7 +52,7 @@ export default function AuthorTable({
   }
 
   const tableBody = (
-    <div className="overflow-x-auto">
+    <div className={asCard ? 'overflow-x-auto' : `integrated-table-viewport${hasPagination ? ' has-pagination' : ''}`}>
       <table className="w-full text-left border-collapse">
         <thead>
           <tr className="border-b border-border bg-surface-muted/40 text-xs font-semibold text-muted-foreground select-none">

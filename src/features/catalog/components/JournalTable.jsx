@@ -10,7 +10,8 @@ export default function JournalTable({
   journals = [],
   followedJournals = {},
   onFollow,
-  asCard = true
+  asCard = true,
+  hasPagination = false
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -70,8 +71,9 @@ export default function JournalTable({
   };
 
   const tableContent = (
-    <div className="table-responsive">
-      <Table hover className="catalog-table align-middle mb-0 text-start w-full">
+    <div className={asCard ? 'table-corner-clip' : `catalog-embedded-table-clip${hasPagination ? ' has-pagination' : ''}`}>
+      <div className="table-responsive">
+        <Table hover className={`catalog-table${asCard ? '' : ' catalog-table-embedded'} align-middle mb-0 text-start w-full`}>
           <thead>
             <tr className="border-b border-border bg-surface-muted/60 text-[12px] text-muted-foreground font-semibold normal-case">
               <th className="px-4 py-3 text-start text-[12px] font-semibold normal-case">Journal & ISSN</th>
@@ -145,6 +147,7 @@ export default function JournalTable({
             })}
           </tbody>
         </Table>
+      </div>
       </div>
     );
 

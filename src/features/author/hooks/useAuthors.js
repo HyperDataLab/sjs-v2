@@ -248,7 +248,14 @@ export default function useAuthors() {
     enabled: !!subjectAreasParams,
   });
 
-  const fetchSubjectAreas = useCallback((params = {}) => setSubjectAreasParams(params), []);
+  const fetchSubjectAreas = useCallback((params = {}) => setSubjectAreasParams((current) => {
+    const next = params || {};
+    if (current && Object.keys(current).length === Object.keys(next).length
+      && Object.keys(next).every((key) => Object.is(current[key], next[key]))) {
+      return current;
+    }
+    return next;
+  }), []);
 
   // 5. Leaderboard
   const { data: leaderboardData, isLoading: loadingLeaderboard, error: errorLeaderboard } = useQuery({

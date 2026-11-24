@@ -93,7 +93,7 @@ function ArticleSearchableSelect({
         </button>
 
         {isOpen && (
-          <div className="absolute left-0 top-full mt-1 w-full min-w-[240px] max-w-[360px] bg-surface border border-border rounded-lg shadow-popover z-50 p-2 animate-in fade-in-0 duration-100">
+          <div className="article-searchable-select-menu absolute left-0 top-full mt-1 w-full min-w-[240px] max-w-[360px] bg-surface border border-border rounded-lg shadow-popover z-50 p-2 animate-in fade-in-0 duration-100">
             {searchable && (
               <div className="relative mb-2">
                 {searching ? (
@@ -531,7 +531,7 @@ export default function ArticleFilterBar({
   }
 
   const content = (
-    <div className="p-3 sm:p-3.5 bg-surface space-y-2.5">
+    <div className="integrated-table-toolbar p-3 sm:p-3.5 bg-surface space-y-2.5">
       {/* 1. Single Filter Button + Search Input + Search Submit Button */}
       <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
         {/* Search Input */}
@@ -650,7 +650,7 @@ export default function ArticleFilterBar({
               </div>
 
               {/* Body: Bảng các filter theo Grid */}
-              <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[65vh] overflow-y-auto">
+              <div className="article-filter-panel-body p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* 1. Tạp chí (Journal) */}
                 <ArticleSearchableSelect
                   label={t("typeJournal", "Journal")}

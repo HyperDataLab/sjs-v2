@@ -54,6 +54,39 @@ body {
   overflow-y: hidden !important;
 }
 
+.table-corner-clip {
+  border-radius: var(--ds-radius-card, 12px);
+  overflow: hidden;
+}
+
+/* Shared corners for a filter toolbar and table rendered in one card. */
+.integrated-table-toolbar {
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+}
+
+.integrated-table-viewport {
+  overflow: hidden;
+  border-bottom-left-radius: 11px;
+  border-bottom-right-radius: 11px;
+}
+
+.integrated-table-viewport.has-pagination {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.integrated-table-viewport thead th:first-child,
+.integrated-table-viewport thead th:last-child {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.integrated-table-footer {
+  border-bottom-left-radius: 11px;
+  border-bottom-right-radius: 11px;
+}
+
 /* ─── Neutralize Bootstrap 5 Default Link Underlines ─────────────────── */
 a,
 a:hover,

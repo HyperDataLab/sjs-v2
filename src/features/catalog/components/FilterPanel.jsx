@@ -168,7 +168,7 @@ export default function FilterPanel({
   }
 
   const content = (
-    <div className="p-3 sm:p-3.5 bg-surface space-y-2.5">
+    <div className="catalog-search-filter-content p-3 sm:p-3.5 bg-surface space-y-2.5">
       {/* 1. Single Filter Button + Search Input + Search Submit Button */}
       <form onSubmit={onSearchSubmit} className="flex items-center gap-2">
         {/* Search Input */}

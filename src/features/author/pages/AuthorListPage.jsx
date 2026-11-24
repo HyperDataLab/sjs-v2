@@ -104,10 +104,8 @@ export default function AuthorListPage() {
   }, [searchVal, pageVal, limitVal, sortVal, subjectAreaVal, periodVal, institutionVal, countryVal, fetchAuthors]);
 
   useEffect(() => {
-    if (!subjectAreas || subjectAreas.length === 0) {
-      fetchSubjectAreas();
-    }
-  }, [subjectAreas, fetchSubjectAreas]);
+    fetchSubjectAreas();
+  }, [fetchSubjectAreas]);
 
   const handleSearchSubmit = (e) => {
     if (e) e.preventDefault();
@@ -307,11 +305,11 @@ export default function AuthorListPage() {
           ))}
         </MotionGrid>
 
-        {/* Unified Author Section: Search Header + Results Toolbar + Table/Grid Content + Pagination Footer in ONE Card */}
+        {/* Search toolbar, author results, and pagination share one card. */}
         <motion.div variants={fadeUp}>
           <Card className="rounded-card border border-border bg-surface shadow-card">
             {/* 1. Integrated Search & Filter Header (gộp filter vào popover như ở article) */}
-            <div className="p-3 sm:p-3.5 bg-surface space-y-2.5">
+            <div className="integrated-table-toolbar p-3 sm:p-3.5 bg-surface space-y-2.5">
               <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
                 {/* Search Input */}
                 <div className="relative flex-1 min-w-[180px]">
@@ -621,8 +619,8 @@ export default function AuthorListPage() {
               )}
             </div>
 
-            {/* 2. Table / Grid content */}
             <div className="border-t border-border">
+              {/* 2. Table / Grid content */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={viewMode}
@@ -651,6 +649,7 @@ export default function AuthorListPage() {
                     ) : authors.length === 0 ? (
                       <AuthorTable
                         asCard={false}
+                        hasPagination={totalAuthors > 0 && totalPagesCount > 1}
                         authors={[]}
                         loading={false}
                         error={errorAuthors}
@@ -670,6 +669,7 @@ export default function AuthorListPage() {
                   ) : (
                     <AuthorTable
                       asCard={false}
+                      hasPagination={totalAuthors > 0 && totalPagesCount > 1}
                       authors={authors}
                       loading={loadingAuthors}
                       error={errorAuthors}
@@ -685,7 +685,7 @@ export default function AuthorListPage() {
 
             {/* 4. Unified Pagination inside single card footer */}
             {totalAuthors > 0 && totalPagesCount > 1 && (
-              <div className="border-t border-border px-4 py-3 bg-surface">
+              <div className="integrated-table-footer border-t border-border px-4 py-3 bg-surface">
                 <AdminPagination
                   totalItems={totalAuthors}
                   currentPage={pageVal}

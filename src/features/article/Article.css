@@ -1,4 +1,21 @@
 /* ArticleListPage.css */
+.article-data-table {
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+.article-data-table thead th {
+  background: var(--bg-chip) !important;
+}
+
+.article-data-table thead th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.article-data-table thead th:last-child {
+  border-top-right-radius: 12px;
+}
+
 .article-list-page {
   min-height: auto;
   padding: 0;
@@ -123,6 +140,12 @@
 .article-filter-panel {
   margin-bottom: 1.25rem;
   padding: 1rem;
+}
+
+/* Keep searchable menus above the footer and outside the filter body's scroll area. */
+.article-filter-panel-body {
+  position: relative;
+  z-index: 2;
 }
 
 .article-form-control {

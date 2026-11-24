@@ -26,10 +26,8 @@ export default function AuthorLeaderboardPage() {
   const [limit, setLimit] = useState(10);
 
   useEffect(() => {
-    if (!subjectAreas || subjectAreas.length === 0) {
-      fetchSubjectAreas();
-    }
-  }, [subjectAreas, fetchSubjectAreas]);
+    fetchSubjectAreas();
+  }, [fetchSubjectAreas]);
 
   useEffect(() => {
     fetchLeaderboard({

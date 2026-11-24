@@ -55,7 +55,7 @@ export default function UserFilterBar({
   const selectedRoleLabel = SYSTEM_ROLES.find(r => r.value === selectedRole)?.label || selectedRole;
 
   const content = (
-    <div className="p-3 sm:p-3.5 bg-surface">
+    <div className="integrated-table-toolbar p-3 sm:p-3.5 bg-surface">
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
         {/* Left: Search input + Filter button */}
         <div className="flex items-center gap-2 flex-1 min-w-0">

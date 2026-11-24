@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Request & Firebase Audit</title>
+  <style>
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#172033;background:#f4f7fb;font-synthesis:none;text-rendering:optimizeLegibility;--blue:#0877c9;--line:#dce4ef;--muted:#64748b;--card:#fff;--red:#b42318;--amber:#9a5b00;--green:#087443}
+    *{box-sizing:border-box}body{margin:0;padding:28px;min-width:320px}main{max-width:1500px;margin:auto}.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:20px}h1{font-size:24px;margin:0 0 6px}p{margin:0;color:var(--muted);line-height:1.5}.local{border:1px solid #a7e1bf;background:#ecfdf3;color:#087443;padding:8px 12px;border-radius:999px;font-size:13px;white-space:nowrap}
+    .notice{background:#edf6ff;border:1px solid #b9dcfa;border-radius:12px;padding:14px 16px;margin:16px 0;color:#234362}.notice strong{color:#12263c}.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.step,.panel,.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 8px #18324d08}.step{padding:16px}.step b{display:block;margin-bottom:7px}.step kbd{background:#f1f5f9;border:1px solid #d6dee8;border-radius:5px;padding:2px 6px;font:12px ui-monospace,monospace}.drop{margin:14px 0 18px;border:2px dashed #a9bed4;border-radius:14px;background:#fff;padding:22px;text-align:center;transition:.15s}.drop.over{border-color:var(--blue);background:#f0f8ff}.drop input{display:none}.button{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;padding:10px 15px;background:var(--blue);color:#fff;font-weight:650;cursor:pointer}.button.secondary{background:#fff;border:1px solid var(--line);color:#24364b}.filename{margin-top:8px;color:var(--muted);font-size:13px}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}.stat{padding:15px}.stat span{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}.stat b{display:block;font-size:24px;margin-top:4px}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px;border-bottom:1px solid var(--line)}input[type=search],select{height:38px;border:1px solid var(--line);border-radius:8px;padding:0 11px;background:white;color:#1f2937}input[type=search]{flex:1;min-width:180px}.filter{display:flex;gap:6px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:white;border-radius:999px;padding:7px 11px;color:#334155;cursor:pointer;font-size:13px}.chip.active{background:#e8f4ff;border-color:#8ec7f2;color:#075b9a}.table-wrap{overflow:auto;max-height:60vh}.panel{overflow:hidden}.panel-head{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.panel-head h2{font-size:16px;margin:0}.count{color:var(--muted);font-size:13px}table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}th{text-align:left;position:sticky;top:0;background:#f8fafc;color:#536277;font-size:12px;text-transform:uppercase;letter-spacing:.035em;z-index:1}th,td{padding:10px 12px;border-bottom:1px solid #e9eef5}tr:hover td{background:#f8fbff}.method{font:700 11px ui-monospace,monospace;padding:4px 6px;border-radius:5px;background:#eef2f7}.url{max-width:600px;overflow:hidden;text-overflow:ellipsis;color:#334155}.tag{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700}.tag.write{background:#fee4e2;color:var(--red)}.tag.read{background:#e7f4ff;color:#075b9a}.tag.auth{background:#f1edff;color:#5b3eb4}.tag.backend{background:#fff3d6;color:var(--amber)}.tag.other{background:#f1f5f9;color:#536277}.status.bad{color:var(--red);font-weight:700}.empty{padding:48px 18px;text-align:center;color:var(--muted)}.small{font-size:12px;color:var(--muted)}.foot{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.5}.hidden{display:none!important}
+    @media(max-width:760px){body{padding:16px}.top{display:block}.local{display:inline-block;margin-top:12px}.steps{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.table-wrap{max-height:65vh}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="top"><div><h1>Request & Firebase Audit</h1><p>Đọc HAR từ DevTools để xem request trình duyệt gửi đi và tìm dấu hiệu ghi dữ liệu Firebase.</p></div><span class="local">Chạy hoàn toàn trong trình duyệt</span></div>
+  <div class="notice"><strong>Giới hạn quan trọng:</strong> HAR chỉ ghi request của trình duyệt. Nếu frontend gọi Worker rồi Worker gọi Firestore nội bộ, HAR chỉ hiện request tới Worker; muốn xác nhận lệnh nội bộ cần kiểm tra Worker source/logs.</div>
+  <section class="steps">
+    <div class="step"><b>1. Ghi request của ứng dụng</b><p>Mở ứng dụng trong tab khác → nhấn <kbd>F12</kbd> → <kbd>Network</kbd> → bật <kbd>Preserve log</kbd> → tải lại trang và thao tác các tính năng cần kiểm tra.</p></div>
+    <div class="step"><b>2. Xuất HAR rồi mở ở đây</b><p>Trong Network, nhấp phải danh sách request → <kbd>Save all as HAR with content</kbd>. Chọn file đó ở vùng bên dưới. Không cần upload file lên server.</p></div>
+  </section>
+  <label class="drop" id="drop">
+    <input id="file" type="file" accept=".har,application/json">
+    <span class="button">Chọn file HAR</span>
+    <p style="margin-top:10px">hoặc kéo thả file <b>.har</b> vào đây</p>
+    <div class="filename" id="filename">Chưa nạp request nào</div>
+  </label>
+  <div class="stats">
+    <div class="stat"><span>Requests hiển thị</span><b id="total">0</b></div>
+    <div class="stat"><span>Firebase requests</span><b id="firebase">0</b></div>
+    <div class="stat"><span>Có dấu hiệu ghi Firebase</span><b id="writes" style="color:var(--red)">0</b></div>
+    <div class="stat"><span>HTTP errors</span><b id="errors">0</b></div>
+  </div>
+  <section class="panel">
+    <div class="controls">
+      <input id="search" type="search" placeholder="Lọc theo URL, host hoặc method…">
+      <select id="kind"><option value="all">Mọi request</option><option value="firebase">Firebase</option><option value="write">Firebase writes nghi vấn</option><option value="backend">Backend API writes</option><option value="error">HTTP lỗi</option></select>
+      <button class="button secondary" id="csv" disabled>Xuất CSV</button>
+      <button class="button secondary" id="clear" disabled>Xóa dữ liệu</button>
+    </div>
+    <div class="panel-head"><h2>Request list</h2><span class="count" id="shown">0 dòng</span></div>
+    <div class="table-wrap"><table><thead><tr><th>Method</th><th>Status</th><th>Phân loại</th><th>Host / URL</th><th>Thời gian</th><th>MIME</th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="empty">Nạp HAR để bắt đầu phân tích.</div></div>
+  </section>
+  <p class="foot">Phân loại “ghi Firebase nghi vấn” dựa trên host, HTTP method và đường dẫn, không đọc body hay token. Các request POST tới <code>runQuery</code>/<code>batchGet</code> được xem là đọc. File HAR có thể chứa cookie hoặc token; công cụ này xử lý tại máy và không gửi nội dung đi đâu.</p>
+</main>
+<script>
+(()=>{
+  const $=id=>document.getElementById(id);let entries=[];let activeFile='';
+  const cleanUrl=value=>{try{const u=new URL(value);return {host:u.host,path:u.pathname+u.search}}catch{return {host:'',path:String(value||'')}}};
+  function classify(entry){
+    const method=String(entry.request?.method||'GET').toUpperCase();const url=String(entry.request?.url||'');const {host,path}=cleanUrl(url);const h=host.toLowerCase(),p=path.toLowerCase();const status=Number(entry.response?.status||0);
+    const localHost=/localhost|127\.0\.0\.1/.test(h);const firestoreApiPath=/\/v\d+\/projects\/[^/]+\/databases\/[^/]+\/documents(?:[:/]|$)/.test(p);
+    const firebaseHost=/firestore\.googleapis\.com|firebaseio\.com|firebasedatabase\.app|firebasestorage\.googleapis\.com|firebasestorage\.app/.test(h)||(localHost&&(firestoreApiPath||/\/v0\/b\/[^/]+\/o(?:\/|$)/.test(p)||(/\.json$/i.test(p)&&/[?&]ns=/.test(url))));
+    const authHost=/identitytoolkit\.googleapis\.com|securetoken\.googleapis\.com/.test(h);
+    const readRpc=/:runquery|:batchget|:listdocuments|:getdocument|\/runquery\b|\/batchget\b/.test(p);
+    let firebaseWrite=false,kind='other',label='Other';
+    if(authHost){kind='auth';label='Firebase Auth';}
+    else if(firebaseHost){
+      const firestoreWrite=(/firestore\.googleapis\.com/.test(h)||localHost&&firestoreApiPath)&&!readRpc&&(
+        /:commit\b|:batchwrite\b|:createdocument\b|:updatedocument\b|:deletedocument\b|\/firestore\.v1\.firestore\/commit\b|\/documents(?:\/|$)/.test(p)||['PATCH','PUT','DELETE'].includes(method));
+      const realtimeWrite=/firebaseio\.com|firebasedatabase\.app/.test(h)&&['POST','PUT','PATCH','DELETE'].includes(method);
+      const storageWrite=/firebasestorage/.test(h)&&['POST','PUT','PATCH','DELETE'].includes(method);
+      firebaseWrite=firestoreWrite||realtimeWrite||storageWrite;kind=firebaseWrite?'write':'firebase';label=firebaseWrite?'Firebase write?':'Firebase request';
+      if(readRpc)label='Firestore read RPC';
+    } else if(['POST','PUT','PATCH','DELETE'].includes(method)){
+      kind='backend';label='Non-Firebase write (storage unknown)';
+    } else if(/workers\.dev$/.test(h)||/hyperdatalab\.org$/.test(h)||/localhost|127\.0\.0\.1/.test(h)){
+      kind='other';label='Backend/API';
+    }
+    return {method,status,url,host,path,kind,label,time:Number(entry.time||0),mime:entry.response?.content?.mimeType||'',firebaseHost,write:firebaseWrite,error:status>=400};
+  }
+  function render(){
+    const q=$('search').value.trim().toLowerCase(),filter=$('kind').value;const filtered=entries.filter(r=>{
+      if(filter==='firebase'&&!r.firebaseHost)return false;if(filter==='write'&&!r.write)return false;if(filter==='backend'&&r.kind!=='backend')return false;if(filter==='error'&&!r.error)return false;
+      return !q||`${r.method} ${r.url} ${r.host} ${r.label}`.toLowerCase().includes(q);
+    });
+    $('total').textContent=entries.length.toLocaleString();$('firebase').textContent=entries.filter(r=>r.firebaseHost).length.toLocaleString();$('writes').textContent=entries.filter(r=>r.write).length.toLocaleString();$('errors').textContent=entries.filter(r=>r.error).length.toLocaleString();$('shown').textContent=`${filtered.length.toLocaleString()} dòng`;
+    $('rows').replaceChildren();$('empty').classList.toggle('hidden',filtered.length>0);if(!entries.length)$('empty').textContent='Nạp HAR để bắt đầu phân tích.';else if(!filtered.length)$('empty').textContent='Không có request khớp bộ lọc.';
+    const frag=document.createDocumentFragment();for(const r of filtered){const tr=document.createElement('tr');const method=document.createElement('td');method.innerHTML=`<span class="method"></span>`;method.firstChild.textContent=r.method;const status=document.createElement('td');status.textContent=r.status||'—';if(r.error)status.className='status bad';const tag=document.createElement('td');tag.innerHTML=`<span class="tag ${r.kind}"></span>`;tag.firstChild.textContent=r.label;const url=document.createElement('td');url.className='url';url.title=r.url;url.textContent=r.url;const time=document.createElement('td');time.textContent=`${Math.round(r.time)} ms`;const mime=document.createElement('td');mime.textContent=r.mime||'—';tr.append(method,status,tag,url,time,mime);frag.append(tr)}$('rows').append(frag);
+    $('csv').disabled=!entries.length;$('clear').disabled=!entries.length;
+  }
+  async function loadFile(file){if(!file)return;try{const har=JSON.parse(await file.text());const raw=har?.log?.entries;if(!Array.isArray(raw))throw new Error('HAR không có log.entries hợp lệ.');entries=raw.map(classify);activeFile=file.name;$('filename').textContent=`${activeFile} · ${entries.length.toLocaleString()} requests`;render()}catch(e){$('filename').textContent=`Không đọc được HAR: ${e.message}`;entries=[];render()}}
+  $('file').addEventListener('change',e=>loadFile(e.target.files?.[0]));$('search').addEventListener('input',render);$('kind').addEventListener('change',render);
+  $('clear').addEventListener('click',()=>{entries=[];activeFile='';$('file').value='';$('filename').textContent='Chưa nạp request nào';render()});
+  $('csv').addEventListener('click',()=>{const cols=['method','status','label','host','path','time_ms','mime'];const quote=v=>'"'+String(v??'').replaceAll('"','""')+'"';const content=[cols.join(','),...entries.map(r=>[r.method,r.status,r.label,r.host,r.path,Math.round(r.time),r.mime].map(quote).join(','))].join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:'text/csv;charset=utf-8'}));a.download='request-audit.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
+  const drop=$('drop');for(const ev of ['dragenter','dragover'])drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')});for(const ev of ['dragleave','drop'])drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')});drop.addEventListener('drop',e=>loadFile(e.dataTransfer.files?.[0]));
+})();
+</script>
+</body>
+</html>

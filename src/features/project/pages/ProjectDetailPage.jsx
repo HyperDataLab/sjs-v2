@@ -248,8 +248,14 @@ const ProjectDetailPage = () => {
   };
 
   const renderLineChart = (chart) => {
-    const data = mapChartData(chart);
-    if (!hasChartData(chart)) return renderEmptyChart();
+    // OpenAlex can already index ahead-of-print works with a future publication_year.
+    // Keep this historical trend within the current calendar year.
+    const currentYear = new Date().getFullYear();
+    const data = mapChartData(chart).filter((item) => {
+      const year = Number(item.name);
+      return !Number.isInteger(year) || year <= currentYear;
+    });
+    if (!data.some((item) => item.value > 0)) return renderEmptyChart();
     return (
       <ResponsiveContainer width="100%" height={260}>
         <LineChart data={data} margin={{ top: 12, right: 18, left: -10, bottom: 8 }}>

@@ -72,7 +72,7 @@ export default function JournalDirectoryPage() {
         description="Manage and monitor the entire publication lifecycle for your academic portfolio."
       />
 
-      {/* Unified Journal Section: Integrated Filter Bar + Content + Pagination in ONE Card */}
+      {/* Filter toolbar, table, and pagination share one card. */}
       <Card className="rounded-card border border-border bg-surface shadow-card">
         {/* Filters and Search toolbar */}
         <JournalFilterBar
@@ -88,8 +88,8 @@ export default function JournalDirectoryPage() {
           asCard={false}
         />
 
-        {/* Display journals */}
         <div className="border-t border-border">
+          {/* Display journals */}
           {loading ? (
             <div className="p-4 space-y-3 bg-surface">
               {[1, 2, 3, 4, 5].map((i) => (
@@ -119,7 +119,11 @@ export default function JournalDirectoryPage() {
               />
             </div>
           ) : viewMode === 'table' ? (
-            <JournalTableAdmin journals={paginatedJournals} asCard={false} />
+            <JournalTableAdmin
+              journals={paginatedJournals}
+              asCard={false}
+              hasPagination={filteredJournals.length > 0}
+            />
           ) : (
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {paginatedJournals.map((j) => (
@@ -131,7 +135,7 @@ export default function JournalDirectoryPage() {
 
         {/* Pagination Controls Footer */}
         {filteredJournals.length > 0 && (
-          <div className="border-t border-border px-4 py-3 bg-surface">
+          <div className="integrated-table-footer border-t border-border px-4 py-3 bg-surface">
             <Pagination
               totalItems={filteredJournals.length}
               currentPage={safePage}
