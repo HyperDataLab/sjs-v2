@@ -41,8 +41,6 @@ const KeywordsNetworksPage = () => {
   return (
     <>
       <div className="kn-page">
-        <VolumeAnalyticsTabs />
-        
         {isLoading ? (
           <div className="space-y-6 py-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

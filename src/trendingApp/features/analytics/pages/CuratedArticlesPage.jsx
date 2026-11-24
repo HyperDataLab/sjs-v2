@@ -100,8 +100,6 @@ const CuratedArticlesPage = () => {
 
   return (
     <div className={analyticsStyles.analyticsPage}>
-      <Tabs />
-      
       <div className={styles.pageContent}>
         <div className={styles.pageHeader}>
           <h2 className={styles.pageTitle}>{t('analytics.curatedArticles', 'Curated Articles')}</h2>

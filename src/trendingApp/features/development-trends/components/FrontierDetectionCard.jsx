@@ -140,9 +140,9 @@ export default function FrontierDetectionCard() {
 
   const chartData = rawData.map(d => ({
     topic: d.label,
-    velocity: d.citationVelocity || 50,
-    impact: d.impactVelocity || 60,
-    size: 100,
+    velocity: d.citationVelocity ?? 0,
+    impact: d.impactVelocity ?? 0,
+    size: d.size ?? 100,
     isFrontier: String(d.status).toLowerCase() === 'frontier'
   }));
 

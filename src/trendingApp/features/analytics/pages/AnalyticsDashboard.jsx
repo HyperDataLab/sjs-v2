@@ -76,8 +76,6 @@ export const AnalyticsDashboard = () => {
 
   return (
     <div className={styles.analyticsPage}>
-      <Tabs />
-
       <div className={styles.pageContent}>
         <div className={styles.pageHeader}>
           <h2 className={styles.pageTitle}>{t('analytics.trackedJournals', 'Tracked Journals')}</h2>
@@ -85,9 +83,7 @@ export const AnalyticsDashboard = () => {
             {t('analytics.trackedJournalsDesc', 'Manage your watchlist for bibliometric monitoring. These journals are currently indexed for real-time impact factor updates and citation frequency alerts.')}
           </p>
         </div>
-      </div>
 
-      <div className={styles.pageContent}>
         {showLoading ? (
           <div className="space-y-4 py-4">
             <Card className="p-6 space-y-3">

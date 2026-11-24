@@ -33,8 +33,6 @@ const CollaborationAnalyticsPage = () => {
   return (
     <>
       <div className="ca-page">
-        <CollaborationTabs />
-
         {isLoading ? (
           <CollaborationAnalyticsSkeleton />
         ) : error ? (
