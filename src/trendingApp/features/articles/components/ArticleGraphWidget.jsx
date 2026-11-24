@@ -46,7 +46,7 @@ export default function ArticleGraphWidget({
     const wantedId = String(selectedNodeId);
     const matchingNode = graph.nodes.find((node) => {
       const properties = node.properties || {};
-      return [node.id, properties.id, properties.article_id, properties.openalex_id]
+      return [node.id, properties.id, properties.article_id, properties.openalex_id, ...(properties.related_article_ids || [])]
         .some((candidate) => candidate != null && String(candidate) === wantedId);
     });
 
