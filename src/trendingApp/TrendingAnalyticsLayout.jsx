@@ -28,13 +28,13 @@ export default function TrendingAnalyticsLayout() {
 
   return (
     <DashboardProvider projectId={id}>
-      <PageContainer className="trending-analytics-shell">
+      <PageContainer className="trending-analytics-shell space-y-3 pt-3 pb-6">
         <PageHeader
           title="In-depth analysis"
           description="Trending System · Project analytics"
-          className="border-0 pb-2 flex-col sm:flex-col sm:items-start gap-3"
+          className="border-0 pb-1 flex-col sm:flex-col sm:items-start gap-1.5"
         >
-          <nav className="flex flex-wrap items-center gap-2 pt-2 border-b border-border pb-3 w-full" aria-label="Analytics pages">
+          <nav className="flex flex-wrap items-center gap-1.5 pt-1.5 border-b border-border pb-2 w-full" aria-label="Analytics pages">
             {links.map(([path, label]) => (
               <NavLink
                 key={path}

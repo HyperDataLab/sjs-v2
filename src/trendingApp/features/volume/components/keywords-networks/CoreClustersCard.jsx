@@ -36,7 +36,7 @@ const CoreClustersCard = ({ data }) => {
         </div>
       </div>
       
-      <p className="kn-stat-desc" style={{ color: 'var(--color-neutral-50)', fontSize: '14px' }}>
+      <p className="kn-stat-desc" style={{ color: 'var(--color-neutral-600)', fontSize: '14px' }}>
         {topItem ? (
           t('volume.coreClustersDesc', { 
             growth, 

@@ -3,7 +3,7 @@
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: var(--spacing-lg);
+  padding: 0;
   flex: 1; /* allow it to grow if needed */
   box-sizing: border-box;
 }
@@ -13,7 +13,7 @@
 .dashboard-layout {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xl);
+  gap: 14px;
   width: 100%;
 }
 
@@ -21,7 +21,7 @@
 .dashboard-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 10px;
   width: 100%;
 }
 
@@ -47,7 +47,7 @@
 /* Grid System */
 .dashboard-grid {
   display: grid;
-  gap: var(--spacing-lg);
+  gap: 14px;
   width: 100%;
 }
 
