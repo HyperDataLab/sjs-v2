@@ -89,15 +89,15 @@ export default function TopAuthorsTable({ authors = [], loading, error, onAuthor
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[700px] border-collapse text-left text-xs">
+            <table className="w-full min-w-[700px] table-fixed border-collapse text-left text-xs">
               <thead className="bg-surface-muted/60 text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border">
                 <tr>
-                  <th scope="col" className="px-4 py-2.5 w-12 text-center">#</th>
-                  <th scope="col" className="px-4 py-2.5 w-[38%]">{t('typeAuthor', 'Author')}</th>
-                  <th scope="col" className="px-4 py-2.5 w-[34%] hidden sm:table-cell">{t('author.linhVuc', 'Research Field')}</th>
-                  <th scope="col" className="px-4 py-2.5 w-[14%] text-right">{t('articles', 'Articles')}</th>
-                  <th scope="col" className="px-4 py-2.5 w-[14%] text-right">{t('citations', 'Citations')}</th>
-                  <th scope="col" className="px-4 py-2.5 w-[10%] text-right">{t('author.hIndex', 'H-index')}</th>
+                  <th scope="col" className="px-2 py-2.5 w-[5%] text-center">#</th>
+                  <th scope="col" className="px-3 py-2.5 w-[30%]">{t('typeAuthor', 'Author')}</th>
+                  <th scope="col" className="px-3 py-2.5 w-[27%] hidden sm:table-cell">{t('author.linhVuc', 'Research Field')}</th>
+                  <th scope="col" className="px-3 py-2.5 w-[14%] text-right">{t('articles', 'Articles')}</th>
+                  <th scope="col" className="px-3 py-2.5 w-[14%] text-right">{t('citations', 'Citations')}</th>
+                  <th scope="col" className="px-3 py-2.5 w-[10%] text-right">{t('author.hIndex', 'H-index')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
@@ -116,10 +116,10 @@ export default function TopAuthorsTable({ authors = [], loading, error, onAuthor
 
                   return (
                     <tr key={author.author_id ?? author.id ?? i} className="transition-colors hover:bg-surface-muted/40">
-                      <td className="px-4 py-3 text-center">
+                      <td className="px-2 py-3 text-center">
                         <RankBadge rank={i + 1} />
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-3 py-3">
                         <button
                           type="button"
                           onClick={() => onAuthorClick?.(author)}
@@ -140,18 +140,18 @@ export default function TopAuthorsTable({ authors = [], loading, error, onAuthor
                           </span>
                         </button>
                       </td>
-                      <td className="px-4 py-3 hidden sm:table-cell">
+                      <td className="px-3 py-3 hidden sm:table-cell">
                         <span className="inline-block max-w-[320px] truncate rounded-full bg-surface-muted border border-border px-2.5 py-0.5 text-[11px] text-muted-foreground" title={field}>
                           {field || '—'}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-right font-mono text-foreground font-medium tabular-nums text-xs">
+                      <td className="px-3 py-3 text-right font-mono text-foreground font-medium tabular-nums text-xs">
                         {formatCount(articles)}
                       </td>
-                      <td className="px-4 py-3 text-right font-mono font-semibold text-primary tabular-nums text-xs">
+                      <td className="px-3 py-3 text-right font-mono font-semibold text-primary tabular-nums text-xs">
                         {formatCount(citations)}
                       </td>
-                      <td className="px-4 py-3 text-right font-mono font-medium text-foreground tabular-nums text-xs">
+                      <td className="px-3 py-3 text-right font-mono font-medium text-foreground tabular-nums text-xs">
                         {formatCount(hIndex)}
                       </td>
                     </tr>
