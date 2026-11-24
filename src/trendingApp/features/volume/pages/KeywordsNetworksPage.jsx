@@ -72,7 +72,12 @@ const KeywordsNetworksPage = () => {
             
             <div className="kn-row kn-row-2">
               <CountryCollaborationChord data={countryCollab} />
-              <CollaborationInsightsCard data={collabInsights} projectId={projectId} filters={filters} />
+              <CollaborationInsightsCard
+                data={collabInsights}
+                links={Array.isArray(countryCollab) ? countryCollab : []}
+                projectId={projectId}
+                filters={filters}
+              />
             </div>
             
             <div className="kn-row kn-row-3">

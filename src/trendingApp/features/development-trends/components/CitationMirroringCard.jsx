@@ -73,20 +73,14 @@ export default function CitationMirroringCard() {
           </div>
         ) : (
           <>
-            {data?.coverage && (
-              <p className="analytics-card-subtitle" title={data.method}>
-                OpenAlex sample: {data.coverage.citingWorks} citing works; {data.coverage.resolvedReferences.toLocaleString()} of {data.coverage.observedReferences.toLocaleString()} references resolved
-                {data.coverage.truncated ? ` (limited to ${data.coverage.targetWorksLimit} cited works)` : ''}.
-              </p>
-            )}
             <div className="citation-mirroring-wrapper" aria-label="Citation Mirroring Dual Line Chart">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <LineChart data={chartData} margin={{ top: 32, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-neutral-200)" />
                   <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fill: 'var(--color-neutral-500)', fontSize: 13 }} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--color-neutral-500)', fontSize: 13 }} />
                   <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--color-neutral-300)', strokeWidth: 1, strokeDasharray: '4 4' }} />
-                  <Legend verticalAlign="top" align="right" height={36} iconType="circle" wrapperStyle={{ fontSize: '13px', color: 'var(--color-neutral-600)', top: '-40px' }} />
+                  <Legend verticalAlign="top" align="right" height={28} iconType="circle" wrapperStyle={{ fontSize: '13px', color: 'var(--color-neutral-600)' }} />
                   <Line type="monotone" dataKey="external" name={t('dashboard.external', 'External')} stroke="var(--color-primary-orange)" strokeWidth={2} dot={false} activeDot={{ r: 4 }} animationDuration={1500} isAnimationActive />
                   <Line type="monotone" dataKey="self" name={t('dashboard.self', 'Self')} stroke="#1f2937" strokeWidth={2} dot={false} activeDot={{ r: 4 }} animationDuration={1500} isAnimationActive />
                 </LineChart>
