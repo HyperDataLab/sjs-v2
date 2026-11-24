@@ -10,6 +10,7 @@ import {
   fetchQuartiles
 } from '../../../../features/global-ecosystem/services/globalEcosystem.service';
 import { fetchDevelopmentTrendsData } from '../../../../features/development-trends/services/developmentTrends.service';
+import { DEV_TRENDS_CACHE_VERSION } from '../../../../features/development-trends/hooks/devTrendsCache';
 import {
   getTopJournalRanking,
   getQuartileDistribution,
@@ -122,7 +123,7 @@ export default function AnalysisPreloader({ projectId, onComplete }) {
     {
       id: 'development-trends',
       name: 'Development & Trends Main Payload',
-      queryKey: ['developmentTrends', projectId, defaultFilters, 0],
+      queryKey: ['developmentTrends', DEV_TRENDS_CACHE_VERSION, projectId, defaultFilters, 0],
       queryFn: () => fetchDevelopmentTrendsData(projectId, defaultFilters)
     },
     // 3. Journals

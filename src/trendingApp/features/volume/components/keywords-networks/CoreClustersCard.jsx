@@ -38,9 +38,10 @@ const CoreClustersCard = ({ data }) => {
       
       <p className="kn-stat-desc" style={{ color: 'var(--color-neutral-600)', fontSize: '14px' }}>
         {topItem ? (
-          t('volume.coreClustersDesc', { 
+          t('volume.keywordGrowthVector', {
+            keyword: label,
             growth, 
-            defaultValue: `Central nodes show high density in deep learning paradigms with a ${growth} growth vector.` 
+            defaultValue: `${label}: ${growth} growth vector.`
           })
         ) : (
           t('volume.noActiveClustersDesc', 'No active topic clusters detected for this timeframe.')

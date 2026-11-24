@@ -28,11 +28,19 @@ const MapPinIcon = () => (
   </svg>
 );
 
-const CollaborationInsightsCard = ({ data, projectId, filters }) => {
+const CollaborationInsightsCard = ({ data, links = [], projectId, filters }) => {
   const { t } = useTranslation();
-  const description = data?.description || t('volume.insightsDefaultDesc', 'Global research output has shifted significantly towards multi-national clusters, with Japan and the EU showing the highest reciprocal citation growth of 18% YoY.');
-  const emergingLink = data?.emergingLink || 'BRICS + Inequality';
-  const criticalNode = data?.criticalNode || 'Random walk';
+  const hasLinks = links.length > 0;
+  const description = data?.description || t('volume.noCollaborationInsights', 'No international collaboration trends detected for this project during the selected timeframe.');
+  const primaryLink = hasLinks
+    ? [...links].sort((a, b) => (b.coAuthorshipValue || 0) - (a.coAuthorshipValue || 0))[0]
+    : null;
+  const countryTotals = new Map();
+  for (const link of links) {
+    countryTotals.set(link.source, (countryTotals.get(link.source) || 0) + (link.coAuthorshipValue || 0));
+    countryTotals.set(link.target, (countryTotals.get(link.target) || 0) + (link.coAuthorshipValue || 0));
+  }
+  const criticalNode = [...countryTotals].sort((a, b) => b[1] - a[1])[0]?.[0];
 
   const handleExport = () => {
     const searchParams = new URLSearchParams();
@@ -93,32 +101,36 @@ const CollaborationInsightsCard = ({ data, projectId, filters }) => {
         </p>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
-        <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', borderRadius: '10px', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '14px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-          <div style={{ backgroundColor: '#ffffff', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <RocketIcon />
+      {hasLinks && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
+          <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', borderRadius: '10px', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '14px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div style={{ backgroundColor: '#ffffff', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <RocketIcon />
+            </div>
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.8)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('volume.primaryCollaborationLink', 'PRIMARY COLLABORATION LINK')}</div>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', marginTop: '2px' }}>{primaryLink.source} + {primaryLink.target}</div>
+            </div>
           </div>
-          <div>
-            <div style={{ fontSize: '13px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.8)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('volume.emergingLink', 'EMERGING LINK')}</div>
-            <div style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', marginTop: '2px' }}>{emergingLink}</div>
+
+          <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', borderRadius: '10px', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '14px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+            <div style={{ backgroundColor: '#ffffff', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <MapPinIcon />
+            </div>
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.8)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('volume.mostCollaborativeCountry', 'MOST COLLABORATIVE COUNTRY')}</div>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', marginTop: '2px' }}>{criticalNode}</div>
+            </div>
           </div>
         </div>
-        
-        <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)', borderRadius: '10px', padding: '14px 18px', display: 'flex', alignItems: 'center', gap: '14px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-          <div style={{ backgroundColor: '#ffffff', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <MapPinIcon />
-          </div>
-          <div>
-            <div style={{ fontSize: '13px', fontWeight: 700, color: 'rgba(255, 255, 255, 0.8)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('volume.criticalNode', 'CRITICAL NODE')}</div>
-            <div style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', marginTop: '2px' }}>{criticalNode}</div>
-          </div>
-        </div>
-      </div>
+      )}
 
 
-      <button onClick={handleExport} className="kn-btn-primary" style={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', padding: '14px', fontSize: '14px', cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-        {t('volume.exportRawMatrix', 'Export Raw Matrix')} <FiDownload style={{ opacity: 0.7 }} />
-      </button>
+      {hasLinks && (
+        <button onClick={handleExport} className="kn-btn-primary" style={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', padding: '14px', fontSize: '14px', cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          {t('volume.exportRawMatrix', 'Export Raw Matrix')} <FiDownload style={{ opacity: 0.7 }} />
+        </button>
+      )}
     </div>
   );
 };

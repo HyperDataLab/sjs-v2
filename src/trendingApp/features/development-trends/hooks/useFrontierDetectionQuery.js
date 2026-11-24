@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchDevelopmentTrendsData } from '../services/developmentTrends.service';
-import { getPreloadedDevTrends } from './devTrendsCache';
+import { DEV_TRENDS_CACHE_VERSION, getPreloadedDevTrends } from './devTrendsCache';
 
 export const useFrontierDetectionQuery = (projectId, filters = {}, refreshTrigger) => {
   const queryClient = useQueryClient();
   return useQuery({
-    queryKey: ['developmentTrends', projectId, filters, refreshTrigger],
+    queryKey: ['developmentTrends', DEV_TRENDS_CACHE_VERSION, projectId, filters, refreshTrigger],
     queryFn: () => fetchDevelopmentTrendsData(projectId, filters),
     enabled: !!projectId,
     staleTime: 30 * 60 * 1000,

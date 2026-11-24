@@ -1,18 +1,16 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { fetchDevelopmentTrendsData } from '../services/developmentTrends.service';
-import { getPreloadedDevTrends } from './devTrendsCache';
 
 export const useCitationMirroringQuery = (projectId, filters = {}, refreshTrigger) => {
-  const queryClient = useQueryClient();
   return useQuery({
-    queryKey: ['developmentTrends', projectId, filters, refreshTrigger],
+    // Version the key so persisted pre-OpenAlex/Firestore results are never reused.
+    queryKey: ['citationMirroring', 'openalex-v2', projectId, filters, refreshTrigger],
     queryFn: () => fetchDevelopmentTrendsData(projectId, filters),
     enabled: !!projectId,
-    staleTime: 30 * 60 * 1000,
-    gcTime: 60 * 60 * 1000,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    placeholderData: () => getPreloadedDevTrends(queryClient, projectId),
+    refetchOnMount: true,
     select: (response) => response?.data?.citationMirroring,
   });
 };
