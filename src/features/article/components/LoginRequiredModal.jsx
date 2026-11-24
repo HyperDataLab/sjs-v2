@@ -13,11 +13,6 @@ export default function LoginRequiredModal({ show, onHide }) {
     navigate('/login');
   };
 
-  const handleRegister = () => {
-    onHide();
-    navigate('/register');
-  };
-
   return (
     <Modal show={show} onHide={onHide} size="sm" className="text-center p-6">
       <div className="flex flex-col items-center">
@@ -38,9 +33,6 @@ export default function LoginRequiredModal({ show, onHide }) {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 w-full">
-          <Button variant="outline" size="sm" onClick={handleRegister} className="w-full sm:w-auto">
-            {t("common.dangKy", "Đăng ký")}
-          </Button>
           <Button size="sm" onClick={handleLogin} className="w-full sm:w-auto">
             {t("signIn", "Đăng nhập")}
           </Button>

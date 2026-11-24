@@ -162,7 +162,7 @@ export default function useAuth() {
       await deleteCurrentAccount();
       clearAuthState();
       clearEmail();
-      navigate('/register', { replace: true });
+      navigate('/login', { replace: true });
     } catch (err) {
       const message = err.response?.data?.message || err.message || 'Xóa tài khoản thất bại';
       setError(message);

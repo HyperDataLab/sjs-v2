@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import Logo from './Logo';
 import { Button } from '../ui/button';
 import useAuth from '../../features/auth/hooks/useAuth';
+import { searchSystemApi } from '../../features/search/api/searchApi';
 
 const items = [
   { label: 'Overview', path: 'dashboard', icon: FiBarChart2 },
@@ -123,6 +124,21 @@ function getHeaderBreadcrumbs(pathname, lang, t) {
 
 export const DashboardShellContext = createContext(false);
 
+const globalResultPath = (item, base) => {
+  const id = item.id || item.openalex_id || item.article_id || item.author_id || item.journal_id;
+  if (!id) return null;
+  switch (String(item.type || item.entity_type || '').toUpperCase()) {
+    case 'JOURNAL': return `${base}/journals/${id}`;
+    case 'AUTHOR': return `${base}/authors/${id}`;
+    case 'ARTICLE':
+    case 'WORK': return `${base}/articles/${id}/visual`;
+    case 'KEYWORD': return `${base}/keywords/${id}`;
+    default: return null;
+  }
+};
+
+const globalResultType = (item) => String(item.type || item.entity_type || 'RESULT').toUpperCase();
+
 export default function DashboardShell({ children }) {
   const { lang = 'en' } = useParams();
   const location = useLocation();
@@ -131,6 +147,13 @@ export default function DashboardShell({ children }) {
   const { logout } = useAuth();
   const reduceMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const headerSearchRef = useRef(null);
+  const [headerSearchValue, setHeaderSearchValue] = useState('');
+  const [headerSearchResults, setHeaderSearchResults] = useState([]);
+  const [headerSearchLoading, setHeaderSearchLoading] = useState(false);
+  const [headerSearchError, setHeaderSearchError] = useState('');
+  const [headerSearchOpen, setHeaderSearchOpen] = useState(false);
+  const [activeSearchResult, setActiveSearchResult] = useState(0);
   const [collapsed, setCollapsed] = useState(() => {
     try {
       return localStorage.getItem('trending_sidebar_collapsed') === 'true';
@@ -152,6 +175,72 @@ export default function DashboardShell({ children }) {
   const drawerCloseRef = useRef(null);
   const sidebarRef = useRef(null);
   const base = `/${lang}`;
+
+  useEffect(() => {
+    const query = headerSearchValue.trim();
+    if (query.length < 2) {
+      setHeaderSearchResults([]);
+      setHeaderSearchError('');
+      setHeaderSearchLoading(false);
+      setHeaderSearchOpen(false);
+      return undefined;
+    }
+
+    let isCurrent = true;
+    setHeaderSearchLoading(true);
+    setHeaderSearchError('');
+    setHeaderSearchOpen(true);
+    setActiveSearchResult(0);
+
+    const timer = window.setTimeout(async () => {
+      try {
+        const response = await searchSystemApi(query, 8);
+        const results = response?.data?.data?.items || [];
+        if (isCurrent) setHeaderSearchResults(results);
+      } catch (error) {
+        if (isCurrent) {
+          setHeaderSearchResults([]);
+          setHeaderSearchError(error.response?.data?.message || 'Search is temporarily unavailable.');
+        }
+      } finally {
+        if (isCurrent) setHeaderSearchLoading(false);
+      }
+    }, 250);
+
+    return () => {
+      isCurrent = false;
+      window.clearTimeout(timer);
+    };
+  }, [headerSearchValue]);
+
+  useEffect(() => {
+    if (!headerSearchOpen) return undefined;
+    const closeWhenOutside = (event) => {
+      if (!headerSearchRef.current?.contains(event.target)) setHeaderSearchOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setHeaderSearchOpen(false);
+    };
+    document.addEventListener('mousedown', closeWhenOutside);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('mousedown', closeWhenOutside);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [headerSearchOpen]);
+
+  const openGlobalResult = (item) => {
+    const path = globalResultPath(item, base);
+    if (path) navigate(path);
+    setHeaderSearchOpen(false);
+    setHeaderSearchValue('');
+  };
+
+  const handleHeaderSearchSubmit = (event) => {
+    event.preventDefault();
+    const result = headerSearchResults[activeSearchResult] || headerSearchResults[0];
+    if (result) openGlobalResult(result);
+  };
 
   const headerBreadcrumbs = useMemo(
     () => getHeaderBreadcrumbs(location.pathname, lang, t),
@@ -329,15 +418,89 @@ export default function DashboardShell({ children }) {
                   );
                 })}
               </nav>
-            <div className="flex items-center gap-2.5">
-              <button type="button" onClick={() => navigate(`${base}/search`)} className="flex h-9 min-w-[210px] items-center gap-2 rounded-control border border-border bg-background px-3 text-left text-xs text-muted-foreground transition-colors" aria-label={t('navigation.search', 'Search')}>
-                <FiSearch aria-hidden="true" />
-                <span>{t('navigation.searchManuscripts', 'Search manuscripts, authors, or IDs…')}</span>
-              </button>
-              <button type="button" onClick={() => navigate(`${base}/profile`)} className="flex h-9 items-center gap-2 rounded-control border-0 bg-transparent px-2 text-xs text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground" aria-label={t('navigation.account', 'Account')}>
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-primary-subtle text-xs font-semibold text-primary">R</span>
-                <span className="hidden lg:inline">{t('navigation.account', 'Account')}</span>
-              </button>
+            <div className="relative w-[280px] shrink-0 lg:w-[310px]" ref={headerSearchRef}>
+              <form onSubmit={handleHeaderSearchSubmit} role="search">
+                <FiSearch aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="search"
+                  value={headerSearchValue}
+                  onChange={(event) => setHeaderSearchValue(event.target.value)}
+                  onFocus={() => {
+                    if (headerSearchValue.trim().length >= 2) setHeaderSearchOpen(true);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'ArrowDown' && headerSearchResults.length) {
+                      event.preventDefault();
+                      setActiveSearchResult((index) => Math.min(index + 1, headerSearchResults.length - 1));
+                    } else if (event.key === 'ArrowUp' && headerSearchResults.length) {
+                      event.preventDefault();
+                      setActiveSearchResult((index) => Math.max(index - 1, 0));
+                    }
+                  }}
+                  placeholder={t('navigation.searchManuscripts', 'Search manuscripts, authors, or IDs…')}
+                  aria-label={t('navigation.search', 'Search')}
+                  aria-expanded={headerSearchOpen}
+                  aria-controls="header-global-search-results"
+                  autoComplete="off"
+                  className="h-9 w-full rounded-control border border-border bg-background pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                />
+              </form>
+
+              {headerSearchOpen && (
+                <div
+                  id="header-global-search-results"
+                  role="listbox"
+                  className="absolute right-0 top-full z-[1100] mt-2 max-h-[min(70vh,420px)] w-[min(420px,calc(100vw-32px))] overflow-y-auto rounded-xl border border-border bg-surface p-1.5 shadow-xl"
+                >
+                  {headerSearchLoading ? (
+                    <div className="flex items-center gap-2 px-3 py-3 text-xs text-muted-foreground">
+                      <Icon icon="lucide:loader-2" className="animate-spin" width={15} />
+                      <span>{t('searching', 'Searching…')}</span>
+                    </div>
+                  ) : headerSearchError ? (
+                    <div className="px-3 py-3 text-xs text-danger">{headerSearchError}</div>
+                  ) : headerSearchResults.length ? (
+                    headerSearchResults.map((item, index) => {
+                      const type = globalResultType(item);
+                      const title = item.title || item.name || item.display_name || String(item.id || '');
+                      const subtitle = [
+                        item.authors?.slice?.(0, 3).map((author) => author.name || author.display_name).join(', '),
+                        item.journal?.name || item.journal_name,
+                        item.publicationYear || item.publication_year || item.year,
+                        item.description,
+                      ].filter(Boolean).join(' · ');
+                      const isNavigable = Boolean(globalResultPath(item, base));
+                      return (
+                        <button
+                          key={`${type}-${item.id || index}`}
+                          type="button"
+                          role="option"
+                          aria-selected={index === activeSearchResult}
+                          disabled={!isNavigable}
+                          onMouseEnter={() => setActiveSearchResult(index)}
+                          onClick={() => openGlobalResult(item)}
+                          className={`flex w-full items-start gap-3 rounded-lg border-0 px-3 py-2.5 text-left transition-colors ${
+                            index === activeSearchResult ? 'bg-primary-subtle' : 'bg-transparent hover:bg-surface-muted'
+                          } ${isNavigable ? 'cursor-pointer' : 'cursor-default opacity-70'}`}
+                        >
+                          <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-md bg-primary-subtle text-primary">
+                            <Icon icon={type === 'AUTHOR' ? 'lucide:user-round' : type === 'JOURNAL' ? 'lucide:book-open' : type === 'ARTICLE' || type === 'WORK' ? 'lucide:file-text' : 'lucide:search'} width={15} />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-xs font-semibold text-foreground">{title}</span>
+                            {subtitle && <span className="mt-0.5 block truncate text-[11px] text-muted-foreground">{subtitle}</span>}
+                          </span>
+                          <span className="shrink-0 rounded bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">{type}</span>
+                        </button>
+                      );
+                    })
+                  ) : (
+                    <div className="px-3 py-3 text-xs text-muted-foreground">
+                      {t('noResults', 'No matching results.')}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </header>
