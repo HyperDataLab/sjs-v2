@@ -5,6 +5,8 @@ import './CollaborationAnalytics.css';
 const AuthorImpactMatrix = ({ data }) => {
   const { t } = useTranslation();
   const [tooltip, setTooltip] = useState(null);
+  const maxOutput = Math.max(1, ...((Array.isArray(data) ? data : []).map(point => Number(point.yearlyOutput) || 0)));
+  const maxHIndex = Math.max(1, ...((Array.isArray(data) ? data : []).map(point => Number(point.hIndex) || 0)));
 
   if (!Array.isArray(data)) {
     return (
@@ -26,6 +28,15 @@ const AuthorImpactMatrix = ({ data }) => {
       </div>
       
       <div className="ca-matrix-container">
+        {Array.from({ length: 5 }, (_, index) => {
+          const position = index * 25;
+          return (
+            <React.Fragment key={position}>
+              <span className="ca-matrix-tick-y" style={{ top: `${position}%` }}>{Math.round(maxHIndex * (1 - index / 4))}</span>
+              <span className="ca-matrix-tick-x" style={{ left: `${position}%` }}>{Math.round(maxOutput * index / 4)}</span>
+            </React.Fragment>
+          );
+        })}
         {/* Grid lines */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
           <div style={{ position: 'absolute', top: '25%', left: 0, right: 0, height: '1px', background: 'var(--color-neutral-200)' }}></div>

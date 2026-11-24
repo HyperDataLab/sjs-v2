@@ -16,9 +16,9 @@ import { Skeleton } from '../../../../shared/ui/skeleton';
 
 const CustomBubble = (props) => {
   const { cx, cy, payload } = props;
-  const radius = payload.size;
+  const radius = payload.bubbleRadius;
   
-  if (payload.quartile === 'Q1' && radius === 18) {
+  if (payload.quartile === 'Q1' && radius >= 18) {
     return (
       <g>
         <circle 
@@ -195,7 +195,7 @@ const ImpactMatrixCard = ({ data, loading, error, onRetry }) => {
                     fill: 'var(--color-neutral-500)' 
                   }}
                 />
-                <ZAxis type="number" dataKey="size" range={[60, 400]} name="Size" />
+                <ZAxis type="number" dataKey="bubbleRadius" range={[5, 18]} name="Size" />
                 <Tooltip 
                   content={<CustomTooltip />} 
                   wrapperStyle={{ zIndex: 100, backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '10px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
