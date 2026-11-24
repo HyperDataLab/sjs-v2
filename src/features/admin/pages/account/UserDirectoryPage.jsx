@@ -187,7 +187,7 @@ export default function UserDirectoryPage() {
         </Alert>
       ) : null}
 
-      {/* Unified User Section: Integrated Filter Bar + Table Content + Pagination in ONE Card */}
+      {/* Filter toolbar, table, and pagination share one card. */}
       <Card className="rounded-card border border-border bg-surface shadow-card">
         <UserFilterBar
           search={search}
@@ -201,11 +201,16 @@ export default function UserDirectoryPage() {
         />
 
         <div className="border-t border-border">
-          <UserTable users={users} loading={loading} asCard={false} />
+          <UserTable
+            users={users}
+            loading={loading}
+            asCard={false}
+            hasPagination={totalItems > 0}
+          />
         </div>
 
         {totalItems > 0 && (
-          <div className="border-t border-border px-4 py-3 bg-surface">
+          <div className="integrated-table-footer border-t border-border px-4 py-3 bg-surface">
             <Pagination
               totalItems={totalItems}
               currentPage={currentPage}

@@ -101,7 +101,7 @@ export default function JournalDetailPage() {
         <JournalTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Tab Contents */}
-        <div className="journal-tab-panel mt-4">
+        <div className="journal-tab-panel">
           {activeTab === 'ranking' && (
             <RankingTabContent
               rankingHistory={rankingHistory}

@@ -14,8 +14,8 @@ export default function JournalMetadataGrid({
     i18n
   } = useTranslation();
   if (loading || !journal) {
-    return <section className="journal-surface journal-meta-grid mb-4" aria-label="Đang tải metadata tạp chí">
-        <Row className="gy-4">
+    return <section className="journal-surface journal-meta-grid" aria-label="Đang tải metadata tạp chí">
+        <Row className="gy-3">
           {[1, 2, 3, 4, 5, 6].map(i => <Col lg={2} md={4} sm={6} key={i}>
               <div className="skeleton-shimmer mb-2" style={{
             width: '60px',
@@ -110,8 +110,8 @@ export default function JournalMetadataGrid({
     label: 'Coverage',
     value: displayCoverage
   }];
-  return <section className="journal-surface journal-meta-grid mb-4" aria-label="Thông tin cơ bản tạp chí">
-      <Row className="gy-4 text-start">
+  return <section className="journal-surface journal-meta-grid" aria-label="Thông tin cơ bản tạp chí">
+      <Row className="gy-2.5 text-start">
         {metadataItems.map((item, idx) => <Col lg={2} md={4} xs={6} key={idx}>
             <div className="journal-meta-label">
               {item.label}

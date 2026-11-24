@@ -190,9 +190,6 @@ export default function ProfilePage() {
               <Button onClick={() => navigate("/login")}>
                 {t("signIn")}
               </Button>
-              <Button variant="outline" onClick={() => navigate("/register")}>
-                {t("profile.dangKi")}
-              </Button>
             </div>
           }
         />

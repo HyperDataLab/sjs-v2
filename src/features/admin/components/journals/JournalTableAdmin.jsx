@@ -13,7 +13,8 @@ import { StateCard } from '../../../../shared/components/Card';
  */
 export default function JournalTableAdmin({
   journals,
-  asCard = true
+  asCard = true,
+  hasPagination = false
 }) {
   const { t: _t } = useTranslation();
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export default function JournalTableAdmin({
   const basePath = isPreview ? '/admin-preview' : '/admin';
 
   return (
-    <div className={asCard ? "border border-border rounded-lg overflow-hidden bg-surface shadow-2xs" : "table-responsive"}>
+    <div className={asCard ? "border border-border rounded-lg overflow-hidden bg-surface shadow-2xs" : `integrated-table-viewport${hasPagination ? ' has-pagination' : ''} table-responsive`}>
       <Table className="w-full text-left">
         <TableHeader className="bg-surface-muted/60">
           <TableRow>

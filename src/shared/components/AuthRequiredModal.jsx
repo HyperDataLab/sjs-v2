@@ -13,11 +13,6 @@ export default function AuthRequiredModal({ show, onHide }) {
     navigate('/login');
   };
 
-  const handleRegisterClick = () => {
-    onHide();
-    navigate('/register');
-  };
-
   return (
     <Modal show={show} onHide={onHide} size="sm">
       <Modal.Header closeButton className="border-0 pb-0">
@@ -34,9 +29,6 @@ export default function AuthRequiredModal({ show, onHide }) {
       </Modal.Body>
 
       <Modal.Footer className="border-0 pt-0 gap-2 flex items-center justify-end">
-        <Button variant="outline" size="sm" onClick={handleRegisterClick}>
-          {t('common.dangKy', 'Register')}
-        </Button>
         <Button size="sm" onClick={handleLoginClick}>
           {t('signIn', 'Sign In')}
         </Button>

@@ -344,7 +344,7 @@ const ProjectListPage = () => {
 
       {/* 4. RECENTLY ACCESSED (Quick Chips / Mini Bento Cards as in wireframe) */}
       {recentProjects.length > 0 && !searchTerm && (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-5">
           <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground m-0 flex items-center gap-1.5">
             <Icon icon="lucide:clock-4" width="14" className="text-primary" />
             <span>RECENTLY ACCESSED</span>
@@ -376,7 +376,7 @@ const ProjectListPage = () => {
       )}
 
       {/* 5. ALL PROJECTS (Grid / List) */}
-      <div className="space-y-4">
+      <div className="flex flex-col gap-5">
         <h3 className="m-0 text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
           <Icon icon="lucide:folder-kanban" width="16" className="text-primary" />
           <span>

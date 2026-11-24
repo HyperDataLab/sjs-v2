@@ -62,7 +62,7 @@ export default function ArticleListPage() {
         {/* Thẻ thống kê chuẩn hóa (Scimago / Scopus grade) */}
         <ArticleStatsCards stats={stats} isLoading={isLoading} />
 
-        {/* Unified Article Section: Filter + Table + Pagination in ONE Card */}
+        {/* Search toolbar, results, and pagination share one card. */}
         <motion.div variants={fadeUp}>
           <Card className="rounded-card border border-border bg-surface shadow-card">
             {/* Thanh lọc & Sắp xếp tích hợp */}
@@ -72,8 +72,6 @@ export default function ArticleListPage() {
               updateFilters={updateFilters}
               clearFilters={clearFilters}
             />
-
-            {/* Bảng dữ liệu */}
             <div className="border-t border-border">
               <ArticleTable
                 asCard={false}
@@ -81,12 +79,13 @@ export default function ArticleListPage() {
                 isLoading={isLoading}
                 onDetailClick={handleDetailClick}
                 onClearFilters={clearFilters}
+                hasPagination={total > 0 && totalPages > 1}
               />
             </div>
 
             {/* Phân trang Footer */}
             {total > 0 && totalPages > 1 && (
-              <div className="border-t border-border px-4 py-3 bg-surface">
+              <div className="integrated-table-footer border-t border-border px-4 py-3 bg-surface">
                 <AdminPagination
                   totalItems={total}
                   currentPage={currentPage}

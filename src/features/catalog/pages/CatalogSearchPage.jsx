@@ -163,6 +163,7 @@ export default function CatalogSearchPage() {
           ) : (
             <JournalTable
               asCard={false}
+              hasPagination={totalPages > 1}
               journals={journals}
               followedJournals={followedJournals}
               onFollow={handleFollowJournal}
@@ -172,7 +173,7 @@ export default function CatalogSearchPage() {
 
         {/* Pagination Controls Footer */}
         {totalPages > 1 && !loadingJournals && (
-          <div className="border-t border-border px-4 py-3 bg-surface">
+          <div className="catalog-results-pagination border-t border-border px-4 py-3 bg-surface">
             <AdminPagination
               totalItems={total}
               currentPage={page}

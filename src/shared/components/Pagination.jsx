@@ -54,7 +54,7 @@ export default function Pagination({
   const displayEntity = getEntityLabel(entityName, totalItems);
 
   return (
-    <div className={`grid grid-cols-[1fr_auto_1fr] items-center gap-4 max-sm:flex max-sm:flex-col max-sm:items-start w-full ${className || 'pt-4'}`}>
+    <div className={`flex w-full items-center justify-between gap-4 max-sm:flex-col max-sm:items-stretch ${className || 'pt-4'}`}>
       <div className="text-muted-custom text-xs">
         {t('pagination.showing', 'Showing')}{' '}
         <span className="font-semibold text-main">{formatNum(startItem)}</span>{' '}
@@ -65,7 +65,7 @@ export default function Pagination({
         {displayEntity}
       </div>
 
-      <div className="justify-self-center">
+      <div className="ml-auto max-sm:self-end">
         <PaginationControls
           currentPage={currentPage}
           totalPages={totalPages}
@@ -73,8 +73,6 @@ export default function Pagination({
         />
       </div>
 
-      {/* Placeholder to balance the 3-column grid layout and center the pagination */}
-      <div className="hidden sm:block" />
     </div>
   );
 }

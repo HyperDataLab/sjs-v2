@@ -7,11 +7,13 @@ import ArticleDetailPage from '../../features/article/pages/ArticleDetailPage';
 import ArticleVisualDetailPage from '../../features/article/pages/ArticleVisualDetailPage';
 import DashboardPage from '../../features/dashboard/pages/DashboardPage';
 
-import RegisterPage from '../../features/auth/pages/RegisterPage';
 import LoginPage from '../../features/auth/pages/LoginPage';
 import SsoCallbackPage from '../../features/auth/pages/SsoCallbackPage';
-import ProfilePage from '../../features/profile/pages/ProfilePage';
+import RegisterPage from '../../features/auth/pages/RegisterPage';
 import VerifyEmailPage from '../../features/auth/pages/VerifyEmailPage';
+import ForgotPasswordPage from '../../features/auth/pages/ForgotPasswordPage';
+import ResetPasswordPage from '../../features/auth/pages/ResetPasswordPage';
+import ProfilePage from '../../features/profile/pages/ProfilePage';
 import ROUTES from './routePaths';
 
 import ProtectedRoute from './ProtectedRoute';
@@ -47,8 +49,6 @@ import AdminDashboardPage from '../../features/admin/pages/AdminDashboardPage';
 import UpdateArticlePage from '../../features/admin/pages/UpdateArticlePage';
 import ArticleRepositoryPage from '../../features/admin/pages/ArticleRepositoryPage';
 
-import ForgotPasswordPage from '../../features/auth/pages/ForgotPasswordPage';
-import ResetPasswordPage from '../../features/auth/pages/ResetPasswordPage';
 
 import GeographyPage from '../../features/zone/pages/GeographyPage';
 
@@ -67,6 +67,8 @@ import KeywordsNetworksPage from '../../trendingApp/features/volume/pages/Keywor
 import { AnalyticsDashboard } from '../../trendingApp/features/analytics/pages/AnalyticsDashboard';
 import CuratedArticlesPage from '../../trendingApp/features/analytics/pages/CuratedArticlesPage';
 
+const isDevelopment = import.meta.env.DEV;
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -80,7 +82,7 @@ export default function AppRoutes() {
 
         <Route element={<PublicRoute />}>
           <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
+          <Route path="register" element={isDevelopment ? <RegisterPage /> : <Navigate to="../login" replace />} />
         </Route>
 
         {/* Routes sử dụng layout chung */}
@@ -162,10 +164,10 @@ export default function AppRoutes() {
           <Route path="topics/:topicId" element={<TopicDetailPage />} />
         </Route>
 
-        {/* Account recovery and verification pages own their split-screen auth layout. */}
-        <Route path="verify-email" element={<VerifyEmailPage />} />
-        <Route path="forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="reset-password" element={<ResetPasswordPage />} />
+        {/* Password-based account flows are available only in local development. */}
+        <Route path="verify-email" element={isDevelopment ? <VerifyEmailPage /> : <Navigate to="login" replace />} />
+        <Route path="forgot-password" element={isDevelopment ? <ForgotPasswordPage /> : <Navigate to="login" replace />} />
+        <Route path="reset-password" element={isDevelopment ? <ResetPasswordPage /> : <Navigate to="login" replace />} />
 
         <Route path="topics/:topicId" element={<TopicDetailPage />} />
 

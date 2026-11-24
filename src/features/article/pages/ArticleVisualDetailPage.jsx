@@ -30,9 +30,11 @@ import { downloadArticlePdf } from '../utils/pdfExport';
 import LatexText from '../../../shared/components/LatexText/LatexText';
 import ArticleGraphWidget from '../../../trendingApp/features/articles/components/ArticleGraphWidget';
 import { searchArticlesGraph } from '../../../trendingApp/features/articles/services/articleGraph.service';
+import { buildGraphData } from '../../../trendingApp/features/articles/utils/articleGraph.utils';
 import '../Article.css';
 const formatAuthorsLine = (authors = [], limit = 3) => {
   if (!authors || authors.length === 0) return t("article.dangCapNhatTacGia");
+  if (!Array.isArray(authors)) return String(authors);
   const names = authors.slice(0, limit).map(author => author.display_name || author.name || author.author_name || t("typeAuthor")).join(', ');
   return authors.length > limit ? `${names}...` : names;
 };
@@ -366,6 +368,21 @@ export default function ArticleVisualDetailPage() {
   const [apiGraphData, setApiGraphData] = useState(null);
   const [graphLoading, setGraphLoading] = useState(false);
 
+  const { targetArticle, connectedPaperItems } = useMemo(() => {
+    if (!originArticle) return { targetArticle: null, connectedPaperItems: [] };
+
+    const originArticleId = String(originArticle.article_id || originArticle.id || id);
+    const currentTarget = String(selectedArticleId) === originArticleId
+      ? originArticle
+      : recommendedArticles.find((article) => String(article.article_id) === String(selectedArticleId)) || originArticle;
+    const related = [
+      ...(String(selectedArticleId) !== originArticleId ? [normalizeRecommendedArticle(originArticle)] : []),
+      ...recommendedArticles,
+    ].filter((article) => String(article.article_id) !== String(selectedArticleId));
+
+    return { targetArticle: currentTarget, connectedPaperItems: related };
+  }, [originArticle, recommendedArticles, selectedArticleId, id]);
+
   useEffect(() => {
     setSelectedArticleId(id);
   }, [id]);
@@ -422,13 +439,14 @@ export default function ArticleVisualDetailPage() {
     fetchOriginArticleDetail();
   }, [fetchOriginArticleDetail]);
 
-  // Try fetching enhanced graph data from backend if available
+  // Load graph data for the current Target Article.
   useEffect(() => {
-    if (!originArticle?.title) return;
+    if (!targetArticle?.title) return;
     let cancelled = false;
+    setApiGraphData(null);
     setGraphLoading(true);
 
-    searchArticlesGraph({ keyword: originArticle.title, limit: 30 })
+    searchArticlesGraph({ keyword: targetArticle.title, limit: 30 })
       .then((res) => {
         if (!cancelled && res?.nodes && res.nodes.length > 0) {
           setApiGraphData(res);
@@ -444,17 +462,17 @@ export default function ArticleVisualDetailPage() {
     return () => {
       cancelled = true;
     };
-  }, [originArticle?.title]);
+  }, [targetArticle?.title]);
 
-  // Construct local graph network from origin paper + recommended papers
+  // Construct a local fallback graph around the current Target Article.
   const localGraphData = useMemo(() => {
-    if (!originArticle) return { nodes: [], relationships: [] };
+    if (!targetArticle) return { nodes: [], relationships: [] };
 
-    const originId = String(originArticle.article_id || originArticle.id || id);
+    const originId = String(targetArticle.article_id || targetArticle.id || id);
     const originAuthorName =
-      Array.isArray(originArticle.authors) && originArticle.authors.length > 0
-        ? (originArticle.authors[0]?.display_name || originArticle.authors[0]?.name || 'Author')
-        : (typeof originArticle.authors === 'string' ? originArticle.authors.split(',')[0] : 'Author');
+      Array.isArray(targetArticle.authors) && targetArticle.authors.length > 0
+        ? (targetArticle.authors[0]?.display_name || targetArticle.authors[0]?.name || 'Author')
+        : (typeof targetArticle.authors === 'string' ? targetArticle.authors.split(',')[0] : 'Author');
 
     const nodes = [
       {
@@ -462,10 +480,10 @@ export default function ArticleVisualDetailPage() {
         labels: ['Article', 'Origin'],
         properties: {
           id: originId,
-          title: originArticle.title || 'Target Article',
-          doi: originArticle.doi || '',
-          publication_year: originArticle.publication_year || new Date().getFullYear(),
-          display_label: `${originAuthorName} (${originArticle.publication_year || 'Recent'})`,
+          title: targetArticle.title || 'Target Article',
+          doi: targetArticle.doi || '',
+          publication_year: targetArticle.publication_year || new Date().getFullYear(),
+          display_label: `${originAuthorName} (${targetArticle.publication_year || 'Recent'})`,
           is_origin: true,
         },
       },
@@ -473,8 +491,8 @@ export default function ArticleVisualDetailPage() {
 
     const relationships = [];
 
-    if (Array.isArray(recommendedArticles) && recommendedArticles.length > 0) {
-      recommendedArticles.forEach((rec, idx) => {
+    if (connectedPaperItems.length > 0) {
+      connectedPaperItems.forEach((rec, idx) => {
         const recId = String(rec.article_id || rec.id || `rec-${idx}`);
         const recAuthorName = rec.authors
           ? (typeof rec.authors === 'string' ? rec.authors.split(',')[0] : 'Author')
@@ -487,7 +505,7 @@ export default function ArticleVisualDetailPage() {
             id: recId,
             title: rec.title || 'Related Article',
             doi: rec.doi || '',
-            publication_year: rec.publication_year || originArticle.publication_year || '—',
+            publication_year: rec.publication_year || targetArticle.publication_year || '—',
             display_label: `${recAuthorName} (${rec.publication_year || '—'})`,
           },
         });
@@ -502,7 +520,7 @@ export default function ArticleVisualDetailPage() {
     }
 
     return { nodes, relationships };
-  }, [originArticle, recommendedArticles, id]);
+  }, [targetArticle, connectedPaperItems, id]);
 
   const activeGraphData = useMemo(() => {
     if (apiGraphData?.nodes?.length > 0) {
@@ -510,6 +528,10 @@ export default function ArticleVisualDetailPage() {
     }
     return localGraphData;
   }, [apiGraphData, localGraphData]);
+  const visibleGraphData = useMemo(
+    () => buildGraphData(activeGraphData),
+    [activeGraphData]
+  );
 
   const handleTitleClick = (articleId) => {
     navigate(`/articles/${articleId}`);
@@ -561,14 +583,14 @@ export default function ArticleVisualDetailPage() {
               <Icon icon="lucide:network" width={14} />
             </div>
             <h2 className="font-bold text-xs sm:text-sm text-foreground truncate max-w-sm sm:max-w-md lg:max-w-xl m-0">
-              {originArticle.title}
+              {targetArticle.title}
             </h2>
           </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
           <span className="text-xs text-muted-foreground hidden md:inline font-mono">
-            {activeGraphData.nodes.length} nodes · {activeGraphData.relationships.length} links
+            {visibleGraphData.nodes.length} nodes · {visibleGraphData.links.length} links
           </span>
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-primary-subtle text-primary border border-primary/20">
             <span className="size-1.5 rounded-full bg-primary animate-pulse" />
@@ -586,27 +608,20 @@ export default function ArticleVisualDetailPage() {
             <span>Target Article</span>
           </div>
 
-          <div
-            onClick={() => setSelectedArticleId(originArticle.article_id)}
-            className={`p-3 border-b border-border transition-colors cursor-pointer shrink-0 ${
-              String(selectedArticleId) === String(originArticle.article_id)
-                ? 'bg-primary-subtle/25 border-l-4 border-l-primary'
-                : 'hover:bg-surface-muted/50'
-            }`}
-          >
+          <div className="p-3 border-b border-l-4 border-l-primary border-border bg-primary-subtle/25 shrink-0">
             <div className="flex items-center justify-between text-xs mb-1">
               <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary text-primary-foreground">
                 Active Node
               </span>
               <span className="font-mono text-muted-foreground text-xs font-semibold">
-                {originArticle.publication_year || '—'}
+                {targetArticle.publication_year || '—'}
               </span>
             </div>
             <h3 className="text-xs font-bold text-foreground line-clamp-2 leading-snug m-0">
-              <LatexText text={originArticle.title} />
+              <LatexText text={targetArticle.title} />
             </h3>
             <div className="text-[11px] text-muted-foreground mt-1 truncate">
-              {formatAuthorsLine(originArticle.authors, 2)}
+              {formatAuthorsLine(targetArticle.authors || targetArticle.authors_text, 2)}
             </div>
           </div>
 
@@ -616,7 +631,7 @@ export default function ArticleVisualDetailPage() {
               <span>Connected Papers</span>
             </span>
             <span className="font-mono text-[11px] text-muted-foreground">
-              ({recommendedArticles.length})
+              ({connectedPaperItems.length})
             </span>
           </div>
 
@@ -626,22 +641,17 @@ export default function ArticleVisualDetailPage() {
                 <span className="inline-block animate-spin mr-1.5">⏳</span>
                 Loading connected publications...
               </div>
-            ) : recommendedArticles.length === 0 ? (
+            ) : connectedPaperItems.length === 0 ? (
               <div className="p-5 text-center text-xs text-muted-foreground">
                 No related articles found.
               </div>
             ) : (
-              recommendedArticles.map((rec) => {
-                const isSelected = String(selectedArticleId) === String(rec.article_id);
+              connectedPaperItems.map((rec) => {
                 return (
                   <div
                     key={rec.article_id}
                     onClick={() => setSelectedArticleId(rec.article_id)}
-                    className={`p-3 transition-colors cursor-pointer ${
-                      isSelected
-                        ? 'bg-primary-subtle/25 border-l-4 border-l-primary font-medium'
-                        : 'hover:bg-surface-muted/50'
-                    }`}
+                    className="p-3 transition-colors cursor-pointer hover:bg-surface-muted/50"
                   >
                     <div className="flex items-center justify-between text-xs mb-1">
                       <span className="font-mono text-muted-foreground text-[11px] font-semibold">
@@ -676,6 +686,7 @@ export default function ArticleVisualDetailPage() {
           <div className="flex-1 w-full h-full relative min-h-[360px] overflow-hidden bg-background">
             <ArticleGraphWidget
               data={activeGraphData}
+              selectedNodeId={selectedArticleId}
               loading={isRecommendedLoading || graphLoading}
               onNodeClick={(node) => {
                 const targetId = node?.properties?.id || node?.id;

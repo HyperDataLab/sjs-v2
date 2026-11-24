@@ -15,6 +15,8 @@ import { PageContainer, PageHeader } from '../../../shared/ui/page-layout';
 import { MotionPage, MotionGrid, MotionItem, fadeUp } from '../../../shared/ui/motion';
 import { Skeleton } from '../../../shared/ui/skeleton';
 import { cn } from '../../../lib/utils';
+import FilterPanelLayer from '../../../shared/components/FilterPanelLayer';
+import SearchableFilterSelect from '../../../shared/components/SearchableFilterSelect';
 import './AuthorListPage.css';
 
 export default function AuthorListPage() {
@@ -73,20 +75,6 @@ export default function AuthorListPage() {
   }, [institutionVal]);
 
   useEffect(() => {
-    function handleClickOutside(e) {
-      if (filterDropdownRef.current && !filterDropdownRef.current.contains(e.target)) {
-        setIsFilterOpen(false);
-      }
-    }
-    if (isFilterOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isFilterOpen]);
-
-  useEffect(() => {
     const params = {
       search: searchVal,
       page: pageVal,
@@ -104,10 +92,8 @@ export default function AuthorListPage() {
   }, [searchVal, pageVal, limitVal, sortVal, subjectAreaVal, periodVal, institutionVal, countryVal, fetchAuthors]);
 
   useEffect(() => {
-    if (!subjectAreas || subjectAreas.length === 0) {
-      fetchSubjectAreas();
-    }
-  }, [subjectAreas, fetchSubjectAreas]);
+    fetchSubjectAreas();
+  }, [fetchSubjectAreas]);
 
   const handleSearchSubmit = (e) => {
     if (e) e.preventDefault();
@@ -307,11 +293,11 @@ export default function AuthorListPage() {
           ))}
         </MotionGrid>
 
-        {/* Unified Author Section: Search Header + Results Toolbar + Table/Grid Content + Pagination Footer in ONE Card */}
+        {/* Search toolbar, author results, and pagination share one card. */}
         <motion.div variants={fadeUp}>
           <Card className="rounded-card border border-border bg-surface shadow-card">
             {/* 1. Integrated Search & Filter Header (gộp filter vào popover như ở article) */}
-            <div className="p-3 sm:p-3.5 bg-surface space-y-2.5">
+            <div className="integrated-table-toolbar p-3 sm:p-3.5 bg-surface space-y-2.5">
               <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
                 {/* Search Input */}
                 <div className="relative flex-1 min-w-[180px]">
@@ -379,18 +365,8 @@ export default function AuthorListPage() {
 
                   {/* Popover Panel */}
                   {isFilterOpen && (
-                    <>
-                      {/* Click interceptor backdrop on mobile */}
-                      <div
-                        className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[0.5px] sm:bg-transparent"
-                        onClick={() => setIsFilterOpen(false)}
-                        aria-hidden="true"
-                      />
-
-                      <div
-                        className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-[540px] md:w-[620px] max-w-[95vw] bg-surface border border-border rounded-xl shadow-2xl z-50 flex flex-col animate-in fade-in-0 zoom-in-95 duration-150"
-                        style={{ zIndex: 60 }}
-                      >
+                    <FilterPanelLayer anchorRef={filterDropdownRef} onClose={() => setIsFilterOpen(false)} width={620}>
+                      <div className="shared-filter-panel w-full max-w-[95vw] flex flex-col bg-surface border border-border rounded-xl shadow-2xl animate-in fade-in-0 zoom-in-95 duration-150">
                         {/* Header */}
                         <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-surface-muted/30">
                           <div className="flex items-center gap-2">
@@ -442,24 +418,18 @@ export default function AuthorListPage() {
                               <Icon icon="lucide:layers" width={13} className="text-muted-foreground/80" />
                               <span>{t("admin.linhVuc", "Research Field")}</span>
                             </label>
-                            <div className="relative">
-                              <select
-                                value={subjectAreaVal}
-                                onChange={(e) => handleFilterChange('subject_area', e.target.value)}
-                                className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border text-left flex items-center justify-between gap-2 transition-colors cursor-pointer select-none appearance-none ${
-                                  subjectAreaVal
-                                    ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                                    : 'border-border bg-surface text-foreground hover:bg-surface-muted/40 hover:border-foreground/30'
-                                }`}
-                              >
-                                <option value="">{t("admin.tatCaLinhVuc", "All research fields")}</option>
-                                {(subjectAreas || []).map((area) => {
+                            <SearchableFilterSelect
+                              value={subjectAreaVal}
+                              onChange={(value) => handleFilterChange('subject_area', value)}
+                              placeholder={t("admin.tatCaLinhVuc", "All research fields")}
+                              options={[
+                                { value: '', label: t("admin.tatCaLinhVuc", "All research fields") },
+                                ...(subjectAreas || []).map((area) => {
                                   const val = area.display_name || area.name || '';
-                                  return <option key={val} value={val}>{val}</option>;
-                                })}
-                              </select>
-                              <Icon icon="lucide:chevron-down" className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground pointer-events-none" />
-                            </div>
+                                  return { value: val, label: val };
+                                }),
+                              ]}
+                            />
                           </div>
 
                           {/* 2. Affiliation / Institution */}
@@ -513,24 +483,18 @@ export default function AuthorListPage() {
                               <Icon icon="lucide:calendar" width={13} className="text-muted-foreground/80" />
                               <span>{t("period", "Publication Period")}</span>
                             </label>
-                            <div className="relative">
-                              <select
-                                value={periodVal}
-                                onChange={(e) => handleFilterChange('period', e.target.value)}
-                                className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border text-left flex items-center justify-between gap-2 transition-colors cursor-pointer select-none appearance-none ${
-                                  periodVal
-                                    ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                                    : 'border-border bg-surface text-foreground hover:bg-surface-muted/40 hover:border-foreground/30'
-                                }`}
-                              >
-                                <option value="">{t("allTime", "All time")}</option>
-                                <option value="2021-2026">2021 – 2026</option>
-                                <option value="2016-2020">2016 – 2020</option>
-                                <option value="2011-2015">2011 – 2015</option>
-                                <option value="2000-2010">2000 – 2010</option>
-                              </select>
-                              <Icon icon="lucide:chevron-down" className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground pointer-events-none" />
-                            </div>
+                            <SearchableFilterSelect
+                              value={periodVal}
+                              onChange={(value) => handleFilterChange('period', value)}
+                              placeholder={t("allTime", "All time")}
+                              options={[
+                                { value: '', label: t("allTime", "All time") },
+                                { value: '2021-2026', label: '2021 – 2026' },
+                                { value: '2016-2020', label: '2016 – 2020' },
+                                { value: '2011-2015', label: '2011 – 2015' },
+                                { value: '2000-2010', label: '2000 – 2010' },
+                              ]}
+                            />
                           </div>
 
                           {/* 4. Sort By */}
@@ -539,22 +503,17 @@ export default function AuthorListPage() {
                               <Icon icon="lucide:arrow-up-down" width={13} className="text-muted-foreground/80" />
                               <span>{t("sort", "Sort by")}</span>
                             </label>
-                            <div className="relative">
-                              <select
-                                value={sortVal}
-                                onChange={(e) => handleFilterChange('sort', e.target.value)}
-                                className={`w-full h-9 pl-3 pr-8 text-xs rounded-control border text-left flex items-center justify-between gap-2 transition-colors cursor-pointer select-none appearance-none ${
-                                  sortVal !== 'articles'
-                                    ? 'border-primary text-primary bg-primary-subtle/50 font-semibold ring-1 ring-primary/20'
-                                    : 'border-border bg-surface text-foreground hover:bg-surface-muted/40 hover:border-foreground/30'
-                                }`}
-                              >
-                                <option value="articles">{t("sortPublications", "Publications (Most published)")}</option>
-                                <option value="citations">{t("sortCitations", "Citations (Most cited)")}</option>
-                                <option value="impact">{t("sortHIndex", "H-index (Academic impact)")}</option>
-                              </select>
-                              <Icon icon="lucide:chevron-down" className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3 text-muted-foreground pointer-events-none" />
-                            </div>
+                            <SearchableFilterSelect
+                              value={sortVal}
+                              onChange={(value) => handleFilterChange('sort', value)}
+                              active={sortVal !== 'articles'}
+                              placeholder={t("sortPublications", "Publications (Most published)")}
+                              options={[
+                                { value: 'articles', label: t("sortPublications", "Publications (Most published)") },
+                                { value: 'citations', label: t("sortCitations", "Citations (Most cited)") },
+                                { value: 'impact', label: t("sortHIndex", "H-index (Academic impact)") },
+                              ]}
+                            />
                           </div>
                         </div>
 
@@ -575,7 +534,7 @@ export default function AuthorListPage() {
                           </Button>
                         </div>
                       </div>
-                    </>
+                    </FilterPanelLayer>
                   )}
                 </div>
 
@@ -621,8 +580,8 @@ export default function AuthorListPage() {
               )}
             </div>
 
-            {/* 2. Table / Grid content */}
             <div className="border-t border-border">
+              {/* 2. Table / Grid content */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={viewMode}
@@ -651,6 +610,7 @@ export default function AuthorListPage() {
                     ) : authors.length === 0 ? (
                       <AuthorTable
                         asCard={false}
+                        hasPagination={totalAuthors > 0 && totalPagesCount > 1}
                         authors={[]}
                         loading={false}
                         error={errorAuthors}
@@ -670,6 +630,7 @@ export default function AuthorListPage() {
                   ) : (
                     <AuthorTable
                       asCard={false}
+                      hasPagination={totalAuthors > 0 && totalPagesCount > 1}
                       authors={authors}
                       loading={loadingAuthors}
                       error={errorAuthors}
@@ -685,7 +646,7 @@ export default function AuthorListPage() {
 
             {/* 4. Unified Pagination inside single card footer */}
             {totalAuthors > 0 && totalPagesCount > 1 && (
-              <div className="border-t border-border px-4 py-3 bg-surface">
+              <div className="integrated-table-footer border-t border-border px-4 py-3 bg-surface">
                 <AdminPagination
                   totalItems={totalAuthors}
                   currentPage={pageVal}

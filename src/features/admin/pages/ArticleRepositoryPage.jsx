@@ -61,7 +61,7 @@ export default function ArticleRepositoryPage() {
         }
       />
 
-      {/* Unified Article Section: Integrated Search/Filter + Table + Pagination in ONE Card */}
+      {/* Filter toolbar, table, and pagination share one card. */}
       <Card className="rounded-card border border-border bg-surface shadow-card">
         <ArticleFilterBar
           search={searchQuery}
@@ -106,12 +106,13 @@ export default function ArticleRepositoryPage() {
               startIndex={pageItems.length === 0 ? 0 : startIndex}
               endIndex={endIndex}
               asCard={false}
+              hasPagination={totalItems > 0}
             />
           )}
         </div>
 
         {totalItems > 0 && (
-          <div className="border-t border-border px-4 py-3 bg-surface">
+          <div className="integrated-table-footer border-t border-border px-4 py-3 bg-surface">
             <Pagination
               totalItems={totalItems}
               currentPage={currentPage}

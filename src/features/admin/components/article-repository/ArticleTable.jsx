@@ -9,7 +9,8 @@ export default function ArticleTable({
   totalItems = 0,
   startIndex = 0,
   endIndex = 0,
-  asCard = true
+  asCard = true,
+  hasPagination = false
 }) {
   const navigate = useNavigate();
 
@@ -19,7 +20,7 @@ export default function ArticleTable({
 
   if (!items || items.length === 0) {
     return (
-      <div className={asCard ? "text-center py-8 border border-border rounded-lg bg-surface m-4" : "text-center py-8 bg-surface"}>
+      <div className={asCard ? "text-center py-8 border border-border rounded-lg bg-surface m-4" : `integrated-table-viewport${hasPagination ? ' has-pagination' : ''} text-center py-8 bg-surface`}>
         <Icon icon="lucide:file-x" width="48" className="text-muted-foreground mx-auto mb-2 opacity-50" />
         <h6 className="text-foreground font-bold text-base">No Manuscripts Found</h6>
         <p className="text-muted-foreground text-xs mb-0">No articles match the selected filters or search query.</p>
@@ -28,7 +29,7 @@ export default function ArticleTable({
   }
 
   return (
-    <div className={asCard ? "border border-border rounded-lg overflow-hidden bg-surface shadow-2xs" : "table-responsive"}>
+    <div className={asCard ? "border border-border rounded-lg overflow-hidden bg-surface shadow-2xs" : `integrated-table-viewport${hasPagination ? ' has-pagination' : ''} table-responsive`}>
       <Table className="w-full text-left">
         <TableHeader className="bg-surface-muted/60">
           <TableRow>
