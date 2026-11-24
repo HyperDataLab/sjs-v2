@@ -3,12 +3,12 @@
 .dashboard-filters {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 8px;
   width: 100%;
   background-color: var(--color-surface);
   border: var(--border-light);
   border-radius: var(--radius-md);
-  padding: var(--spacing-md);
+  padding: 10px 14px;
   box-sizing: border-box;
 }
 
@@ -17,14 +17,14 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-md);
+  gap: 8px;
 }
 
 .dashboard-filters-controls {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
+  gap: 6px;
 }
 
 .dashboard-filter-label {

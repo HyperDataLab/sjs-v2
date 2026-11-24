@@ -109,7 +109,7 @@ export default function DashboardFilters() {
   };
 
   return (
-    <Card className="dashboard-filters bg-surface border-border shadow-card rounded-card p-4">
+    <Card className="dashboard-filters bg-surface border-border shadow-card rounded-card p-3">
       <div className="dashboard-filters-top">
         <div className="dashboard-filters-controls">
           <div className="dashboard-filter-label">

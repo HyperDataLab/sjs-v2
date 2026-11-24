@@ -206,9 +206,9 @@
 
 .ca-matrix-container {
   position: relative;
-  width: calc(100% - 32px);
-  margin-left: 32px;
-  margin-bottom: 24px;
+  width: calc(100% - 48px);
+  margin-left: 48px;
+  margin-bottom: 42px;
   aspect-ratio: 16 / 9;
   border: 1px solid var(--color-neutral-200);
   margin-top: 16px;
@@ -216,7 +216,7 @@
 
 .ca-matrix-axis-x {
   position: absolute;
-  bottom: -24px;
+  bottom: -40px;
   left: 0;
   width: 100%;
   text-align: center;
@@ -229,7 +229,7 @@
 .ca-matrix-axis-y {
   position: absolute;
   top: 50%;
-  left: -24px;
+  left: -40px;
   transform-origin: 0 0;
   transform: rotate(-90deg) translateX(-50%);
   font-size: 13px;
@@ -237,6 +237,135 @@
   font-weight: 600;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.ca-matrix-tick-x,
+.ca-matrix-tick-y {
+  position: absolute;
+  z-index: 2;
+  color: var(--color-neutral-500);
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.ca-matrix-tick-x {
+  bottom: -18px;
+  transform: translateX(-50%);
+}
+
+.ca-matrix-tick-y {
+  left: -8px;
+  transform: translate(-100%, -50%);
+}
+
+.ca-heatmap {
+  display: grid;
+  grid-template-columns: 36px 52px minmax(0, 1fr);
+  gap: 12px;
+  margin: 16px 0 0;
+  min-width: 0;
+}
+
+.ca-heatmap-y-title {
+  align-self: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+  color: var(--color-neutral-500);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ca-heatmap-main {
+  min-width: 0;
+}
+
+.ca-heatmap-y-ticks {
+  display: grid;
+  grid-template-rows: repeat(5, minmax(44px, 1fr));
+  align-items: center;
+  padding-top: 1px;
+  color: var(--color-neutral-500);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.ca-heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(44px, 1fr));
+  aspect-ratio: 16 / 9;
+  min-height: 240px;
+  border-top: 1px solid var(--color-neutral-200);
+  border-left: 1px solid var(--color-neutral-200);
+}
+
+.ca-heatmap-cell {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  border-right: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
+  background: #fff;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  transition: background-color 140ms ease, box-shadow 140ms ease;
+}
+
+.ca-heatmap-cell.is-populated {
+  background-color: rgb(0 113 188 / var(--heat-intensity));
+}
+
+.ca-heatmap-cell.is-populated:hover {
+  box-shadow: inset 0 0 0 2px #005b98;
+}
+
+.ca-heatmap-x-ticks {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-neutral-500);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  padding-top: 6px;
+}
+
+.ca-heatmap-x-title {
+  margin-top: 8px;
+  text-align: center;
+  color: var(--color-neutral-500);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ca-heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0 48px;
+  color: var(--color-neutral-500);
+  font-size: 12px;
+}
+
+.ca-heatmap-legend-scale {
+  width: 100px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(to right, rgb(0 113 188 / 12%), rgb(0 113 188 / 90%));
+}
+
+.ca-heatmap-legend-note {
+  margin-left: auto;
+}
+
+.ca-matrix-empty {
+  padding: 20px;
+  text-align: center;
+  color: #64748b;
 }
 
 .ca-network-container {
@@ -328,6 +457,22 @@
 @media (max-width: 1024px) {
   .ca-row-half, .ca-row-2-1 {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .ca-heatmap-grid {
+    min-height: 200px;
+  }
+
+  .ca-heatmap-legend {
+    flex-wrap: wrap;
+    margin-left: 48px;
+  }
+
+  .ca-heatmap-legend-note {
+    flex-basis: 100%;
+    margin-left: 0;
   }
 }
 

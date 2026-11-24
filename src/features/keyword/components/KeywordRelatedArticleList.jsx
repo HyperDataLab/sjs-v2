@@ -23,9 +23,9 @@ const KeywordRelatedArticleList = ({
 
   if (loading) {
     return (
-      <div className="space-y-3">
+      <div className="divide-y divide-border">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="p-4 rounded-xl border border-border bg-surface space-y-2.5">
+          <div key={i} className="py-4 first:pt-2 space-y-2.5">
             <div className="flex justify-between items-center">
               <Skeleton className="h-4 w-32 rounded" />
               <Skeleton className="h-3.5 w-12 rounded" />
@@ -50,7 +50,7 @@ const KeywordRelatedArticleList = ({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="divide-y divide-border">
       {articles.map((article, idx) => {
         const pubYear = article.publication_year || article.year;
         const isCopied = copiedDoi === article.doi;
@@ -59,7 +59,7 @@ const KeywordRelatedArticleList = ({
         return (
           <div
             key={article.id || article.article_id || idx}
-            className="p-4 rounded-xl border border-border bg-surface hover:border-primary/40 hover:shadow-xs transition-all space-y-2.5"
+            className="py-4 first:pt-2 space-y-2.5"
           >
             {/* Header row: Journal & Year & Matched Keywords */}
             <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
@@ -116,7 +116,7 @@ const KeywordRelatedArticleList = ({
             )}
 
             {/* Footer: DOI with copy button, Citations, and Details Action */}
-            <div className="pt-2 border-t border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-muted-foreground">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-3 flex-wrap min-w-0">
                 {article.doi && (
                   <div className="flex items-center gap-1 font-mono text-[11px] truncate">

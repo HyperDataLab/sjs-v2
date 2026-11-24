@@ -185,6 +185,14 @@ const CuratedArticlesPage = () => {
                   title={t('common.error', 'Error')}
                   description={error}
                 />
+              ) : articles.length === 0 ? (
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <StatePanel
+                    icon={<Icon icon="lucide:file-search" width="32" />}
+                    title={t('analytics.noCuratedArticles', 'No curated articles found')}
+                    description={t('analytics.noCuratedArticlesDescription', 'No articles matched this project and the current filters.')}
+                  />
+                </div>
               ) : (
                 articles.map(article => (
                   <CuratedArticleCard key={article.id} article={article} />

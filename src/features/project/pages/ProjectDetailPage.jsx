@@ -407,7 +407,7 @@ const ProjectDetailPage = () => {
               key={idx}
               variant={p === page ? 'default' : 'outline'}
               size="sm"
-              className="size-8 p-0"
+              className="min-w-8 shrink-0 px-2 whitespace-nowrap tabular-nums"
               onClick={() => p !== page && fetchFn(p)}
             >
               {p}
@@ -661,14 +661,14 @@ const ProjectDetailPage = () => {
                 <p className="m-0 text-xs">{t("project.chuaCoBaiBaoNaoKhopVoiTuKhoaCu")}</p>
               </div>
             ) : (
-              <div className="space-y-3 pt-2">
+              <div className="divide-y divide-border pt-2">
                 {watchArticles.map((article, index) => {
                   const pubYear = article.publication_year || (article.publication_date && new Date(article.publication_date).getFullYear());
                   const journalName = article.journal_name || article.journal?.title || t("author.tapChiKhoaHoc", "Scientific Journal");
                   return (
                     <div
                       key={article.article_id || article.id || index}
-                      className="p-4 rounded-xl border border-border bg-surface-muted/20 hover:bg-surface-muted/40 transition-colors space-y-2.5"
+                      className="py-4 first:pt-2 last:pb-0 space-y-2.5"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                         <div className="flex items-center gap-2 flex-wrap">
