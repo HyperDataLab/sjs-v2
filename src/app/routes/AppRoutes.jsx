@@ -6,6 +6,7 @@ import ArticleListPage from '../../features/article/pages/ArticleListPage';
 import ArticleDetailPage from '../../features/article/pages/ArticleDetailPage';
 import ArticleVisualDetailPage from '../../features/article/pages/ArticleVisualDetailPage';
 import DashboardPage from '../../features/dashboard/pages/DashboardPage';
+import LandingPage from '../../features/landing/pages/LandingPage';
 
 import LoginPage from '../../features/auth/pages/LoginPage';
 import SsoCallbackPage from '../../features/auth/pages/SsoCallbackPage';
@@ -78,11 +79,11 @@ export default function AppRoutes() {
 
       {/* Language Prefixed Route Tree */}
       <Route path="/:lang" element={<LangLayout />}>
-        <Route index element={<Navigate to="login" replace />} />
+        <Route index element={<LandingPage />} />
+        <Route path="register" element={<RegisterPage />} />
 
         <Route element={<PublicRoute />}>
           <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={isDevelopment ? <RegisterPage /> : <Navigate to="../login" replace />} />
         </Route>
 
         {/* Routes sử dụng layout chung */}
@@ -91,6 +92,7 @@ export default function AppRoutes() {
           {/* 🔐 Tuyến đường yêu cầu bảo mật (Đã đăng nhập) */}
           <Route element={<ProtectedRoute />}>
             <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="geography" element={<GeographyPage />} />
             
             <Route path="projects" element={<ProjectListPage />} />
             <Route path="projects/create" element={<CreateProjectPage />} />
@@ -158,8 +160,6 @@ export default function AppRoutes() {
             path="keywords/:keywordId/articles"
             element={<KeywordArticlesPage />}
           />
-
-          <Route path="geography" element={<GeographyPage />} />
 
           <Route path="topics/:topicId" element={<TopicDetailPage />} />
         </Route>

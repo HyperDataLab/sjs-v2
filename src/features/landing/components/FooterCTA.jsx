@@ -63,8 +63,8 @@ export default function FooterCTA() {
           {/* Try Searching Now Button */}
           <a
             href="#search-sandbox"
-            className="btn-view-trends w-full sm:w-auto rounded-pill px-5 py-3 flex items-center justify-center gap-2 border border-border text-foreground hover:bg-muted/50 transition-colors"
-            style={{ fontSize: '14px', fontWeight: 600 }}
+            className="btn-view-trends w-full sm:w-auto rounded-full px-5 py-3 flex items-center justify-center gap-2 border border-border text-foreground hover:bg-muted/50 transition-colors"
+            style={{ fontSize: '14px', fontWeight: 600, borderRadius: '9999px' }}
           >
             <Icon icon="lucide:search" className="btn-view-trends-icon text-lg" />
             <span>{t('ctaTryNowBtn')}</span>
@@ -73,8 +73,8 @@ export default function FooterCTA() {
           {/* Create Free Account Button */}
           <Button
             onClick={handleCreateAccount}
-            className="btn-primary-glow w-full sm:w-auto rounded-pill px-5 py-3 flex items-center justify-center gap-2 border-0 h-auto"
-            style={{ fontSize: '14px', fontWeight: 700 }}
+            className="btn-primary-glow w-full sm:w-auto rounded-full px-5 py-3 flex items-center justify-center gap-2 border-0 h-auto"
+            style={{ fontSize: '14px', fontWeight: 700, borderRadius: '9999px' }}
           >
             <Icon icon="lucide:user-plus" className="text-lg" />
             <span>{t('ctaCreateAccountBtn')}</span>
