@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useState } from 'react';
-import { useNavigate, useLocation, Link, useParams } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import AuthLayout from '../../../app/layouts/AuthLayout';
 import AuthBanner from '../components/AuthBanner';
@@ -12,6 +12,7 @@ import { startHyperdatalabSso } from '../services/hyperdatalabSso';
 import { Alert } from '../../../shared/ui/alert';
 import { useAuthStore } from '../../../app/store/authStore';
 import { getAuthenticatedHomePath, getDefaultLang } from '../../../app/routes/languageRouting';
+import { EXTERNAL_REGISTRATION_URL } from '../constants/registration';
 const DASHBOARD_PAGE = ROUTES.DASHBOARD;
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -85,15 +86,20 @@ export default function LoginPage() {
           <LoginForm onSubmit={handlePasswordLogin} isLoading={isLoading} apiError={error} />
           <div className="mt-6 text-center text-sm">
             <span className="text-muted-foreground">{t('auth.chuaCoTaiKhoan')}</span>{' '}
-            <Link to={ROUTES.REGISTER} className="font-semibold text-primary hover:underline">
+            <a href={EXTERNAL_REGISTRATION_URL} className="font-semibold text-primary hover:underline">
               {t('signUp')}
-            </Link>
+            </a>
           </div>
         </>
       ) : (
-        <p className="mt-5 text-center text-xs text-muted-foreground">
-          {t('auth.ssoOnlyAccounts', 'Use your approved HyperDataLab account to sign in. New accounts are managed by your administrator.')}
-        </p>
+        <div className="mt-5 space-y-2 text-center text-xs text-muted-foreground">
+          <p className="m-0">
+            {t('auth.ssoOnlyAccounts', 'Use your approved HyperDataLab account to sign in. New accounts are managed by your administrator.')}
+          </p>
+          <a href={EXTERNAL_REGISTRATION_URL} className="font-semibold text-primary hover:underline">
+            {t('signUp')}
+          </a>
+        </div>
       )}
     </AuthLayout>
   );

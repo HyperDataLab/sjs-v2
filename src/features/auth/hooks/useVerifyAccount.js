@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ROUTES from '../../../app/routes/routePaths';
 import { verifyEmailApi } from '../api/auth.api';
+import { redirectToExternalRegistration } from '../constants/registration';
 
 // Số giây đếm ngược trước khi tự redirect
 const COUNTDOWN_SECONDS = 5;
@@ -83,7 +84,7 @@ const useVerifyAccount = () => {
   };
 
   const goToRegister = () => {
-    navigate(ROUTES.REGISTER);
+    redirectToExternalRegistration();
   };
 
   return {

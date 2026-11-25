@@ -15,6 +15,7 @@ import useAuth from "../../auth/hooks/useAuth";
 import { useUserStore } from "../../../app/store/userStore";
 import ROUTES from "../../../app/routes/routePaths";
 import { DashboardShellContext } from "../../../shared/components/DashboardShell";
+import { redirectToExternalRegistration } from "../../auth/constants/registration";
 
 // Single source of truth for supported languages — shared by desktop & mobile switchers.
 const LANGUAGES = [
@@ -86,7 +87,7 @@ export default function Header() {
   };
 
   const handleAuthRegister = () => {
-    navigateWithLang(ROUTES.REGISTER);
+    redirectToExternalRegistration();
   };
 
   const navItems = [
@@ -296,15 +297,13 @@ export default function Header() {
                   >
                     {t("signIn")}
                   </Button>
-                  {import.meta.env.DEV && (
-                    <Button
-                      size="sm"
-                      className="btn-primary-glow border-0 text-white text-xs rounded-full px-3 h-8"
-                      onClick={handleAuthRegister}
-                    >
-                      {t("signUp")}
-                    </Button>
-                  )}
+                  <Button
+                    size="sm"
+                    className="btn-primary-glow border-0 text-white text-xs rounded-full px-3 h-8"
+                    onClick={handleAuthRegister}
+                  >
+                    {t("signUp")}
+                  </Button>
                 </div>
               )}
             </div>
@@ -504,17 +503,15 @@ export default function Header() {
                   >
                     {t("signIn")}
                   </Button>
-                  {import.meta.env.DEV && (
-                    <Button
-                      className="btn-primary-glow w-full rounded-full py-2.5 text-xs font-bold border-0 text-white h-9"
-                      onClick={() => {
-                        setShowMobileMenu(false);
-                        handleAuthRegister();
-                      }}
-                    >
-                      {t("signUp")}
-                    </Button>
-                  )}
+                  <Button
+                    className="btn-primary-glow w-full rounded-full py-2.5 text-xs font-bold border-0 text-white h-9"
+                    onClick={() => {
+                      setShowMobileMenu(false);
+                      handleAuthRegister();
+                    }}
+                  >
+                    {t("signUp")}
+                  </Button>
                 </div>
               )}
             </div>
