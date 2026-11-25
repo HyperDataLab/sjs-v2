@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { NavLink, Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { FiBarChart2, FiFileText, FiFolder, FiGlobe, FiMenu, FiSearch, FiUsers, FiX, FiLogOut } from 'react-icons/fi';
+import { FiBarChart2, FiFileText, FiFolder, FiGlobe, FiMenu, FiSearch, FiUsers, FiX, FiLogOut, FiLogIn } from 'react-icons/fi';
 import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createContext } from 'react';
@@ -144,7 +144,7 @@ export default function DashboardShell({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { logout } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
   const reduceMotion = useReducedMotion();
   const [mobileOpen, setMobileOpen] = useState(false);
   const headerSearchRef = useRef(null);
@@ -167,7 +167,9 @@ export default function DashboardShell({ children }) {
       const next = !prev;
       try {
         localStorage.setItem('trending_sidebar_collapsed', String(next));
-      } catch {}
+      } catch {
+        // Sidebar preference storage is optional (for example, in restricted browser contexts).
+      }
       return next;
     });
   };
@@ -345,34 +347,53 @@ export default function DashboardShell({ children }) {
             ))}
           </nav>
           <div className="mt-auto flex flex-col gap-0.5 border-t border-border pt-2">
-            <button
-              type="button"
-              title={isCollapsed ? t('navigation.account', 'Account') : undefined}
-              className={`flex h-9 min-h-[36px] w-full items-center rounded-control border-0 bg-transparent text-left text-xs font-semibold text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground cursor-pointer ${
-                isCollapsed ? 'justify-center px-0' : 'gap-2.5 px-2.5 py-1.5'
-              }`}
-              onClick={() => {
-                setMobileOpen(false);
-                navigate(`${base}/profile`);
-              }}
-            >
-              <FiUsers aria-hidden="true" className="text-base shrink-0" />
-              {!isCollapsed && <span className="truncate">{t('navigation.account', 'Account')}</span>}
-            </button>
-            <button
-              type="button"
-              title={isCollapsed ? t('navigation.signOut', 'Sign out') : undefined}
-              className={`flex h-9 min-h-[36px] w-full items-center rounded-control border-0 bg-transparent text-left text-xs font-semibold text-muted-foreground transition-colors hover:bg-danger-subtle hover:text-danger cursor-pointer ${
-                isCollapsed ? 'justify-center px-0' : 'gap-2.5 px-2.5 py-1.5'
-              }`}
-              onClick={() => {
-                setMobileOpen(false);
-                logout();
-              }}
-            >
-              <FiLogOut aria-hidden="true" className="text-base shrink-0" />
-              {!isCollapsed && <span className="truncate">{t('navigation.signOut', 'Sign out')}</span>}
-            </button>
+            {isAuthenticated ? (
+              <>
+                <button
+                  type="button"
+                  title={isCollapsed ? t('navigation.account', 'Account') : undefined}
+                  className={`flex h-9 min-h-[36px] w-full items-center rounded-control border-0 bg-transparent text-left text-xs font-semibold text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground cursor-pointer ${
+                    isCollapsed ? 'justify-center px-0' : 'gap-2.5 px-2.5 py-1.5'
+                  }`}
+                  onClick={() => {
+                    setMobileOpen(false);
+                    navigate(`${base}/profile`);
+                  }}
+                >
+                  <FiUsers aria-hidden="true" className="text-base shrink-0" />
+                  {!isCollapsed && <span className="truncate">{t('navigation.account', 'Account')}</span>}
+                </button>
+                <button
+                  type="button"
+                  title={isCollapsed ? t('navigation.signOut', 'Sign out') : undefined}
+                  className={`flex h-9 min-h-[36px] w-full items-center rounded-control border-0 bg-transparent text-left text-xs font-semibold text-muted-foreground transition-colors hover:bg-danger-subtle hover:text-danger cursor-pointer ${
+                    isCollapsed ? 'justify-center px-0' : 'gap-2.5 px-2.5 py-1.5'
+                  }`}
+                  onClick={() => {
+                    setMobileOpen(false);
+                    logout();
+                  }}
+                >
+                  <FiLogOut aria-hidden="true" className="text-base shrink-0" />
+                  {!isCollapsed && <span className="truncate">{t('navigation.signOut', 'Sign out')}</span>}
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                title={isCollapsed ? t('signIn', 'Sign in') : undefined}
+                className={`flex h-9 min-h-[36px] w-full items-center rounded-control border-0 bg-transparent text-left text-xs font-semibold text-muted-foreground transition-colors hover:bg-primary-subtle hover:text-primary cursor-pointer ${
+                  isCollapsed ? 'justify-center px-0' : 'gap-2.5 px-2.5 py-1.5'
+                }`}
+                onClick={() => {
+                  setMobileOpen(false);
+                  navigate(`${base}/login`);
+                }}
+              >
+                <FiLogIn aria-hidden="true" className="text-base shrink-0" />
+                {!isCollapsed && <span className="truncate">{t('signIn', 'Sign in')}</span>}
+              </button>
+            )}
           </div>
         </div>
       </aside>

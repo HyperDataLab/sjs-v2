@@ -92,6 +92,7 @@ export default function AppRoutes() {
           {/* 🔐 Tuyến đường yêu cầu bảo mật (Đã đăng nhập) */}
           <Route element={<ProtectedRoute />}>
             <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="geography" element={<GeographyPage />} />
             
             <Route path="projects" element={<ProjectListPage />} />
             <Route path="projects/create" element={<CreateProjectPage />} />
@@ -159,8 +160,6 @@ export default function AppRoutes() {
             path="keywords/:keywordId/articles"
             element={<KeywordArticlesPage />}
           />
-
-          <Route path="geography" element={<GeographyPage />} />
 
           <Route path="topics/:topicId" element={<TopicDetailPage />} />
         </Route>

@@ -18,28 +18,24 @@ export default function Footer() {
   ];
 
   return (
-    <footer 
-      className="py-8 bg-surface border-t border-border"
-    >
+    <footer className="border-t border-border bg-surface py-7 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-10">
           {/* Brand and Description */}
-          <div className="flex items-center gap-3">
-            <div>
-              <Logo size={40} fontSize="1.25rem" />
-              <div className="text-muted-foreground text-xs max-w-[300px] mt-1">
-                {t('footerDesc')}
-              </div>
-            </div>
+          <div className="min-w-0">
+            <Logo size={36} fontSize="1.125rem" />
+            <p className="mt-2 ml-12 mb-0 max-w-[320px] text-sm leading-5 text-muted-foreground">
+              {t('footerDesc')}
+            </p>
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex flex-wrap justify-center gap-6">
+          <nav aria-label="Footer" className="flex flex-wrap justify-center md:justify-end gap-x-7 gap-y-3">
             {links.map((link) => (
               <a
                 key={link.labelKey}
                 href={link.href}
-                className="text-muted-foreground hover:text-primary text-sm transition-colors"
+                className="text-muted-foreground hover:text-primary text-sm font-medium transition-colors"
               >
                 {t(link.labelKey)}
               </a>
@@ -48,9 +44,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <div 
-          className="text-center text-muted-foreground mt-8 pt-6 border-t border-border text-xs"
-        >
+        <div className="mt-6 border-t border-border pt-4 text-center text-xs text-muted-foreground">
           © {currentYear} Trending System. {t('footerRights')}
         </div>
       </div>
